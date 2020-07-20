@@ -1,0 +1,25 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "TMT",
+    "TCT",
+    "TMT"  ],
+  "key": {
+    "T": {
+        "item": "prospect:tin_plate"
+    },
+    "C": {
+        "item": "minecraft:coal",
+        "data": 1
+    },
+    "M": {
+        "item": "prospect:suit_material"
+    }
+},
+  "result": {
+    "item": "prospect:filter",
+    "data": 0
+  }
+}
+
+

@@ -1,0 +1,8 @@
+{
+    "parent": "block/cube_bottom_top",
+    "textures": {
+        "side": "prospect:blocks/press_sides",
+        "bottom": "prospect:blocks/plating_dark",
+        "top": "prospect:blocks/plating_dark"
+    }
+}

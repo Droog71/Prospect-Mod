@@ -1,0 +1,27 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "TQT",
+    "QDQ",
+    "TXT"  ],
+  "key": {
+    "T": {
+        "item": "prospect:tin_plate"
+    },
+    "X": {
+        "item": "prospect:ev_transformer"
+    },
+    "Q": {
+        "item": "prospect:quantum_circuit"
+    },
+    "D": {
+        "item": "minecraft:diamond"
+    }
+},
+  "result": {
+    "item": "prospect:replicator",
+    "data": 0
+  }
+}
+
+

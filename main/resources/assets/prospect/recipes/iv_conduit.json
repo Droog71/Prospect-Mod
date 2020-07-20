@@ -1,0 +1,21 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "AAA",
+    "AWA",
+    "AAA"  ],
+  "key": {
+    "W": {
+        "item": "prospect:in_iv_wire"
+    },
+    "A": {
+        "item": "prospect:aluminum_plate"
+    }
+},
+  "result": {
+    "item": "prospect:iv_cable",
+    "data": 0
+  }
+}
+
+

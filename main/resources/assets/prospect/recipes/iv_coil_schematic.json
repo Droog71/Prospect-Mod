@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "prospect:iv_coil"
+        },
+        {
+            "item": "minecraft:paper"
+        },
+        {
+            "item": "minecraft:dye",
+            "data": 4
+        },
+        {
+            "item": "minecraft:feather"
+        }
+    ],
+    "result": {
+        "item": "prospect:iv_coil_schematic"
+    }
+}

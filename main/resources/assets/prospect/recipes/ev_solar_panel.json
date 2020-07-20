@@ -1,0 +1,21 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "PPP",
+    "PTP",
+    "PPP"  ],
+  "key": {
+    "T": {
+        "item": "prospect:hv_transformer"
+    },
+    "P": {
+        "item": "minecraft:hv_solar_panel"
+    }
+},
+  "result": {
+    "item": "prospect:ev_solar_panel",
+    "data": 0
+  }
+}
+
+

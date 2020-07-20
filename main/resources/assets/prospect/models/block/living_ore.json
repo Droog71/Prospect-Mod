@@ -1,0 +1,8 @@
+{
+    "parent": "block/cube_bottom_top",
+    "textures": {
+        "side": "prospect:blocks/living_ore",
+        "bottom": "prospect:blocks/living_ore",
+        "top": "prospect:blocks/living_ore"
+    }
+}

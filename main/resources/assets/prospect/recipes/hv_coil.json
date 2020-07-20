@@ -1,0 +1,18 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "WWW",
+    "W W",
+    "WWW"  ],
+  "key": {
+    "W": {
+        "item": "prospect:hv_wire"
+    }
+},
+  "result": {
+    "item": "prospect:hv_coil",
+    "data": 0
+  }
+}
+
+

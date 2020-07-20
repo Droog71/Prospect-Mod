@@ -1,0 +1,24 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "LLL",
+    "E I",
+    "LLL"  ],
+  "key": {
+    "E": {
+        "item": "prospect:ev_coil"
+    },
+    "I": {
+        "item": "prospect:iv_coil"
+    },
+    "L": {
+        "item": "prospect:lead_plate"
+    }
+},
+  "result": {
+    "item": "prospect:ev_transformer",
+    "data": 0
+  }
+}
+
+

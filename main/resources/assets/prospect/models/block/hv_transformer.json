@@ -1,0 +1,8 @@
+{
+    "parent": "block/cube_bottom_top",
+    "textures": {
+        "side": "prospect:blocks/hv_transformer",
+        "bottom": "prospect:blocks/hv_transformer",
+        "top": "prospect:blocks/hv_transformer"
+    }
+}

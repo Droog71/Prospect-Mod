@@ -1,0 +1,24 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "SWS",
+    "WIW",
+    "SWS"  ],
+  "key": {
+    "W": {
+        "item": "prospect:copper_wire"
+    },
+    "S": {
+        "item": "prospect:silver_plate"
+    },
+    "I": {
+        "item": "prospect:silicon"
+    }
+},
+  "result": {
+    "item": "prospect:circuit",
+    "data": 0
+  }
+}
+
+

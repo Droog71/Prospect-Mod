@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "normal": [
+            { "model": "prospect:ev_solar_panel" }
+        ]
+    }
+}

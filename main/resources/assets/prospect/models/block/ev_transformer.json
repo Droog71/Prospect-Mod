@@ -1,0 +1,8 @@
+{
+    "parent": "block/cube_bottom_top",
+    "textures": {
+        "side": "prospect:blocks/ev_transformer",
+        "bottom": "prospect:blocks/ev_transformer",
+        "top": "prospect:blocks/ev_transformer"
+    }
+}

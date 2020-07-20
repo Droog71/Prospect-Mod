@@ -1,0 +1,14 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "prospect:copper_wire"
+        },
+        {
+            "item": "prospect:copper_wire"
+        }
+    ],
+    "result": {
+        "item": "prospect:mv_wire"
+    }
+}

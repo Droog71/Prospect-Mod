@@ -1,0 +1,15 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "prospect:iv_wire"
+        },
+	{
+            "item": "minecraft:wool",
+      	    "data": 0
+        }
+    ],
+    "result": {
+        "item": "prospect:in_iv_wire"
+    }
+}

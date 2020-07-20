@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "prospect:pants"
+        },
+        {
+            "item": "minecraft:paper"
+        },
+        {
+            "item": "minecraft:dye",
+            "data": 4
+        },
+        {
+            "item": "minecraft:feather"
+        }
+    ],
+    "result": {
+        "item": "prospect:pants_schematic"
+    }
+}

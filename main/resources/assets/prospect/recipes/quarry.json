@@ -1,0 +1,30 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "IQI",
+    "XPX",
+    "LPL"  ],
+  "key": {
+    "I": {
+        "item": "prospect:in_iv_wire"
+    },
+    "X": {
+        "item": "prospect:ev_transformer"
+    },
+    "P": {
+        "item": "minecraft:piston"
+    },
+    "Q": {
+        "item": "prospect:quantum_circuit"
+    },
+    "L": {
+        "item": "prospect:lead_plate"
+    }
+},
+  "result": {
+    "item": "prospect:quarry",
+    "data": 0
+  }
+}
+
+

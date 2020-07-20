@@ -1,0 +1,8 @@
+{
+    "parent": "block/cube_bottom_top",
+    "textures": {
+        "side": "prospect:blocks/copper_ore",
+        "bottom": "prospect:blocks/copper_ore",
+        "top": "prospect:blocks/copper_ore"
+    }
+}

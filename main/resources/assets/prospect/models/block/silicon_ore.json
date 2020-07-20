@@ -1,0 +1,8 @@
+{
+    "parent": "block/cube_bottom_top",
+    "textures": {
+        "side": "prospect:blocks/silicon_ore",
+        "bottom": "prospect:blocks/silicon_ore",
+        "top": "prospect:blocks/silicon_ore"
+    }
+}

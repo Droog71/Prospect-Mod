@@ -1,0 +1,27 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "LCL",
+    "LPL",
+    "LHL"  ],
+  "key": {
+    "L": {
+        "item": "prospect:lead_plate"
+    },
+    "C": {
+        "item": "prospect:lv_coil"
+    },
+    "H": {
+        "item": "minecraft:hopper"
+    },
+    "P": {
+        "item": "minecraft:piston"
+    }
+},
+  "result": {
+    "item": "prospect:extruder",
+    "data": 0
+  }
+}
+
+

@@ -1,0 +1,27 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "GGG",
+    "TXT",
+    "TWT"  ],
+  "key": {
+    "T": {
+        "item": "prospect:tin_plate"
+    },
+    "G": {
+        "item": "minecraft:glass"
+    },
+    "X": {
+        "item": "prospect:lv_transformer"
+    },
+    "W": {
+        "item": "prospect:copper_wire"
+    }
+},
+  "result": {
+    "item": "prospect:lv_solar_panel",
+    "data": 0
+  }
+}
+
+

@@ -1,0 +1,24 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "THT",
+    "HFH",
+    "THT"  ],
+  "key": {
+    "T": {
+        "item": "prospect:tin_plate"
+    },
+    "F": {
+        "item": "prospect:filter"
+    },
+    "H": {
+        "item": "minecraft:hopper"
+    }
+},
+  "result": {
+    "item": "prospect:purifier",
+    "data": 0
+  }
+}
+
+

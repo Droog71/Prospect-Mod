@@ -1,0 +1,24 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "LLL",
+    "QHQ",
+    "LHL"  ],
+  "key": {
+    "L": {
+        "item": "prospect:lead_plate"
+    },
+    "Q": {
+        "item": "prospect:quantum_circuit"
+    },
+    "H": {
+        "item": "minecraft:hopper"
+    }
+},
+  "result": {
+    "item": "prospect:launch_pad",
+    "data": 0
+  }
+}
+
+

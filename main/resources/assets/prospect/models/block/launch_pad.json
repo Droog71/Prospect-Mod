@@ -1,0 +1,8 @@
+{
+    "parent": "block/cube_bottom_top",
+    "textures": {
+        "side": "prospect:blocks/launchpad_sides",
+        "bottom": "prospect:blocks/launchpad_sides",
+        "top": "prospect:blocks/launchpad_top"
+    }
+}

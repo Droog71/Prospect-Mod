@@ -1,0 +1,24 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "III",
+    "L M",
+    "III"  ],
+  "key": {
+    "L": {
+        "item": "prospect:lv_coil"
+    },
+    "M": {
+        "item": "prospect:mv_coil"
+    },
+    "I": {
+        "item": "prospect:lead_plate"
+    }
+},
+  "result": {
+    "item": "prospect:lv_transformer",
+    "data": 0
+  }
+}
+
+

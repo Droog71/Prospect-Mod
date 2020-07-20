@@ -1,0 +1,18 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "MMM",
+    "M M",
+    "M M"  ],
+  "key": {
+    "M": {
+        "item": "prospect:suit_material"
+    }
+},
+  "result": {
+    "item": "prospect:pants",
+    "data": 0
+  }
+}
+
+

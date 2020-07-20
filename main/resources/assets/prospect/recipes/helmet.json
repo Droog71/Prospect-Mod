@@ -1,0 +1,21 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "MMM",
+    "MGM",
+    "MMM"  ],
+  "key": {
+    "M": {
+        "item": "prospect:suit_material"
+    },
+    "G": {
+        "item": "minecraft:glass"
+    }
+},
+  "result": {
+    "item": "prospect:helmet",
+    "data": 0
+  }
+}
+
+

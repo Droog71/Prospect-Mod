@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "normal": [
+            { "model": "prospect:copper_ore" }
+        ]
+    }
+}

@@ -1,0 +1,42 @@
+{
+  "printer": 
+  {
+    "category": "block",
+    "sounds": [ "prospect:printer" ]
+  },
+  "purifier": 
+  {
+    "category": "block",
+    "sounds": [ "prospect:purifier" ]
+  },
+  "quarry": 
+  {
+    "category": "block",
+    "sounds": [ "prospect:quarry" ]
+  },
+  "replicator": 
+  {
+    "category": "block",
+    "sounds": [ "prospect:replicator" ]
+  },
+  "transmitter": 
+  {
+    "category": "block",
+    "sounds": [ "prospect:transmitter" ]
+  },
+"capsule": 
+  {
+    "category": "block",
+    "sounds": [ "prospect:capsule" ]
+  },
+"extruder": 
+  {
+    "category": "block",
+    "sounds": [ "prospect:extruder" ]
+  },
+"press": 
+  {
+    "category": "block",
+    "sounds": [ "prospect:press" ]
+  }
+}

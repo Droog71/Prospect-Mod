@@ -1,0 +1,24 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "LCL",
+    "LPL",
+    "LPL"  ],
+  "key": {
+    "L": {
+        "item": "prospect:lead_plate"
+    },
+    "C": {
+        "item": "prospect:lv_coil"
+    },
+    "P": {
+        "item": "minecraft:piston"
+    }
+},
+  "result": {
+    "item": "prospect:press",
+    "data": 0
+  }
+}
+
+
