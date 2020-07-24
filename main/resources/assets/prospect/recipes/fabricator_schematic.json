@@ -2,7 +2,7 @@
     "type": "minecraft:crafting_shapeless",
     "ingredients": [
         {
-            "item": "prospect:printer"
+            "item": "prospect:fabricator"
         },
         {
             "item": "minecraft:paper"
@@ -16,6 +16,6 @@
         }
     ],
     "result": {
-        "item": "prospect:printer_schematic"
+        "item": "prospect:fabricator_schematic"
     }
 }

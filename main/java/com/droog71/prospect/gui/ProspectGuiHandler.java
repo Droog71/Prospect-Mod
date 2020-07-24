@@ -3,12 +3,12 @@ package com.droog71.prospect.gui;
 import com.droog71.prospect.inventory.ExtruderContainer;
 import com.droog71.prospect.inventory.LaunchPadContainer;
 import com.droog71.prospect.inventory.PressContainer;
-import com.droog71.prospect.inventory.PrinterContainer;
+import com.droog71.prospect.inventory.FabricatorContainer;
 import com.droog71.prospect.inventory.ReplicatorContainer;
 import com.droog71.prospect.tilentity.ExtruderTileEntity;
 import com.droog71.prospect.tilentity.LaunchPadTileEntity;
 import com.droog71.prospect.tilentity.PressTileEntity;
-import com.droog71.prospect.tilentity.PrinterTileEntity;
+import com.droog71.prospect.tilentity.FabricatorTileEntity;
 import com.droog71.prospect.tilentity.ReplicatorTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
@@ -27,7 +27,7 @@ public class ProspectGuiHandler implements IGuiHandler
 		}
 		if (ID == 1)
 		{
-			return new PrinterContainer(player.inventory, (PrinterTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
+			return new FabricatorContainer(player.inventory, (FabricatorTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
 		}
 		if (ID == 2)
 		{
@@ -57,7 +57,7 @@ public class ProspectGuiHandler implements IGuiHandler
 		}
 		if (ID == 1)
 		{
-			return new PrinterGUI(player.inventory, (PrinterTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
+			return new PrinterGUI(player.inventory, (FabricatorTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
 		}
 		if (ID == 2)
 		{

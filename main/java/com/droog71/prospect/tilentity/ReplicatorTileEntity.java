@@ -1,18 +1,15 @@
 package com.droog71.prospect.tilentity;
 
 import com.droog71.prospect.fe.ProspectEnergyStorage;
-import com.droog71.prospect.init.ProspectBlocks;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.ReplicatorContainer;
 import ic2.api.energy.prefab.BasicSink;
 import ic2.core.platform.registry.Ic2Items;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -22,11 +19,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.Loader;
@@ -290,7 +285,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
         {
         	if (energyStorage.overloaded)
             {
-            	explode();
+        		energyStorage.explode(world,pos);
             }
 			else
 			{
@@ -346,19 +341,6 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
         {
             markDirty();
         }
-    }
-    
-    private void explode()
-    {
-    	world.playSound(null, pos, SoundEvents.ENTITY_GENERIC_EXPLODE,  SoundCategory.BLOCKS, 0.5f, 1);
-    	WorldServer w = (WorldServer) world;
-    	w.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 1, null);
-    	w.spawnParticle(EnumParticleTypes.LAVA, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);
-    	w.spawnParticle(EnumParticleTypes.FLAME, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);   	
-    	world.getBlockState(pos).getBlock().breakBlock(world, pos, ProspectBlocks.extruder.getDefaultState());
-    	EntityItem item = new EntityItem(w, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(ProspectBlocks.extruder));
-    	w.spawnEntity(item);
-    	world.setBlockToAir(pos);    	
     }
     
     private void updateEnergy()
@@ -420,16 +402,16 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	Item i = stack.getItem();
     	if (i == Items.EMERALD || i == Items.DIAMOND)
     	{
-    		return 400;
+    		return 100;
     	}
     	if (Loader.isModLoaded("ic2"))
     	{
     		if (stack == Ic2Items.uraniumDrop)
     		{
-    			return 400;
+    			return 100;
     		}
     	}
-    	return 200;
+    	return 50;
     }
 
     private boolean invalidReplicatorItem(ItemStack stack)
@@ -448,8 +430,8 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	}
     	NonNullList<ItemStack> copper = OreDictionary.getOres("ingotCopper");
     	for (ItemStack s : copper)
-    	{ 		
-    		if (s.getDisplayName() == stack.getDisplayName())
+    	{ 		   	
+    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
     			return false;
     		}
@@ -457,7 +439,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	NonNullList<ItemStack> tin = OreDictionary.getOres("ingotTin");
     	for (ItemStack s : tin)
     	{
-    		if (s.getDisplayName() == stack.getDisplayName())
+    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
     			return false;
     		}
@@ -465,7 +447,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	NonNullList<ItemStack> silver = OreDictionary.getOres("ingotSilver");
     	for (ItemStack s : silver)
     	{
-    		if (s.getDisplayName() == stack.getDisplayName())
+    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
     			return false;
     		}
@@ -473,7 +455,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	NonNullList<ItemStack> lead = OreDictionary.getOres("ingotLead");
     	for (ItemStack s : lead)
     	{
-    		if (s.getDisplayName() == stack.getDisplayName())
+    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
     			return false;
     		}
@@ -481,7 +463,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	NonNullList<ItemStack> aluminum = OreDictionary.getOres("ingotAluminum");
     	for (ItemStack s : aluminum)
     	{
-    		if (s.getDisplayName() == stack.getDisplayName())
+    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
     			return false;
     		}
@@ -489,7 +471,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	NonNullList<ItemStack> silicon = OreDictionary.getOres("silicon");
     	for (ItemStack s : silicon)
     	{
-    		if (s.getDisplayName() == stack.getDisplayName())
+    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
     			return false;
     		}
@@ -541,7 +523,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
         if (canReplicate())
         {           
             ItemStack itemstack = replicatorItemStacks.get(0);
-            ItemStack itemstack1 = new ItemStack(itemstack.getItem());
+            ItemStack itemstack1 = itemstack.copy();
             ItemStack itemstack2 = replicatorItemStacks.get(2);
 
             if (itemstack2.isEmpty())
@@ -557,7 +539,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 
     public static int getCreditSpendTime(ItemStack stack) //Could eventually be used for differing denominations of currency.
     {
-    	return 10; 
+    	return 50;
     }
 
     public static boolean isCredit(ItemStack stack)

@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class ConfigHandler 
 {
-	public static boolean getSporesEnabled()
+	public static boolean toxicSporesEnabled()
 	{
 		File configFile = new File(System.getProperty("user.dir")+"/config/prospect.cfg");	
         if (configFile.exists())
@@ -19,7 +19,7 @@ public class ConfigHandler
 				configFileScanner = new Scanner(configFile);
 				String configFileContents = configFileScanner.useDelimiter("\\Z").next();				
 				configFileScanner.close();
-				String configValue = configFileContents.split(":")[1].toLowerCase();
+				String configValue = configFileContents.split(">")[1].split(":")[1].toLowerCase().trim();
 				if (configValue.equals("true"))
 				{
 					return true;
@@ -27,7 +27,37 @@ public class ConfigHandler
 			} 
 			catch (FileNotFoundException e) 
 			{
-				System.out.println("Reactor turbines mod failed to find config file!");
+				System.out.println("Prospect mod failed to find config file!");
+				e.printStackTrace();
+			}			
+        }
+        else
+        {
+        	createConfigFile();
+        }
+        return false;
+	}
+	
+	public static boolean purifierParticleEffectsEnabled()
+	{
+		File configFile = new File(System.getProperty("user.dir")+"/config/prospect.cfg");	
+        if (configFile.exists())
+        {
+			Scanner configFileScanner;
+			try 
+			{
+				configFileScanner = new Scanner(configFile);
+				String configFileContents = configFileScanner.useDelimiter("\\Z").next();				
+				configFileScanner.close();
+				String configValue = configFileContents.split(">")[2].split(":")[1].toLowerCase().trim();
+				if (configValue.equals("true"))
+				{
+					return true;
+				}
+			} 
+			catch (FileNotFoundException e) 
+			{
+				System.out.println("Prospect mod failed to find config file!");
 				e.printStackTrace();
 			}			
         }
@@ -50,7 +80,7 @@ public class ConfigHandler
 			    try 
 			    {
 			        f = new FileWriter(configFile,false);
-			        f.write("toxic_spores_enabled:true");
+			        f.write(">toxic_spores_enabled:true\n>purifier_particle_effects:true");
 			        f.close();
 			    } 
 			    catch (IOException ioe) 

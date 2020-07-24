@@ -1,7 +1,7 @@
 {
     "parent": "block/cube_bottom_top",
     "textures": {
-        "side": "prospect:blocks/printer_sides",
+        "side": "prospect:blocks/fabricator_sides",
         "bottom": "prospect:blocks/plating_dark",
         "top": "prospect:blocks/plating_dark"
     }

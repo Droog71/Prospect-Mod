@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class PrinterContainer extends Container
+public class FabricatorContainer extends Container
 {
     private final IInventory tilePrinter;
     private int printTime;
@@ -18,7 +18,7 @@ public class PrinterContainer extends Container
     private int energyCapacity;
     private int energyStored;
 
-    public PrinterContainer(InventoryPlayer playerInventory, IInventory printerInventory)
+    public FabricatorContainer(InventoryPlayer playerInventory, IInventory printerInventory)
     {
         this.tilePrinter = printerInventory;
         this.addSlotToContainer(new Slot(printerInventory, 0, 56, 17));

@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 @Mod.EventBusSubscriber(modid = Prospect.MODID)
 public class ProspectSounds
 {
-    static ResourceLocation printerSoundLocation;
+    static ResourceLocation fabricatorSoundLocation;
 	static ResourceLocation purifierSoundLocation;    
     static ResourceLocation quarrySoundLocation;
     static ResourceLocation replicatorSoundLocation;
@@ -17,7 +17,7 @@ public class ProspectSounds
     static ResourceLocation capsuleSoundLocation;
     static ResourceLocation extruderSoundLocation;
     static ResourceLocation pressSoundLocation;
-	public static SoundEvent printerSoundEvent;
+	public static SoundEvent fabricatorSoundEvent;
     public static SoundEvent purifierSoundEvent;
     public static SoundEvent quarrySoundEvent;
     public static SoundEvent replicatorSoundEvent;
@@ -28,7 +28,7 @@ public class ProspectSounds
 	
 	public static void init() 
 	{
-        printerSoundLocation = new ResourceLocation("prospect", "printer");
+        fabricatorSoundLocation = new ResourceLocation("prospect", "fabricator");
 		purifierSoundLocation = new ResourceLocation("prospect", "purifier");
         quarrySoundLocation = new ResourceLocation("prospect", "quarry");
         replicatorSoundLocation = new ResourceLocation("prospect", "replicator");
@@ -36,7 +36,7 @@ public class ProspectSounds
         capsuleSoundLocation = new ResourceLocation("prospect", "capsule");
         extruderSoundLocation = new ResourceLocation("prospect", "extruder");
         pressSoundLocation = new ResourceLocation("prospect", "press");
-		printerSoundEvent = new SoundEvent(printerSoundLocation);
+		fabricatorSoundEvent = new SoundEvent(fabricatorSoundLocation);
         purifierSoundEvent = new SoundEvent(purifierSoundLocation);
         quarrySoundEvent = new SoundEvent(quarrySoundLocation);
         replicatorSoundEvent = new SoundEvent(replicatorSoundLocation);

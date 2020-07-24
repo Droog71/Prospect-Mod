@@ -44,7 +44,7 @@ public class Schematic extends ProspectItem
     	}       	
     	if (id == 6)
     	{
-    		return new ItemStack(ProspectBlocks.printer);
+    		return new ItemStack(ProspectBlocks.fabricator);
     	}
     	if (id == 7)
     	{

@@ -103,7 +103,7 @@ public class PotionSpore extends PotionProspect
 	public void performEffect(@Nonnull EntityLivingBase living, int amplified) 
 	{
 		EntityPlayer player = (EntityPlayer) living;
-		if (player != null && ConfigHandler.getSporesEnabled())
+		if (player != null && ConfigHandler.toxicSporesEnabled())
 		{
 			boolean isPoisoned = false;
 			boolean nearPurifier = false;

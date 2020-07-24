@@ -1,7 +1,7 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "prospect:items/printer_schematic"
+        "layer0": "prospect:items/fabricator_schematic"
      },
      
     "display": {

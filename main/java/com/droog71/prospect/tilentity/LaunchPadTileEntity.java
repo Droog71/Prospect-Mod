@@ -7,10 +7,8 @@ import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.LaunchPadContainer;
 import ic2.api.energy.prefab.BasicSink;
 import ic2.core.platform.registry.Ic2Items;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -37,9 +35,8 @@ import techguns.TGItems;
 
 public class LaunchPadTileEntity extends TileEntity implements ITickable, ISidedInventory
 {
-    private static final int[] SLOTS_TOP = new int[] {0};
-    private static final int[] SLOTS_BOTTOM = new int[] {2, 1};
-    private static final int[] SLOTS_SIDES = new int[] {1};
+    private static final int[] SLOTS_BOTTOM = new int[] {2};
+    private static final int[] SLOTS_SIDES = new int[] {0};
     private NonNullList<ItemStack> launchPadItemStacks = NonNullList.<ItemStack>withSize(3, ItemStack.EMPTY);
     private int energyStored;
     private int energyCapacity;
@@ -264,19 +261,6 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
     {
         return inventory.getField(0) > 0;
     }
-
-    private void explode()
-    {
-    	world.playSound(null, pos, SoundEvents.ENTITY_GENERIC_EXPLODE,  SoundCategory.BLOCKS, 0.5f, 1);
-    	WorldServer w = (WorldServer) world;
-    	w.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 1, null);
-    	w.spawnParticle(EnumParticleTypes.LAVA, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);
-    	w.spawnParticle(EnumParticleTypes.FLAME, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);   	
-    	world.getBlockState(pos).getBlock().breakBlock(world, pos, ProspectBlocks.extruder.getDefaultState());
-    	EntityItem item = new EntityItem(w, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(ProspectBlocks.extruder));
-    	w.spawnEntity(item);
-    	world.setBlockToAir(pos);    	
-    }
     
     /**
      * Like the old updateEntity(), except more generic.
@@ -288,7 +272,7 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
         {
         	if (energyStorage.overloaded)
             {
-            	explode();
+        		energyStorage.explode(world,pos);
             }
         	else
         	{
@@ -424,9 +408,9 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
     	return false;
     }
     
-    public int getlaunchTime(ItemStack stack)
+    public int getlaunchTime(ItemStack stack) //Could be used to vary launch times depending on the item.
     {
-        return 1000;
+        return 100;
     }
 
     private int getCurrentPayout()
@@ -500,32 +484,32 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
     	}
     	if (item == Item.getItemFromBlock(ProspectBlocks.replicator) || item == Item.getItemFromBlock(ProspectBlocks.iv_solar_panel))
     	{
+    		currentPayout = 64;
+    		return currentPayout;
+    	}
+    	if (item == Item.getItemFromBlock(ProspectBlocks.quarry) || item == Item.getItemFromBlock(ProspectBlocks.ev_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.purifier)  || item == Item.getItemFromBlock(ProspectBlocks.fabricator))
+    	{
     		currentPayout = 32;
     		return currentPayout;
     	}
-    	if (item == Item.getItemFromBlock(ProspectBlocks.quarry) || item == Item.getItemFromBlock(ProspectBlocks.ev_solar_panel))
+    	if (item == Item.getItemFromBlock(ProspectBlocks.hv_solar_panel)  || item == Item.getItemFromBlock(ProspectBlocks.ev_transformer))
     	{
     		currentPayout = 16;
     		return currentPayout;
     	}
-    	if (item == Item.getItemFromBlock(ProspectBlocks.hv_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.printer) || item == Item.getItemFromBlock(ProspectBlocks.ev_transformer) || item == Item.getItemFromBlock(ProspectBlocks.iv_cable))
+    	if (item == Item.getItemFromBlock(ProspectBlocks.mv_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.hv_transformer) || item == Item.getItemFromBlock(ProspectBlocks.iv_cable))
     	{
     		currentPayout = 8;
     		return currentPayout;
     	}
-    	if (item == Item.getItemFromBlock(ProspectBlocks.purifier) || item == Item.getItemFromBlock(ProspectBlocks.hv_transformer) || item == Item.getItemFromBlock(ProspectBlocks.ev_cable) || item == ProspectItems.in_iv_wire)
+    	if (item == Item.getItemFromBlock(ProspectBlocks.extruder) || item == Item.getItemFromBlock(ProspectBlocks.press) || item == Item.getItemFromBlock(ProspectBlocks.lv_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.hv_cable) || item == Item.getItemFromBlock(ProspectBlocks.mv_transformer) || item == ProspectItems.in_iv_wire)
     	{
     		currentPayout = 4;
     		return currentPayout;
     	}
-    	if (item == Item.getItemFromBlock(ProspectBlocks.extruder) || item == Item.getItemFromBlock(ProspectBlocks.press) || item == Item.getItemFromBlock(ProspectBlocks.lv_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.hv_cable) || item == Item.getItemFromBlock(ProspectBlocks.mv_transformer) || item == ProspectItems.in_ev_wire)
+    	if (item == Item.getItemFromBlock(ProspectBlocks.lv_cable) || item == Item.getItemFromBlock(ProspectBlocks.lv_transformer) || item == Item.getItemFromBlock(ProspectBlocks.mv_cable) || item == ProspectItems.in_ev_wire || item == ProspectItems.in_hv_wire || item == ProspectItems.in_mv_wire || item == ProspectItems.in_lv_wire || item == ProspectItems.quantum_circuit || item == ProspectItems.gem)
     	{
     		currentPayout = 2;
-    		return currentPayout;
-    	}
-    	if (item == Item.getItemFromBlock(ProspectBlocks.lv_cable) || item == Item.getItemFromBlock(ProspectBlocks.mv_cable) || item == ProspectItems.in_hv_wire || item == ProspectItems.in_mv_wire || item == ProspectItems.in_lv_wire || item == ProspectItems.quantum_circuit || item == ProspectItems.gem)
-    	{
-    		currentPayout = 1;
     		return currentPayout;
     	}   
     	return 0;
@@ -650,7 +634,7 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
         }
         else
         {
-            return side == EnumFacing.UP ? SLOTS_TOP : SLOTS_SIDES;
+            return SLOTS_SIDES;
         }
     }
 

@@ -3,8 +3,8 @@ package com.droog71.prospect.tilentity;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import com.droog71.prospect.blocks.energy.Purifier;
+import com.droog71.prospect.config.ConfigHandler;
 import com.droog71.prospect.fe.ProspectEnergyStorage;
-import com.droog71.prospect.init.ProspectBlocks;
 import com.droog71.prospect.init.ProspectSounds;
 import ic2.api.energy.prefab.BasicSink;
 import net.minecraft.util.EnumFacing;
@@ -16,9 +16,6 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -106,7 +103,7 @@ public class PurifierTileEntity extends TileEntity implements ITickable
 		{
 			if (energyStorage.overloaded)
             {
-            	explode();
+				energyStorage.explode(world,pos);
             }
 			else
 			{
@@ -129,38 +126,28 @@ public class PurifierTileEntity extends TileEntity implements ITickable
 		effectsTimer++;
 		if (effectsTimer > 40)
 		{	
-			WorldServer w = (WorldServer) world;
-			BlockPos corner_1 = pos.add(-20, -20, -20);
-			BlockPos corner_2 = pos.add(20, 20, 20);
-			Iterable<BlockPos> allBlocks = BlockPos.getAllInBox(corner_1, corner_2);
-			Iterator<BlockPos> iter = allBlocks.iterator();		
-			while(iter.hasNext())
+			if (ConfigHandler.purifierParticleEffectsEnabled())
 			{
-				try
+				WorldServer w = (WorldServer) world;
+				BlockPos corner_1 = pos.add(-20, -20, -20);
+				BlockPos corner_2 = pos.add(20, 20, 20);
+				Iterable<BlockPos> allBlocks = BlockPos.getAllInBox(corner_1, corner_2);
+				Iterator<BlockPos> iter = allBlocks.iterator();		
+				while(iter.hasNext())
 				{
-					w.spawnParticle(EnumParticleTypes.TOWN_AURA, iter.next().getX(), iter.next().getY(), iter.next().getZ(), 1, 0, 0, 0, 1, null);
-				}
-				catch(NoSuchElementException e)
-				{
-					//NOOP
+					try
+					{
+						w.spawnParticle(EnumParticleTypes.TOWN_AURA, iter.next().getX(), iter.next().getY(), iter.next().getZ(), 1, 0, 0, 0, 1, null);
+					}
+					catch(NoSuchElementException e)
+					{
+						//NOOP
+					}
 				}
 			}
 			world.playSound(null, pos, ProspectSounds.purifierSoundEvent,  SoundCategory.BLOCKS, 0.25f, 1);
 			effectsTimer = 0;
 		}	
-    }
-
-    private void explode()
-    {
-    	world.playSound(null, pos, SoundEvents.ENTITY_GENERIC_EXPLODE,  SoundCategory.BLOCKS, 0.5f, 1);
-    	WorldServer w = (WorldServer) world;
-    	w.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 1, null);
-    	w.spawnParticle(EnumParticleTypes.LAVA, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);
-    	w.spawnParticle(EnumParticleTypes.FLAME, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);   	
-    	world.getBlockState(pos).getBlock().breakBlock(world, pos, ProspectBlocks.extruder.getDefaultState());
-    	EntityItem item = new EntityItem(w, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(ProspectBlocks.extruder));
-    	w.spawnEntity(item);
-    	world.setBlockToAir(pos);    	
     }
 	
 	private boolean useEnergy()

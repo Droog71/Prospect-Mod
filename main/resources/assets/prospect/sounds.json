@@ -1,8 +1,8 @@
 {
-  "printer": 
+  "fabricator": 
   {
     "category": "block",
-    "sounds": [ "prospect:printer" ]
+    "sounds": [ "prospect:fabricator" ]
   },
   "purifier": 
   {

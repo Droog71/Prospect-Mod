@@ -1,7 +1,7 @@
 package com.droog71.prospect.gui;
 
-import com.droog71.prospect.inventory.PrinterContainer;
-import com.droog71.prospect.tilentity.PrinterTileEntity;
+import com.droog71.prospect.inventory.FabricatorContainer;
+import com.droog71.prospect.tilentity.FabricatorTileEntity;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -21,7 +21,7 @@ public class PrinterGUI extends GuiContainer
 
     public PrinterGUI(InventoryPlayer playerInv, IInventory printerInv)
     {
-        super(new PrinterContainer(playerInv, printerInv));
+        super(new FabricatorContainer(playerInv, printerInv));
         this.playerInventory = playerInv;
         this.tilePrinter = printerInv;
     }
@@ -60,7 +60,7 @@ public class PrinterGUI extends GuiContainer
         int j = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
 
-        if (PrinterTileEntity.isEnergized(this.tilePrinter))
+        if (FabricatorTileEntity.isEnergized(this.tilePrinter))
         {
             int k = this.getBurnLeftScaled(13);
             this.drawTexturedModalRect(i + 56, j + 36 + 12 - k, 176, 12 - k, 14, k + 1);

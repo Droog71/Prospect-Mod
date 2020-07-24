@@ -76,7 +76,7 @@ public class ProspectItems
 	public static Item suit_schematic;
 	public static Item pants_schematic;
 	public static Item boots_schematic;		
-	public static Item printer_schematic;
+	public static Item fabricator_schematic;
 	public static Item quarry_schematic;
 	public static Item purifier_schematic;
 	public static Item launch_pad_schematic;
@@ -148,7 +148,7 @@ public class ProspectItems
 		helmet_schematic = new Schematic("helmet_schematic",3).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);	
 		filter_schematic = new Schematic("filter_schematic",4).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		launch_pad_schematic = new Schematic("launch_pad_schematic",5).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);		
-		printer_schematic = new Schematic("printer_schematic",6).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		fabricator_schematic = new Schematic("fabricator_schematic",6).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		extruder_schematic = new Schematic("extruder_schematic",7).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		purifier_schematic = new Schematic("purifier_schematic",8).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		quarry_schematic = new Schematic("quarry_schematic",9).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
@@ -232,7 +232,7 @@ public class ProspectItems
 		
 		event.getRegistry().registerAll(purifier_schematic);
 		event.getRegistry().registerAll(launch_pad_schematic);
-		event.getRegistry().registerAll(printer_schematic);
+		event.getRegistry().registerAll(fabricator_schematic);
 		event.getRegistry().registerAll(helmet_schematic);
 		event.getRegistry().registerAll(suit_schematic);
 		event.getRegistry().registerAll(pants_schematic);
@@ -328,7 +328,7 @@ public class ProspectItems
 		registerRender(extruder_schematic);	
 		registerRender(purifier_schematic);
 		registerRender(launch_pad_schematic);
-		registerRender(printer_schematic);		
+		registerRender(fabricator_schematic);		
 		registerRender(lv_transformer_schematic);
 		registerRender(mv_transformer_schematic);
 		registerRender(hv_transformer_schematic);

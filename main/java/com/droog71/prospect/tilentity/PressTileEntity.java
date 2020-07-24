@@ -1,15 +1,12 @@
 package com.droog71.prospect.tilentity;
 
 import com.droog71.prospect.fe.ProspectEnergyStorage;
-import com.droog71.prospect.init.ProspectBlocks;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.PressContainer;
 import ic2.api.energy.prefab.BasicSink;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -18,12 +15,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.Loader;
@@ -267,7 +262,7 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
         {
             if (energyStorage.overloaded)
             {
-            	explode();
+            	energyStorage.explode(world,pos);
             }
             else
             {
@@ -292,19 +287,6 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
                 }
             }                   
         }       
-    }
-    
-    private void explode()
-    {
-    	world.playSound(null, pos, SoundEvents.ENTITY_GENERIC_EXPLODE,  SoundCategory.BLOCKS, 0.5f, 1);
-    	WorldServer w = (WorldServer) world;
-    	w.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 1, null);
-    	w.spawnParticle(EnumParticleTypes.LAVA, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);
-    	w.spawnParticle(EnumParticleTypes.FLAME, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);   	
-    	world.getBlockState(pos).getBlock().breakBlock(world, pos, ProspectBlocks.press.getDefaultState());
-    	EntityItem item = new EntityItem(w, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(ProspectBlocks.press));
-    	w.spawnEntity(item);
-    	world.setBlockToAir(pos);    	
     }
     
     private void doWork()
@@ -386,9 +368,9 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
     	return false;
     }
     
-    public int getpressTime(ItemStack stack)
+    public int getpressTime(ItemStack stack) //Could be used for varying press time for different ingots.
     {
-        return 200;
+        return 100;
     }
 
     private ItemStack getPlate(ItemStack stack)
@@ -396,7 +378,7 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
     	NonNullList<ItemStack> copper = OreDictionary.getOres("ingotCopper");
     	for (ItemStack s : copper)
     	{ 		
-    		if (s.getDisplayName() == stack.getDisplayName())
+    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
     			return new ItemStack(ProspectItems.copper_plate);
     		}
@@ -404,7 +386,7 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
     	NonNullList<ItemStack> tin = OreDictionary.getOres("ingotTin");
     	for (ItemStack s : tin)
     	{
-    		if (s.getDisplayName() == stack.getDisplayName())
+    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
     			return new ItemStack(ProspectItems.tin_plate);
     		}
@@ -412,7 +394,7 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
     	NonNullList<ItemStack> silver = OreDictionary.getOres("ingotSilver");
     	for (ItemStack s : silver)
     	{
-    		if (s.getDisplayName() == stack.getDisplayName())
+    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
     			return new ItemStack(ProspectItems.silver_plate);
     		}
@@ -420,7 +402,7 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
     	NonNullList<ItemStack> lead = OreDictionary.getOres("ingotLead");
     	for (ItemStack s : lead)
     	{
-    		if (s.getDisplayName() == stack.getDisplayName())
+    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
     			return new ItemStack(ProspectItems.lead_plate);
     		}
@@ -428,7 +410,7 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
     	NonNullList<ItemStack> aluminum = OreDictionary.getOres("ingotAluminum");
     	for (ItemStack s : aluminum)
     	{
-    		if (s.getDisplayName() == stack.getDisplayName())
+    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
     			return new ItemStack(ProspectItems.aluminum_plate);
     		}

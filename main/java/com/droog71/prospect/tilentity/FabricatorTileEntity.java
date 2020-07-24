@@ -4,19 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.droog71.prospect.fe.ProspectEnergyStorage;
-import com.droog71.prospect.init.ProspectBlocks;
 import com.droog71.prospect.init.ProspectSounds;
-import com.droog71.prospect.inventory.PrinterContainer;
+import com.droog71.prospect.inventory.FabricatorContainer;
 import com.droog71.prospect.items.Schematic;
 import ic2.api.energy.prefab.BasicSink;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -28,7 +25,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
@@ -36,19 +32,18 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class PrinterTileEntity extends TileEntity implements ITickable, ISidedInventory
+public class FabricatorTileEntity extends TileEntity implements ITickable, ISidedInventory
 {
     private static final int[] SLOTS_TOP = new int[] {0};
     private static final int[] SLOTS_BOTTOM = new int[] {2, 1};
     private static final int[] SLOTS_SIDES = new int[] {1};
-    private NonNullList<ItemStack> printerItemStacks = NonNullList.<ItemStack>withSize(3, ItemStack.EMPTY);
+    private NonNullList<ItemStack> fabricatorItemStacks = NonNullList.<ItemStack>withSize(3, ItemStack.EMPTY);
     private int energyStored;
     private int energyCapacity;
     private int printTime;
@@ -104,13 +99,13 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
     @Override
 	public int getSizeInventory()
     {
-        return printerItemStacks.size();
+        return fabricatorItemStacks.size();
     }
 
     @Override
 	public boolean isEmpty()
     {
-        for (ItemStack itemstack : printerItemStacks)
+        for (ItemStack itemstack : fabricatorItemStacks)
         {
             if (!itemstack.isEmpty())
             {
@@ -127,7 +122,7 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
     @Override
 	public ItemStack getStackInSlot(int index)
     {
-        return printerItemStacks.get(index);
+        return fabricatorItemStacks.get(index);
     }
 
     /**
@@ -136,7 +131,7 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
     @Override
 	public ItemStack decrStackSize(int index, int count)
     {
-        return ItemStackHelper.getAndSplit(printerItemStacks, index, count);
+        return ItemStackHelper.getAndSplit(fabricatorItemStacks, index, count);
     }
 
     /**
@@ -145,7 +140,7 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
     @Override
 	public ItemStack removeStackFromSlot(int index)
     {
-        return ItemStackHelper.getAndRemove(printerItemStacks, index);
+        return ItemStackHelper.getAndRemove(fabricatorItemStacks, index);
     }
 
     /**
@@ -154,9 +149,9 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
     @Override
 	public void setInventorySlotContents(int index, ItemStack stack)
     {
-        ItemStack itemstack = printerItemStacks.get(index);
+        ItemStack itemstack = fabricatorItemStacks.get(index);
         boolean flag = !stack.isEmpty() && stack.isItemEqual(itemstack) && ItemStack.areItemStackTagsEqual(stack, itemstack);
-        printerItemStacks.set(index, stack);
+        fabricatorItemStacks.set(index, stack);
 
         if (stack.getCount() > getInventoryStackLimit())
         {
@@ -198,8 +193,8 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
 	public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);    
-        printerItemStacks = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
-        ItemStackHelper.loadAllItems(compound, printerItemStacks);
+        fabricatorItemStacks = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
+        ItemStackHelper.loadAllItems(compound, fabricatorItemStacks);
         energyStored = compound.getInteger("EnergyStored");
         printTime = compound.getInteger("PrintTime");
         totalPrintTime = compound.getInteger("PrintTimeTotal");      
@@ -222,7 +217,7 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
         compound.setInteger("EnergyCapacity", (short)energyCapacity);
         compound.setInteger("PrintTime", (short)printTime);
         compound.setInteger("PrintTimeTotal", (short)totalPrintTime);
-        ItemStackHelper.saveAllItems(compound, printerItemStacks);   
+        ItemStackHelper.saveAllItems(compound, fabricatorItemStacks);   
         if (Loader.isModLoaded("ic2"))
 		{
 	        if ((BasicSink) ic2EnergySink == null)
@@ -281,7 +276,7 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
         {
         	if (energyStorage.overloaded)
             {
-            	explode();
+        		energyStorage.explode(world,pos);
             }
         	else
         	{
@@ -308,7 +303,7 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
         if (printTime == totalPrintTime)
         {
         	printTime = 0;
-        	totalPrintTime = getPrintTime(printerItemStacks.get(0));
+        	totalPrintTime = getPrintTime(fabricatorItemStacks.get(0));
             printItem();
             flag1 = true;
         }
@@ -321,22 +316,9 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
 		effectsTimer++;
 		if (effectsTimer > 40)
 		{
-			world.playSound(null, pos, ProspectSounds.printerSoundEvent,  SoundCategory.BLOCKS, 0.25f, 1);
+			world.playSound(null, pos, ProspectSounds.fabricatorSoundEvent,  SoundCategory.BLOCKS, 0.25f, 1);
 			effectsTimer = 0;
 		}
-    }
-    
-    private void explode()
-    {
-    	world.playSound(null, pos, SoundEvents.ENTITY_GENERIC_EXPLODE,  SoundCategory.BLOCKS, 0.5f, 1);
-    	WorldServer w = (WorldServer) world;
-    	w.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 1, null);
-    	w.spawnParticle(EnumParticleTypes.LAVA, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);
-    	w.spawnParticle(EnumParticleTypes.FLAME, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);   	
-    	world.getBlockState(pos).getBlock().breakBlock(world, pos, ProspectBlocks.extruder.getDefaultState());
-    	EntityItem item = new EntityItem(w, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(ProspectBlocks.extruder));
-    	w.spawnEntity(item);
-    	world.setBlockToAir(pos);    	
     }
     
     private void updateEnergy()
@@ -395,7 +377,7 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
     
     public int getPrintTime(ItemStack stack)
     {
-    	return 200;
+    	return 100;
     }
   
     private boolean canCraft(ItemStack[] stacks, IInventory iinventory)
@@ -520,17 +502,17 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
     }
     
     /**
-     * Returns true if the printer can print an item, i.e. has a source item, destination stack isn't full, etc.
+     * Returns true if the fabricator can print an item, i.e. has a source item, destination stack isn't full, etc.
      */
     private boolean canPrint()
     {    	
-        if (printerItemStacks.get(0).isEmpty() || !(printerItemStacks.get(0).getItem() instanceof Schematic))
+        if (fabricatorItemStacks.get(0).isEmpty() || !(fabricatorItemStacks.get(0).getItem() instanceof Schematic))
         {
             return false;
         }
         
         ItemStack itemstack = null;  	
-        Item item = printerItemStacks.get(0).getItem();  	
+        Item item = fabricatorItemStacks.get(0).getItem();  	
     	ItemStack[] required = ((Schematic) item).getIngredients();
         ItemStack result = ((Schematic) item).getResult();
         
@@ -546,7 +528,7 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
             return false;
         }
 
-        ItemStack itemstack1 = printerItemStacks.get(2);
+        ItemStack itemstack1 = fabricatorItemStacks.get(2);
 
         if (itemstack1.isEmpty())
         {
@@ -572,7 +554,7 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
         {           
             ItemStack itemstack1 = new ItemStack(Items.AIR);
             
-            Item item = printerItemStacks.get(0).getItem();  
+            Item item = fabricatorItemStacks.get(0).getItem();  
                  
             if (item instanceof Schematic)
             {
@@ -588,11 +570,11 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
         		}
             } 
             
-            ItemStack itemstack2 = printerItemStacks.get(2);
+            ItemStack itemstack2 = fabricatorItemStacks.get(2);
 
             if (itemstack2.isEmpty())
             {
-                printerItemStacks.set(2, itemstack1.copy());
+                fabricatorItemStacks.set(2, itemstack1.copy());
             }
             else if (itemstack2.getItem() == itemstack1.getItem())
             {
@@ -687,7 +669,7 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
 
     public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
     {
-        return new PrinterContainer(playerInventory, this);
+        return new FabricatorContainer(playerInventory, this);
     }
 
     @Override
@@ -736,7 +718,7 @@ public class PrinterTileEntity extends TileEntity implements ITickable, ISidedIn
     @Override
 	public void clear()
     {
-        printerItemStacks.clear();
+        fabricatorItemStacks.clear();
     }
 
     net.minecraftforge.items.IItemHandler handlerTop = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.UP);

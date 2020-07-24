@@ -1,16 +1,13 @@
 package com.droog71.prospect.tilentity;
 
 import com.droog71.prospect.fe.ProspectEnergyStorage;
-import com.droog71.prospect.init.ProspectBlocks;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.ExtruderContainer;
 
 import ic2.api.energy.prefab.BasicSink;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -19,17 +16,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedInventory
 {
@@ -267,7 +263,7 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
         {
             if (energyStorage.overloaded)
             {
-            	explode();
+            	energyStorage.explode(world,pos);
             }
             else
             {
@@ -292,19 +288,6 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
                 }
             }                   
         }       
-    }
-    
-    private void explode()
-    {
-    	world.playSound(null, pos, SoundEvents.ENTITY_GENERIC_EXPLODE,  SoundCategory.BLOCKS, 0.5f, 1);
-    	WorldServer w = (WorldServer) world;
-    	w.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 1, null);
-    	w.spawnParticle(EnumParticleTypes.LAVA, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);
-    	w.spawnParticle(EnumParticleTypes.FLAME, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);   	
-    	world.getBlockState(pos).getBlock().breakBlock(world, pos, ProspectBlocks.extruder.getDefaultState());
-    	EntityItem item = new EntityItem(w, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(ProspectBlocks.extruder));
-    	w.spawnEntity(item);
-    	world.setBlockToAir(pos);    	
     }
     
     private void doWork()
@@ -386,17 +369,30 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
     	return false;
     }
     
-    public int getextrudeTime(ItemStack stack)
+    public int getextrudeTime(ItemStack stack) //Could be used for varying extrude time for different ingots.
     {
-        return 200;
+        return 100;
     }
 
+    private boolean isCopperIngot(ItemStack stack)
+    {
+    	NonNullList<ItemStack> copper = OreDictionary.getOres("ingotCopper");
+    	for (ItemStack s : copper)
+    	{ 		   	
+    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
+    		{
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
     /**
      * Returns true if the extruder can extrude an item, i.e. has a source item, destination stack isn't full, etc.
      */
     private boolean canExtrude()
     {
-        if (extruderItemStacks.get(0).isEmpty() || extruderItemStacks.get(0).getItem() != ProspectItems.copper_ingot)
+        if (extruderItemStacks.get(0).isEmpty() || !isCopperIngot(extruderItemStacks.get(0)))
         {
             return false;
         }

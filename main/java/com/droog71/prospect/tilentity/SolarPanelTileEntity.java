@@ -4,7 +4,6 @@ import com.droog71.prospect.fe.ProspectEnergyStorage;
 import ic2.api.energy.prefab.BasicSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -16,6 +15,7 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 {
 	private Object ic2EnergySource;
 	private ProspectEnergyStorage energyStorage = new ProspectEnergyStorage();
+	private int capacity;
 	private int rating;
 	private int tier;
 	
@@ -26,8 +26,9 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 	
 	public SolarPanelTileEntity(int capacity, int rating, int tier)
 	{		
-		energyStorage.capacity = capacity;		
+		this.capacity = capacity;
 		this.rating = rating;
+		this.tier = tier;
 	}
 	
 	@Override
@@ -42,6 +43,7 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 			((BasicSource) ic2EnergySource).onLoad(); // notify the energy sink
 		}
 		energyStorage.maxReceive = 0;
+		energyStorage.capacity = capacity;
 	}
 	 
 	@Override
@@ -78,6 +80,9 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 			ic2EnergySource = new BasicSource(this,10,1);
 		}	
         ((BasicSource) ic2EnergySource).readFromNBT(tag);
+        capacity = tag.getInteger("capacity");
+        rating = tag.getInteger("rating");
+        tier = tag.getInteger("tier");
     }
  
     @Override
@@ -89,6 +94,9 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 			ic2EnergySource = new BasicSource(this,10,1);
 		}	
         ((BasicSource) ic2EnergySource).writeToNBT(tag);
+        tag.setInteger("capacity", capacity);
+        tag.setInteger("rating", rating);
+        tag.setInteger("tier", tier);
         return tag;
     }
 
@@ -98,7 +106,7 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 		if (!world.isRemote) //Everything is done on the server.
 		{
 			addEnergy();
-			giveEnergy();
+			doWork();			
 		}
 	}
 	
@@ -117,70 +125,21 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 		}
 	}
 	
-	private void giveEnergy()
+	private void doWork()
 	{		
 		boolean connectedFE = false;
-		BlockPos[] sides = {pos.add(0,1,0),pos.add(1,0,0),pos.add(0,0,1),pos.add(0,-1,0),pos.add(-1,0,0),pos.add(0,0,-1)};
-		for (BlockPos p : sides)
+		if (energyStorage.receivers(world, pos).size() > 0)
 		{
-			TileEntity otherTile = world.getTileEntity(p);
-			if (otherTile != null)
+			if (Loader.isModLoaded("ic2"))
 			{
-				EnumFacing direction = null;
-				for (EnumFacing facing : EnumFacing.VALUES) 
-				{
-					IEnergyStorage otherStorage = otherTile.getCapability(CapabilityEnergy.ENERGY,facing);
-					if (otherStorage != null)
-					{
-						if (direction == null)
-						{
-							direction = facing;
-						}						
-					}
-				}
-				IEnergyStorage otherStorage = otherTile.getCapability(CapabilityEnergy.ENERGY,direction);
-				if (otherStorage != null)
-				{		
-					if (Loader.isModLoaded("ic2"))
-					{
-						((BasicSource) ic2EnergySource).setEnergyStored(0);
-						((BasicSource) ic2EnergySource).setCapacity(0);
-						connectedFE = true;
-					}
-					if (energyStorage.getEnergyStored() >= rating)
-					{
-						if (otherStorage.canReceive())
-						{
-							if (otherStorage.getEnergyStored() <= otherStorage.getMaxEnergyStored() - rating)
-							{
-								otherStorage.receiveEnergy(rating,false);
-								energyStorage.useEnergy(rating);
-							}	
-							else
-							{
-								otherStorage.receiveEnergy(otherStorage.getMaxEnergyStored() - otherStorage.getEnergyStored(),false);
-								energyStorage.useEnergy(otherStorage.getMaxEnergyStored() - otherStorage.getEnergyStored());								
-							}
-						}					
-					}
-					else if (energyStorage.getEnergyStored() > 0)
-					{
-						if (otherStorage.canReceive())
-						{
-							if (otherStorage.getEnergyStored() <= otherStorage.getMaxEnergyStored() - energyStorage.getEnergyStored())
-							{
-								otherStorage.receiveEnergy(energyStorage.getEnergyStored(),false);
-								energyStorage.useEnergy(energyStorage.getEnergyStored());
-							}	
-							else
-							{
-								otherStorage.receiveEnergy(otherStorage.getMaxEnergyStored() - otherStorage.getEnergyStored(),false);
-								energyStorage.useEnergy(otherStorage.getMaxEnergyStored() - otherStorage.getEnergyStored());
-							}
-						}
-					}					
-				}
-			}						
+				((BasicSource) ic2EnergySource).setEnergyStored(0);
+				((BasicSource) ic2EnergySource).setCapacity(0);
+				connectedFE = true;
+			}
+			for (IEnergyStorage sink : energyStorage.receivers(world, pos))
+			{
+				energyStorage.giveEnergy(energyStorage, sink, rating);
+			}
 		}
 		if (connectedFE == false)
 		{

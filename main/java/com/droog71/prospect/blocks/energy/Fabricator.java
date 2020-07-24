@@ -5,7 +5,7 @@ import java.util.Random;
 import com.droog71.prospect.Prospect;
 import com.droog71.prospect.blocks.ProspectBlockContainer;
 import com.droog71.prospect.init.ProspectBlocks;
-import com.droog71.prospect.tilentity.PrinterTileEntity;
+import com.droog71.prospect.tilentity.FabricatorTileEntity;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,9 +20,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class Printer extends ProspectBlockContainer
+public class Fabricator extends ProspectBlockContainer
 {
-    public Printer(String name, Material material)
+    public Fabricator(String name, Material material)
     {   	
     	super(name, material);
     }
@@ -39,7 +39,7 @@ public class Printer extends ProspectBlockContainer
     @Override
 	public Item getItemDropped(IBlockState state, Random rand, int fortune)
     {
-        return Item.getItemFromBlock(ProspectBlocks.printer);
+        return Item.getItemFromBlock(ProspectBlocks.fabricator);
     }
 
     /**
@@ -56,7 +56,7 @@ public class Printer extends ProspectBlockContainer
         {
             TileEntity tileentity = worldIn.getTileEntity(pos);
 
-            if (tileentity instanceof PrinterTileEntity)
+            if (tileentity instanceof FabricatorTileEntity)
             {
                 playerIn.openGui(Prospect.instance, 1, worldIn, pos.getX(), pos.getY(), pos.getZ());
             }
@@ -71,7 +71,7 @@ public class Printer extends ProspectBlockContainer
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        return new PrinterTileEntity();
+        return new FabricatorTileEntity();
     }
 
     /**
@@ -82,9 +82,9 @@ public class Printer extends ProspectBlockContainer
     {
         TileEntity tileentity = worldIn.getTileEntity(pos);
 
-        if (tileentity instanceof PrinterTileEntity)
+        if (tileentity instanceof FabricatorTileEntity)
         {
-            InventoryHelper.dropInventoryItems(worldIn, pos, (PrinterTileEntity)tileentity);
+            InventoryHelper.dropInventoryItems(worldIn, pos, (FabricatorTileEntity)tileentity);
             worldIn.updateComparatorOutputLevel(pos, this);
         }
         super.breakBlock(worldIn, pos, state);
@@ -105,6 +105,6 @@ public class Printer extends ProspectBlockContainer
     @Override
 	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state)
     {
-        return new ItemStack(Item.getItemFromBlock(ProspectBlocks.printer));
+        return new ItemStack(Item.getItemFromBlock(ProspectBlocks.fabricator));
     }
 }
