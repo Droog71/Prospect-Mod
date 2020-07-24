@@ -111,8 +111,9 @@ public class ProspectEnergyStorage implements IEnergyStorage
 				int demand = sink.getMaxEnergyStored() - sink.getEnergyStored(); //The energy required by the receiver.
 				int potential = Math.min(demand, rating); //Use the lower value.								
 				int available = Math.min(potential, source.getEnergyStored()); //Use the lower value.
-				int difference = Math.max(0, ((source.getEnergyStored() - sink.getEnergyStored())/2)-1); //To keep power flow in the correct direction.
-				int output = Math.min(available, difference); //Use the lower value.
+				int possible = Math.max(0, ((source.getEnergyStored() - sink.getEnergyStored())/2)-1); //For conductors.
+				int balanced = Math.min(possible, available); //For conductors.
+				int output = source.canReceive() ? balanced : available; //Power source or conductor?
 				source.useEnergy(output); //Remove energy from the source.
 				sink.receiveEnergy(rating, true); //If this transaction overloads the receiver, it will explode.
 				if (sink != null) //Recipient did not explode.

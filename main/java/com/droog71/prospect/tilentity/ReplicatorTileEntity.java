@@ -433,7 +433,10 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	{ 		   	
     		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
-    			return false;
+    			if (s.getMetadata() == stack.getMetadata())
+    			{
+    				return false;
+    			}
     		}
     	}
     	NonNullList<ItemStack> tin = OreDictionary.getOres("ingotTin");
@@ -441,7 +444,10 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	{
     		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
-    			return false;
+    			if (s.getMetadata() == stack.getMetadata())
+    			{
+    				return false;
+    			}
     		}
     	}
     	NonNullList<ItemStack> silver = OreDictionary.getOres("ingotSilver");
@@ -449,7 +455,10 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	{
     		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
-    			return false;
+    			if (s.getMetadata() == stack.getMetadata())
+    			{
+    				return false;
+    			}
     		}
     	}
     	NonNullList<ItemStack> lead = OreDictionary.getOres("ingotLead");
@@ -457,7 +466,10 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	{
     		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
-    			return false;
+    			if (s.getMetadata() == stack.getMetadata())
+    			{
+    				return false;
+    			}
     		}
     	}
     	NonNullList<ItemStack> aluminum = OreDictionary.getOres("ingotAluminum");
@@ -465,7 +477,10 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	{
     		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
-    			return false;
+    			if (s.getMetadata() == stack.getMetadata())
+    			{
+    				return false;
+    			}
     		}
     	}
     	NonNullList<ItemStack> silicon = OreDictionary.getOres("silicon");
@@ -473,7 +488,10 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	{
     		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
-    			return false;
+    			if (s.getMetadata() == stack.getMetadata())
+    			{
+    				return false;
+    			}
     		}
     	}
     	return true;

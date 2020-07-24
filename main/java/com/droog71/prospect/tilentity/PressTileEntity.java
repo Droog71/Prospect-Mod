@@ -380,7 +380,10 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
     	{ 		
     		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
-    			return new ItemStack(ProspectItems.copper_plate);
+    			if (s.getMetadata() == stack.getMetadata())
+    			{
+    				return new ItemStack(ProspectItems.copper_plate);
+    			}			
     		}
     	}
     	NonNullList<ItemStack> tin = OreDictionary.getOres("ingotTin");
@@ -388,7 +391,10 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
     	{
     		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
-    			return new ItemStack(ProspectItems.tin_plate);
+    			if (s.getMetadata() == stack.getMetadata())
+    			{
+    				return new ItemStack(ProspectItems.tin_plate);
+    			}
     		}
     	}
     	NonNullList<ItemStack> silver = OreDictionary.getOres("ingotSilver");
@@ -396,7 +402,10 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
     	{
     		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
-    			return new ItemStack(ProspectItems.silver_plate);
+    			if (s.getMetadata() == stack.getMetadata())
+    			{
+    				return new ItemStack(ProspectItems.silver_plate);
+    			}
     		}
     	}
     	NonNullList<ItemStack> lead = OreDictionary.getOres("ingotLead");
@@ -404,7 +413,10 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
     	{
     		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
-    			return new ItemStack(ProspectItems.lead_plate);
+    			if (s.getMetadata() == stack.getMetadata())
+    			{
+    				return new ItemStack(ProspectItems.lead_plate);
+    			}
     		}
     	}
     	NonNullList<ItemStack> aluminum = OreDictionary.getOres("ingotAluminum");
@@ -412,7 +424,10 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
     	{
     		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
-    			return new ItemStack(ProspectItems.aluminum_plate);
+    			if (s.getMetadata() == stack.getMetadata())
+    			{
+    				return new ItemStack(ProspectItems.aluminum_plate);
+    			}
     		}
     	}
     	return null;

@@ -381,7 +381,10 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
     	{ 		   	
     		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
-    			return true;
+    			if (s.getMetadata() == stack.getMetadata())
+    			{
+    				return true;
+    			}
     		}
     	}
     	return false;
