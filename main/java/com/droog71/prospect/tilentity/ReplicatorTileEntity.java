@@ -192,7 +192,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
         replicatorSpendTime = compound.getInteger("SpendTime");
         replicateTime = compound.getInteger("replicateTime");
         totalreplicateTime = compound.getInteger("replicateTimeTotal");
-        currentCreditSpendTime = getCreditSpendTime(replicatorItemStacks.get(1));
+        currentCreditSpendTime = getCreditSpendTime(replicatorItemStacks.get(0));
         energyCapacity = compound.getInteger("EnergyCapacity");
         if (Loader.isModLoaded("ic2"))
 		{
@@ -303,7 +303,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 	                		if (replicatorSpendTime <= 0)
 	                		{
 	                            itemstack.shrink(1);
-	                            replicatorSpendTime = getCreditSpendTime(itemstack);
+	                            replicatorSpendTime = getCreditSpendTime(replicatorItemStacks.get(0));
 	                            flag1 = true;
 	                		}	                		
                            
@@ -402,7 +402,11 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	Item i = stack.getItem();
     	if (i == Items.EMERALD || i == Items.DIAMOND)
     	{
-    		return 100;
+    		return 200;
+    	}
+    	if (i == Item.getItemFromBlock(Blocks.WOOL))
+    	{
+    		return 150;
     	}
     	if (Loader.isModLoaded("ic2"))
     	{
@@ -557,6 +561,22 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 
     public static int getCreditSpendTime(ItemStack stack) //Could eventually be used for differing denominations of currency.
     {
+    	Item i = stack.getItem();
+    	if (i == Items.EMERALD || i == Items.DIAMOND)
+    	{
+    		return 3;
+    	}
+    	if (Loader.isModLoaded("ic2"))
+    	{
+    		if (stack == Ic2Items.uraniumDrop)
+    		{
+    			return 3;
+    		}
+    	}
+    	if (i == Item.getItemFromBlock(Blocks.WOOL))
+    	{
+    		return 15;
+    	}
     	return 50;
     }
 

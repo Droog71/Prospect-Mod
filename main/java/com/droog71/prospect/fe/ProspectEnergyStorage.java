@@ -3,9 +3,10 @@ package com.droog71.prospect.fe;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.droog71.prospect.init.ProspectBlocks;
+import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -126,14 +127,16 @@ public class ProspectEnergyStorage implements IEnergyStorage
     
     //If an energy storage block's FE per tick rating is exceeded, it will explode.
     public void explode(World world, BlockPos pos)
-    {
+    {   	
     	world.playSound(null, pos, SoundEvents.ENTITY_GENERIC_EXPLODE,  SoundCategory.BLOCKS, 0.5f, 1);
     	WorldServer w = (WorldServer) world;
     	w.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 1, null);
     	w.spawnParticle(EnumParticleTypes.LAVA, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);
-    	w.spawnParticle(EnumParticleTypes.FLAME, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);   	
-    	world.getBlockState(pos).getBlock().breakBlock(world, pos, ProspectBlocks.extruder.getDefaultState());
-    	EntityItem item = new EntityItem(w, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(ProspectBlocks.extruder));
+    	w.spawnParticle(EnumParticleTypes.FLAME, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);
+    	
+    	Block block = world.getBlockState(pos).getBlock();
+    	block.breakBlock(world, pos, block.getDefaultState());
+    	EntityItem item = new EntityItem(w, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Item.getItemFromBlock(block)));
     	w.spawnEntity(item);
     	world.setBlockToAir(pos);    	
     }

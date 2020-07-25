@@ -77,7 +77,7 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
         super.readFromNBT(tag);	 
         if ((BasicSource) ic2EnergySource == null)
 		{
-			ic2EnergySource = new BasicSource(this,10,1);
+        	ic2EnergySource = new BasicSource(this,capacity/4,tier);
 		}	
         ((BasicSource) ic2EnergySource).readFromNBT(tag);
         capacity = tag.getInteger("capacity");
@@ -91,7 +91,7 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
         super.writeToNBT(tag);	
         if ((BasicSource) ic2EnergySource == null)
 		{
-			ic2EnergySource = new BasicSource(this,10,1);
+			ic2EnergySource = new BasicSource(this,capacity/4,tier);
 		}	
         ((BasicSource) ic2EnergySource).writeToNBT(tag);
         tag.setInteger("capacity", capacity);
@@ -118,7 +118,7 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 			{
 				if (((BasicSource) ic2EnergySource).getCapacity() > 0)
 				{
-					((BasicSource) ic2EnergySource).addEnergy(world.getSunBrightnessFactor(1F) * 5);
+					((BasicSource) ic2EnergySource).addEnergy(world.getSunBrightnessFactor(1F) * rating/4);
 				}				
 			}
 			energyStorage.generateEnergy((int)world.getSunBrightnessFactor(1F) * rating);
@@ -143,7 +143,7 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 		}
 		if (connectedFE == false)
 		{
-			((BasicSource) ic2EnergySource).setCapacity(10);
+			((BasicSource) ic2EnergySource).setCapacity(energyStorage.capacity/4);
 		}
 	}
 	
