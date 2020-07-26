@@ -46,9 +46,10 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
     private NonNullList<ItemStack> fabricatorItemStacks = NonNullList.<ItemStack>withSize(3, ItemStack.EMPTY);
     private int energyStored;
     private int energyCapacity;
-    private int printTime;
-    private int totalPrintTime;
+    private int fabricateTime;
+    private int totalfabricateTime;
     private int effectsTimer;
+    private boolean itemsConsumed;
     private Object ic2EnergySink;	
 	private ProspectEnergyStorage energyStorage = new ProspectEnergyStorage();
     
@@ -160,8 +161,8 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
 
         if (index == 0 && !flag)
         {
-            totalPrintTime = getPrintTime(stack);
-            printTime = 0;
+            totalfabricateTime = getfabricateTime(stack);
+            fabricateTime = 0;
             markDirty();
         }
     }
@@ -196,8 +197,8 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
         fabricatorItemStacks = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
         ItemStackHelper.loadAllItems(compound, fabricatorItemStacks);
         energyStored = compound.getInteger("EnergyStored");
-        printTime = compound.getInteger("PrintTime");
-        totalPrintTime = compound.getInteger("PrintTimeTotal");      
+        fabricateTime = compound.getInteger("fabricateTime");
+        totalfabricateTime = compound.getInteger("fabricateTimeTotal");      
         energyCapacity = compound.getInteger("EnergyCapacity");
         if (Loader.isModLoaded("ic2"))
 		{
@@ -215,8 +216,8 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
         super.writeToNBT(compound);      
         compound.setInteger("EnergyStored", (short)energyStored);
         compound.setInteger("EnergyCapacity", (short)energyCapacity);
-        compound.setInteger("PrintTime", (short)printTime);
-        compound.setInteger("PrintTimeTotal", (short)totalPrintTime);
+        compound.setInteger("fabricateTime", (short)fabricateTime);
+        compound.setInteger("fabricateTimeTotal", (short)totalfabricateTime);
         ItemStackHelper.saveAllItems(compound, fabricatorItemStacks);   
         if (Loader.isModLoaded("ic2"))
 		{
@@ -282,14 +283,18 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
         	{
         		updateEnergy();           	
                 if (isEnergized())
-                {
-                    if (canPrint())
-                    {               	
-                    	if (useEnergy())
+                {      
+                	if (itemsConsumed)
+                	{
+                		if (useEnergy())
                     	{
                     		doWork();
                     	}
-                    }
+                	}
+                	else if (canFabricate())
+                	{
+                		consumeItems();
+                	}
                 }
         	}      	
         }
@@ -297,19 +302,13 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
     
     private void doWork()
     {
-    	boolean flag1 = false;   
-    	++printTime;
+    	++fabricateTime;
     	
-        if (printTime == totalPrintTime)
+        if (fabricateTime == totalfabricateTime)
         {
-        	printTime = 0;
-        	totalPrintTime = getPrintTime(fabricatorItemStacks.get(0));
-            printItem();
-            flag1 = true;
-        }
-        
-		if (flag1)
-        {
+        	fabricateTime = 0;
+        	totalfabricateTime = getfabricateTime(fabricatorItemStacks.get(0));
+            fabricateItem();
             markDirty();
         }
 		
@@ -375,9 +374,9 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
     	return false;
     }
     
-    public int getPrintTime(ItemStack stack)
+    public int getfabricateTime(ItemStack stack) //For now, all schematics take the same amount of time. This may change.
     {
-    	return 100;
+    	return 50;
     }
   
     private boolean canCraft(ItemStack[] stacks, IInventory iinventory)
@@ -413,32 +412,49 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
         return false;
     }
     
-    private void consumeItems(ItemStack[] stacks)
+    private void consumeItems()
     {
-    	IInventory iinventory = getInventoryForCrafting(stacks);
-        if (iinventory != null)
+    	ItemStack[] stacks = null;
+        Item item = fabricatorItemStacks.get(0).getItem();
+        
+        if (item instanceof Schematic)
         {
-			int size = iinventory.getSizeInventory();
-			for (ItemStack requiredStack : stacks)
-            {      
-            	boolean foundStack = false;
-            	for (int index = 0; index < size; ++index)
-                {
-                	ItemStack containerStack = iinventory.getStackInSlot(index);                       
-                    if (containerStack.getItem() == requiredStack.getItem())
+        	ItemStack[] required = ((Schematic) item).getIngredients();           
+            IInventory inventoryToUse = getInventoryForCrafting(required);      	
+            if (inventoryToUse != null)
+    		{
+            	stacks = required;
+    		}
+        } 
+        
+        if (stacks != null)
+        {
+        	IInventory iinventory = getInventoryForCrafting(stacks);
+            if (iinventory != null)
+            {
+    			int size = iinventory.getSizeInventory();
+    			for (ItemStack requiredStack : stacks)
+                {      
+                	boolean foundStack = false;
+                	for (int index = 0; index < size; ++index)
                     {
-                    	if (containerStack.getCount() >= requiredStack.getCount())
-                    	{
-                    		if (foundStack == false)
-                    		{
-                    			foundStack = true;
-                    			containerStack.shrink(requiredStack.getCount());
-                    		}
-                    	}
+                    	ItemStack containerStack = iinventory.getStackInSlot(index);                       
+                        if (containerStack.getItem() == requiredStack.getItem())
+                        {
+                        	if (containerStack.getCount() >= requiredStack.getCount())
+                        	{
+                        		if (foundStack == false)
+                        		{
+                        			foundStack = true;
+                        			containerStack.shrink(requiredStack.getCount());
+                        		}
+                        	}
+                        }
                     }
-                }
-            } 
-        	iinventory.markDirty();
+                } 
+    			itemsConsumed = true;
+            	iinventory.markDirty();
+            }
         }
     }
     
@@ -502,85 +518,57 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
     }
     
     /**
-     * Returns true if the fabricator can print an item, i.e. has a source item, destination stack isn't full, etc.
+     * Returns true if the fabricator can fabricate an item, i.e. has a source item, destination stack isn't full, etc.
      */
-    private boolean canPrint()
+    private boolean canFabricate()
     {    	
         if (fabricatorItemStacks.get(0).isEmpty() || !(fabricatorItemStacks.get(0).getItem() instanceof Schematic))
         {
             return false;
         }
-        
-        ItemStack itemstack = null;  	
-        Item item = fabricatorItemStacks.get(0).getItem();  	
-    	ItemStack[] required = ((Schematic) item).getIngredients();
-        ItemStack result = ((Schematic) item).getResult();
-        
-        IInventory inventoryToUse = getInventoryForCrafting(required);
-    	
-        if (inventoryToUse != null)
-		{
-			itemstack = result;
-		}
-    	
-        if (itemstack == null)
-        {
-            return false;
-        }
+        	
+        ItemStack result = ((Schematic) fabricatorItemStacks.get(0).getItem()).getResult();
+        ItemStack output = fabricatorItemStacks.get(2);
 
-        ItemStack itemstack1 = fabricatorItemStacks.get(2);
-
-        if (itemstack1.isEmpty())
+        if (output.isEmpty())
         {
             return true;
         }
-        else if (!itemstack1.isItemEqual(itemstack))
+        else if (!output.isItemEqual(result))
         {
             return false;
         }
-        else if (itemstack1.getCount() + itemstack.getCount() <= getInventoryStackLimit() && itemstack1.getCount() + itemstack.getCount() <= itemstack1.getMaxStackSize())  // Forge fix: respect stack sizes
+        else if (output.getCount() + result.getCount() <= getInventoryStackLimit() && output.getCount() + result.getCount() <= output.getMaxStackSize())
         {
             return true;
         }
         else
         {
-            return itemstack1.getCount() + itemstack.getCount() <= itemstack.getMaxStackSize(); // Forge fix: respect stack sizes
+            return output.getCount() + result.getCount() <= result.getMaxStackSize();
         }
     }
 
-    public void printItem()
-    {
-        if (canPrint())
-        {           
-            ItemStack itemstack1 = new ItemStack(Items.AIR);
-            
-            Item item = fabricatorItemStacks.get(0).getItem();  
-                 
-            if (item instanceof Schematic)
-            {
-            	ItemStack[] required = ((Schematic) item).getIngredients();
-                ItemStack result = ((Schematic) item).getResult();
-                 
-                IInventory inventoryToUse = getInventoryForCrafting(required);
-            	
-                if (inventoryToUse != null)
-        		{
-        			consumeItems(required);
-        			itemstack1 = result;
-        		}
-            } 
-            
-            ItemStack itemstack2 = fabricatorItemStacks.get(2);
+    public void fabricateItem()
+    {        
+        ItemStack result = new ItemStack(Items.AIR);   
+        ItemStack output = fabricatorItemStacks.get(2);
+        Item item = fabricatorItemStacks.get(0).getItem();
+             
+        if (item instanceof Schematic)
+        {
+        	result = ((Schematic) item).getResult();                  	
+        }                
 
-            if (itemstack2.isEmpty())
-            {
-                fabricatorItemStacks.set(2, itemstack1.copy());
-            }
-            else if (itemstack2.getItem() == itemstack1.getItem())
-            {
-                itemstack2.grow(itemstack1.getCount());
-            }
+        if (output.isEmpty())
+        {
+            fabricatorItemStacks.set(2, result.copy());
+            itemsConsumed = false;
         }
+        else if (output.getItem() == result.getItem())
+        {
+        	output.grow(result.getCount());
+            itemsConsumed = false;
+        }           
     }
 
     /**
@@ -682,9 +670,9 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
             case 1:
                 return energyCapacity;
             case 2:
-                return printTime;
+                return fabricateTime;
             case 3:
-                return totalPrintTime;
+                return totalfabricateTime;
             default:
                 return 0;
         }
@@ -702,10 +690,10 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
                 energyCapacity = value;
                 break;
             case 2:
-            	printTime = value;
+            	fabricateTime = value;
                 break;
             case 3:
-            	totalPrintTime = value;
+            	totalfabricateTime = value;
         }
     }
 

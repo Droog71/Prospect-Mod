@@ -370,7 +370,7 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
     
     public int getpressTime(ItemStack stack) //Could be used for varying press time for different ingots.
     {
-        return 100;
+        return 50;
     }
 
     private ItemStack getPlate(ItemStack stack)

@@ -12,17 +12,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class FabricatorContainer extends Container
 {
-    private final IInventory tilePrinter;
-    private int printTime;
-    private int totalPrintTime;
+    private final IInventory tileFabricator;
+    private int fabricateTime;
+    private int totalfabricateTime;
     private int energyCapacity;
     private int energyStored;
 
-    public FabricatorContainer(InventoryPlayer playerInventory, IInventory printerInventory)
+    public FabricatorContainer(InventoryPlayer playerInventory, IInventory fabricatorInventory)
     {
-        this.tilePrinter = printerInventory;
-        this.addSlotToContainer(new Slot(printerInventory, 0, 56, 17));
-        this.addSlotToContainer(new Slot(printerInventory, 2, 116, 35));
+        this.tileFabricator = fabricatorInventory;
+        this.addSlotToContainer(new Slot(fabricatorInventory, 0, 56, 17));
+        this.addSlotToContainer(new Slot(fabricatorInventory, 2, 116, 35));
 
         for (int i = 0; i < 3; ++i)
         {
@@ -42,7 +42,7 @@ public class FabricatorContainer extends Container
 	public void addListener(IContainerListener listener)
     {
         super.addListener(listener);
-        listener.sendAllWindowProperties(this, this.tilePrinter);
+        listener.sendAllWindowProperties(this, this.tileFabricator);
     }
 
     /**
@@ -57,37 +57,37 @@ public class FabricatorContainer extends Container
         {
             IContainerListener icontainerlistener = this.listeners.get(i);
 
-            if (this.energyStored != this.tilePrinter.getField(0))
+            if (this.energyStored != this.tileFabricator.getField(0))
             {
-                icontainerlistener.sendWindowProperty(this, 0, this.tilePrinter.getField(0));
+                icontainerlistener.sendWindowProperty(this, 0, this.tileFabricator.getField(0));
             }
 
-            if (this.energyCapacity != this.tilePrinter.getField(1))
+            if (this.energyCapacity != this.tileFabricator.getField(1))
             {
-                icontainerlistener.sendWindowProperty(this, 1, this.tilePrinter.getField(1));
+                icontainerlistener.sendWindowProperty(this, 1, this.tileFabricator.getField(1));
             }
 
-            if (this.printTime != this.tilePrinter.getField(2))
+            if (this.fabricateTime != this.tileFabricator.getField(2))
             {
-                icontainerlistener.sendWindowProperty(this, 2, this.tilePrinter.getField(2));
+                icontainerlistener.sendWindowProperty(this, 2, this.tileFabricator.getField(2));
             }
             
-            if (this.totalPrintTime != this.tilePrinter.getField(3))
+            if (this.totalfabricateTime != this.tileFabricator.getField(3))
             {
-                icontainerlistener.sendWindowProperty(this, 3, this.tilePrinter.getField(3));
+                icontainerlistener.sendWindowProperty(this, 3, this.tileFabricator.getField(3));
             }
         }
-        this.energyStored = this.tilePrinter.getField(0);
-        this.energyCapacity = this.tilePrinter.getField(1);
-        this.printTime = this.tilePrinter.getField(2);
-        this.totalPrintTime = this.tilePrinter.getField(3);
+        this.energyStored = this.tileFabricator.getField(0);
+        this.energyCapacity = this.tileFabricator.getField(1);
+        this.fabricateTime = this.tileFabricator.getField(2);
+        this.totalfabricateTime = this.tileFabricator.getField(3);
     }
 
     @Override
 	@SideOnly(Side.CLIENT)
     public void updateProgressBar(int id, int data)
     {
-        this.tilePrinter.setField(id, data);
+        this.tileFabricator.setField(id, data);
     }
 
     /**
@@ -96,7 +96,7 @@ public class FabricatorContainer extends Container
     @Override
 	public boolean canInteractWith(EntityPlayer playerIn)
     {
-        return this.tilePrinter.isUsableByPlayer(playerIn);
+        return this.tileFabricator.isUsableByPlayer(playerIn);
     }
 
     /**

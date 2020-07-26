@@ -371,7 +371,7 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
     
     public int getextrudeTime(ItemStack stack) //Could be used for varying extrude time for different ingots.
     {
-        return 100;
+        return 50;
     }
 
     private boolean isCopperIngot(ItemStack stack)
@@ -401,7 +401,7 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
         }
         else
         {
-            ItemStack itemstack = new ItemStack(ProspectItems.copper_wire);
+            ItemStack itemstack = new ItemStack(ProspectItems.copper_wire,6);
 
             if (itemstack.isEmpty())
             {
@@ -439,7 +439,7 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
         if (canExtrude())
         {
             ItemStack itemstack = extruderItemStacks.get(0);
-            ItemStack itemstack1 = new ItemStack(ProspectItems.copper_wire);
+            ItemStack itemstack1 = new ItemStack(ProspectItems.copper_wire,6);
             ItemStack itemstack2 = extruderItemStacks.get(2);
 
             if (itemstack2.isEmpty())

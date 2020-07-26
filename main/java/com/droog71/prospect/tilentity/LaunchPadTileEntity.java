@@ -420,32 +420,32 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
 		{
     		if (item == TGItems.PLASMA_GENERATOR.getItem())
     		{
-    			currentPayout = 32;
+    			currentPayout = 64;
         		return currentPayout;
     		} 
     		if (item == TGBlocks.BASIC_MACHINE.getItemblock())
     		{
-    			currentPayout = 16;
+    			currentPayout = 32;
         		return currentPayout;
     		}    		
     		if (item == TGItems.CIRCUIT_BOARD_ELITE.getItem())
     		{
-    			currentPayout = 8;
+    			currentPayout = 16;
         		return currentPayout;
     		}
     		if (item == TGItems.ELECTRIC_ENGINE.getItem())
     		{
-    			currentPayout = 4;
+    			currentPayout = 8;
         		return currentPayout;
     		}
     		if (item == TGItems.CIRCUIT_BOARD_BASIC.getItem())
     		{
-    			currentPayout = 2;
+    			currentPayout = 4;
         		return currentPayout;
     		}  
     		if (item == TGItems.ENERGY_CELL.getItem())
     		{
-    			currentPayout = 1;
+    			currentPayout = 2;
         		return currentPayout;
     		}  
 		}
@@ -453,32 +453,32 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
     	{
     		if (item == Ic2Items.massfabricator.getItem() || item == Ic2Items.adjustableTransformer.getItem())
     		{
-    			currentPayout = 32;
+    			currentPayout = 64;
         		return currentPayout;
     		}
     		if (item == Ic2Items.nuclearReactor.getItem())
     		{
-    			currentPayout = 16;
+    			currentPayout = 32;
         		return currentPayout;
     		}
     		if (item == Ic2Items.advancedCircuit.getItem() || item == Ic2Items.macerator.getItem() || item == Ic2Items.compressor.getItem() || item == Ic2Items.electroFurnace.getItem() || item == Ic2Items.extractor.getItem())
     		{
-    			currentPayout = 8;
+    			currentPayout = 16;
         		return currentPayout;
     		}
     		if (item == Ic2Items.electricCircuit.getItem())
     		{
-    			currentPayout = 4;
+    			currentPayout = 8;
         		return currentPayout;
     		}
     		if (item == Ic2Items.doubleInsulatedGoldCable.getItem() || item == Ic2Items.tribbleInsulatedIronCable.getItem())
     		{
-    			currentPayout = 2;
+    			currentPayout = 4;
         		return currentPayout;
     		}
     		if (item == Ic2Items.copperCable.getItem())
     		{
-    			currentPayout = 1;
+    			currentPayout = 2;
         		return currentPayout;
     		}
     	}
@@ -487,31 +487,31 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
     		currentPayout = 64;
     		return currentPayout;
     	}
-    	if (item == Item.getItemFromBlock(ProspectBlocks.quarry) || item == Item.getItemFromBlock(ProspectBlocks.ev_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.purifier)  || item == Item.getItemFromBlock(ProspectBlocks.fabricator))
+    	if (item == Item.getItemFromBlock(ProspectBlocks.hv_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.ev_transformer) || item == Item.getItemFromBlock(ProspectBlocks.quarry) || item == Item.getItemFromBlock(ProspectBlocks.ev_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.purifier)  || item == Item.getItemFromBlock(ProspectBlocks.fabricator))
     	{
     		currentPayout = 32;
     		return currentPayout;
     	}
-    	if (item == Item.getItemFromBlock(ProspectBlocks.hv_solar_panel)  || item == Item.getItemFromBlock(ProspectBlocks.ev_transformer))
+    	if (item == Item.getItemFromBlock(ProspectBlocks.mv_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.hv_transformer) || item == Item.getItemFromBlock(ProspectBlocks.iv_cable))
     	{
     		currentPayout = 16;
     		return currentPayout;
     	}
-    	if (item == Item.getItemFromBlock(ProspectBlocks.mv_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.hv_transformer) || item == Item.getItemFromBlock(ProspectBlocks.iv_cable))
+    	if (item == Item.getItemFromBlock(ProspectBlocks.extruder) || item == Item.getItemFromBlock(ProspectBlocks.press) || item == Item.getItemFromBlock(ProspectBlocks.lv_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.hv_cable) || item == Item.getItemFromBlock(ProspectBlocks.mv_transformer))
     	{
     		currentPayout = 8;
     		return currentPayout;
     	}
-    	if (item == Item.getItemFromBlock(ProspectBlocks.extruder) || item == Item.getItemFromBlock(ProspectBlocks.press) || item == Item.getItemFromBlock(ProspectBlocks.lv_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.hv_cable) || item == Item.getItemFromBlock(ProspectBlocks.mv_transformer) || item == ProspectItems.in_iv_wire)
+    	if (item == Item.getItemFromBlock(ProspectBlocks.lv_cable) || item == Item.getItemFromBlock(ProspectBlocks.lv_transformer) || item == Item.getItemFromBlock(ProspectBlocks.mv_cable) || item == ProspectItems.quantum_circuit || item == ProspectItems.gem)
     	{
     		currentPayout = 4;
     		return currentPayout;
-    	}
-    	if (item == Item.getItemFromBlock(ProspectBlocks.lv_cable) || item == Item.getItemFromBlock(ProspectBlocks.lv_transformer) || item == Item.getItemFromBlock(ProspectBlocks.mv_cable) || item == ProspectItems.in_ev_wire || item == ProspectItems.in_hv_wire || item == ProspectItems.in_mv_wire || item == ProspectItems.in_lv_wire || item == ProspectItems.quantum_circuit || item == ProspectItems.gem)
+    	}  
+    	if (item == ProspectItems.in_iv_wire || item == ProspectItems.in_ev_wire || item == ProspectItems.in_hv_wire || item == ProspectItems.in_mv_wire || item == ProspectItems.in_lv_wire)
     	{
     		currentPayout = 2;
     		return currentPayout;
-    	}   
+    	} 
     	return 0;
     }
     

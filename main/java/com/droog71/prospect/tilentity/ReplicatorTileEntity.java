@@ -425,22 +425,15 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	{
     		return false;
     	}
-    	if (Loader.isModLoaded("ic2"))
-    	{
-    		if (stack == Ic2Items.stickyResin || stack == Ic2Items.uraniumDrop)
-    		{
-    			return false;
-    		}
-    	}
     	NonNullList<ItemStack> copper = OreDictionary.getOres("ingotCopper");
     	for (ItemStack s : copper)
-    	{ 		   	
+    	{ 		
     		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
     			if (s.getMetadata() == stack.getMetadata())
     			{
     				return false;
-    			}
+    			}			
     		}
     	}
     	NonNullList<ItemStack> tin = OreDictionary.getOres("ingotTin");
@@ -498,6 +491,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     			}
     		}
     	}
+    	System.out.println("Invalid replicator item!");
     	return true;
     }
     
@@ -505,37 +499,27 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
      * Returns true if the transmitter can transmit an item, i.e. has a source item, destination stack isn't full, etc.
      */
     private boolean canReplicate()
-    {
-    	Item item = replicatorItemStacks.get(0).getItem();
-    	ItemStack itemstack = new ItemStack(item);
-
-        if (itemstack.isEmpty())
-        {
-            return false;
-        }
-        else if (invalidReplicatorItem(itemstack))
+    {  	
+        if (replicatorItemStacks.get(0).isEmpty() || invalidReplicatorItem(replicatorItemStacks.get(0)))
         {
         	return false;
         }
         else
         {
-            ItemStack itemstack1 = replicatorItemStacks.get(2);
+        	ItemStack input = replicatorItemStacks.get(0);
+            ItemStack output = replicatorItemStacks.get(2);
 
-            if (itemstack1.isEmpty())
+            if (output.isEmpty())
             {
                 return true;
             }
-            else if (!itemstack1.isItemEqual(itemstack))
+            else if (!output.isItemEqual(input))
             {
                 return false;
             }
-            else if (itemstack1.getCount() + itemstack.getCount() <= getInventoryStackLimit() && itemstack1.getCount() + itemstack.getCount() <= itemstack1.getMaxStackSize())  // Forge fix: respect stack sizes
-            {
-                return true;
-            }
             else
             {
-                return itemstack1.getCount() + itemstack.getCount() <= itemstack.getMaxStackSize(); // Forge fix: respect stack sizes
+                return output.getCount() + input.getCount() <= output.getMaxStackSize();
             }
         }
     }
@@ -564,18 +548,18 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	Item i = stack.getItem();
     	if (i == Items.EMERALD || i == Items.DIAMOND)
     	{
-    		return 3;
+    		return 10;
+    	}
+    	if (i == Item.getItemFromBlock(Blocks.WOOL))
+    	{
+    		return 15;
     	}
     	if (Loader.isModLoaded("ic2"))
     	{
     		if (stack == Ic2Items.uraniumDrop)
     		{
-    			return 3;
+    			return 10;
     		}
-    	}
-    	if (i == Item.getItemFromBlock(Blocks.WOOL))
-    	{
-    		return 15;
     	}
     	return 50;
     }
