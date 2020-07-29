@@ -1,15 +1,12 @@
 { 
   "type": "forge:ore_shaped",
   "pattern": [
-    "LCL",
-    "LPL",
-    "LPL"  ],
+    "HPH",
+    "H H",
+    "HHH"  ],
   "key": {
-    "L": {
-        "item": "prospect:lead_plate"
-    },
-    "C": {
-        "item": "prospect:lv_coil"
+    "H": {
+        "item": "minecraft:heavy_weighted_pressure_plate"
     },
     "P": {
         "item": "minecraft:piston"

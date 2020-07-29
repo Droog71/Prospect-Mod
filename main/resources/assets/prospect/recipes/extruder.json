@@ -1,15 +1,12 @@
 { 
   "type": "forge:ore_shaped",
   "pattern": [
-    "LCL",
-    "LPL",
-    "LHL"  ],
+    "LLL",
+    "P H",
+    "LLL"  ],
   "key": {
     "L": {
         "item": "prospect:lead_plate"
-    },
-    "C": {
-        "item": "prospect:lv_coil"
     },
     "H": {
         "item": "minecraft:hopper"

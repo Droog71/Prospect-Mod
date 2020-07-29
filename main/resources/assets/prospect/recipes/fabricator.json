@@ -1,18 +1,21 @@
 { 
   "type": "forge:ore_shaped",
   "pattern": [
-    "TQT",
-    "QRQ",
-    "TQT"  ],
+    "TTT",
+    "QPQ",
+    "TXT"  ],
   "key": {
     "T": {
         "item": "prospect:tin_plate"
     },
-    "R": {
-        "item": "prospect:replicator"
+    "P": {
+        "item": "prospect:press"
     },
     "Q": {
         "item": "prospect:quantum_circuit"
+    },
+    "X": {
+        "item": "prospect:hv_transformer"
     }
 },
   "result": {

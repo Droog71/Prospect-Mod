@@ -1,9 +1,9 @@
 { 
   "type": "forge:ore_shaped",
   "pattern": [
-    "LLL",
+    "LHL",
     "QHQ",
-    "LHL"  ],
+    "LXL"  ],
   "key": {
     "L": {
         "item": "prospect:lead_plate"
@@ -13,6 +13,9 @@
     },
     "H": {
         "item": "minecraft:hopper"
+    },
+    "X": {
+        "item": "prospect:lv_transformer"
     }
 },
   "result": {

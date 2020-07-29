@@ -1,8 +1,8 @@
 { 
   "type": "forge:ore_shaped",
   "pattern": [
-    "TQT",
-    "QDQ",
+    "TTT",
+    "QFQ",
     "TXT"  ],
   "key": {
     "T": {
@@ -14,8 +14,8 @@
     "Q": {
         "item": "prospect:quantum_circuit"
     },
-    "D": {
-        "item": "minecraft:diamond"
+    "F": {
+        "item": "prospect:fabricator"
     }
 },
   "result": {

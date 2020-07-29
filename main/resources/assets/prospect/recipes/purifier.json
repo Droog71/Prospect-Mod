@@ -3,7 +3,7 @@
   "pattern": [
     "THT",
     "HFH",
-    "THT"  ],
+    "TXT"  ],
   "key": {
     "T": {
         "item": "prospect:tin_plate"
@@ -13,6 +13,9 @@
     },
     "H": {
         "item": "minecraft:hopper"
+    },
+    "X": {
+        "item": "prospect:mv_transformer"
     }
 },
   "result": {
