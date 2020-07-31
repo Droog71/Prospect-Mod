@@ -5,7 +5,6 @@ import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.ReplicatorContainer;
 import ic2.api.energy.prefab.BasicSink;
-import ic2.core.platform.registry.Ic2Items;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
@@ -43,6 +42,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     private int totalreplicateTime;
     private Object ic2EnergySink;
 	private int effectsTimer;
+	private int itemTier;
 	private ProspectEnergyStorage energyStorage = new ProspectEnergyStorage();
     
 	@Override
@@ -52,12 +52,12 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 		{
 			if (((BasicSink) ic2EnergySink == null))
 			{
-        		ic2EnergySink = new BasicSink(this,1000000,5);       		
+        		ic2EnergySink = new BasicSink(this,256000,4);       		
 			}	
 			((BasicSink) ic2EnergySink).onLoad(); // notify the energy sink
 		}
-		energyStorage.capacity = 125000;
-		energyStorage.maxReceive = 25000;
+		energyStorage.capacity = 80000;
+		energyStorage.maxReceive = 16000;
 	}
 	 
 	@Override
@@ -153,7 +153,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 
         if (index == 0 && !flag)
         {
-            totalreplicateTime = getreplicateTime(stack);
+            totalreplicateTime = getreplicateTime();
             replicateTime = 0;
             markDirty();
         }
@@ -192,13 +192,13 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
         replicatorSpendTime = compound.getInteger("SpendTime");
         replicateTime = compound.getInteger("replicateTime");
         totalreplicateTime = compound.getInteger("replicateTimeTotal");
-        currentCreditSpendTime = getCreditSpendTime(replicatorItemStacks.get(0));
+        currentCreditSpendTime = getCreditSpendTime();
         energyCapacity = compound.getInteger("EnergyCapacity");
         if (Loader.isModLoaded("ic2"))
 		{
 	        if ((BasicSink) ic2EnergySink == null)
 			{
-	        	ic2EnergySink = new BasicSink(this,1000000,5);
+	        	ic2EnergySink = new BasicSink(this,256000,4);
 			}	
 	        ((BasicSink) ic2EnergySink).readFromNBT(compound);
 		}
@@ -218,7 +218,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 		{
 	        if ((BasicSink) ic2EnergySink == null)
 			{
-	        	ic2EnergySink = new BasicSink(this,1000000,5);
+	        	ic2EnergySink = new BasicSink(this,256000,4); 
 			}	
 	        ((BasicSink) ic2EnergySink).writeToNBT(compound);
 		}
@@ -303,7 +303,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 	                		if (replicatorSpendTime <= 0)
 	                		{
 	                            itemstack.shrink(1);
-	                            replicatorSpendTime = getCreditSpendTime(replicatorItemStacks.get(0));
+	                            replicatorSpendTime = getCreditSpendTime();
 	                            flag1 = true;
 	                		}	                		
                            
@@ -311,7 +311,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 		                    if (replicateTime == totalreplicateTime)
 		                    {
 		                        replicateTime = 0;
-		                        totalreplicateTime = getreplicateTime(replicatorItemStacks.get(0));
+		                        totalreplicateTime = getreplicateTime();
 		                        replicateItem();
 		                        flag1 = true;
 		                    }
@@ -359,7 +359,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	{
     		if (Loader.isModLoaded("ic2"))
     		{
-    			((BasicSink) ic2EnergySink).setCapacity(1000000);
+    			((BasicSink) ic2EnergySink).setCapacity(256000);
         		if (((BasicSink) ic2EnergySink).getEnergyStored() > 0)
         		{
         			energyStored = (int) ((BasicSink) ic2EnergySink).getEnergyStored();
@@ -373,47 +373,39 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     {
     	if (Loader.isModLoaded("ic2"))
 		{
-        	if (((BasicSink) ic2EnergySink).useEnergy(4096))
+        	if (((BasicSink) ic2EnergySink).useEnergy(512))
         	{
         		return true;
         	}   
         	else if (energyStorage != null)
         	{
-    			if (energyStorage.getEnergyStored() >= 16384)
+    			if (energyStorage.getEnergyStored() >= 2048)
         		{
-        			energyStorage.useEnergy(16384);
+        			energyStorage.useEnergy(2048);
         			return true;
         		}                		
         	}
 		}
     	else if (energyStorage != null)
     	{
-			if (energyStorage.getEnergyStored() >= 16384)
+			if (energyStorage.getEnergyStored() >= 2048)
     		{
-				energyStorage.useEnergy(16384);
+				energyStorage.useEnergy(2048);
     			return true;
     		}                		
     	}
     	return false;
     }
     
-    public int getreplicateTime(ItemStack stack)
+    public int getreplicateTime()
     {
-    	Item i = stack.getItem();
-    	if (i == Items.EMERALD || i == Items.DIAMOND)
+    	if (itemTier == 5)
     	{
     		return 200;
     	}
-    	if (i == Item.getItemFromBlock(Blocks.WOOL))
+    	if (itemTier == 4)
     	{
     		return 150;
-    	}
-    	if (Loader.isModLoaded("ic2"))
-    	{
-    		if (stack == Ic2Items.uraniumDrop)
-    		{
-    			return 100;
-    		}
     	}
     	return 50;
     }
@@ -421,8 +413,29 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     private boolean invalidReplicatorItem(ItemStack stack)
     {
     	Item i = stack.getItem();
-    	if (i == Item.getItemFromBlock(Blocks.WOOL) || i == Items.GLOWSTONE_DUST || i == Items.IRON_INGOT || i == Items.GOLD_INGOT || i == Items.REDSTONE || i == Items.DIAMOND || i == Items.CLAY_BALL || i == Items.QUARTZ || i == Items.COAL || i == Items.EMERALD)
+    	if (i == Items.ENDER_PEARL || i == Items.GHAST_TEAR || i == Items.BLAZE_POWDER || i == Items.NETHER_WART)
     	{
+    		itemTier = 5;
+    		return false;
+    	}
+    	if (i == Items.DIAMOND || i == Items.EMERALD)
+    	{
+    		itemTier = 4;
+    		return false;
+    	}
+    	if (i == Items.IRON_INGOT || i == Items.GOLD_INGOT || i == Items.REDSTONE)
+    	{
+    		itemTier = 3;
+    		return false;
+    	}
+    	if (i == Items.GLOWSTONE_DUST || i == Items.CLAY_BALL || i == Items.QUARTZ || i == Items.COAL || i == Items.STRING)
+    	{
+    		itemTier = 2;
+    		return false;
+    	}
+    	if (i == Item.getItemFromBlock(Blocks.PLANKS) || i == Item.getItemFromBlock(Blocks.COBBLESTONE) || i == Item.getItemFromBlock(Blocks.WOOL))
+    	{
+    		itemTier = 1;
     		return false;
     	}
     	NonNullList<ItemStack> copper = OreDictionary.getOres("ingotCopper");
@@ -432,6 +445,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     		{
     			if (s.getMetadata() == stack.getMetadata())
     			{
+    				itemTier = 3;
     				return false;
     			}			
     		}
@@ -443,6 +457,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     		{
     			if (s.getMetadata() == stack.getMetadata())
     			{
+    				itemTier = 3;
     				return false;
     			}
     		}
@@ -454,6 +469,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     		{
     			if (s.getMetadata() == stack.getMetadata())
     			{
+    				itemTier = 3;
     				return false;
     			}
     		}
@@ -465,6 +481,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     		{
     			if (s.getMetadata() == stack.getMetadata())
     			{
+    				itemTier = 3;
     				return false;
     			}
     		}
@@ -476,6 +493,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     		{
     			if (s.getMetadata() == stack.getMetadata())
     			{
+    				itemTier = 3;
     				return false;
     			}
     		}
@@ -487,6 +505,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     		{
     			if (s.getMetadata() == stack.getMetadata())
     			{
+    				itemTier = 3;
     				return false;
     			}
     		}
@@ -543,23 +562,15 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
         }
     }
 
-    public static int getCreditSpendTime(ItemStack stack) //Could eventually be used for differing denominations of currency.
+    public int getCreditSpendTime() //Could eventually be used for differing denominations of currency.
     {
-    	Item i = stack.getItem();
-    	if (i == Items.EMERALD || i == Items.DIAMOND)
+    	if (itemTier == 5)
     	{
     		return 10;
     	}
-    	if (i == Item.getItemFromBlock(Blocks.WOOL))
+    	if (itemTier == 4)
     	{
     		return 15;
-    	}
-    	if (Loader.isModLoaded("ic2"))
-    	{
-    		if (stack == Ic2Items.uraniumDrop)
-    		{
-    			return 10;
-    		}
     	}
     	return 50;
     }

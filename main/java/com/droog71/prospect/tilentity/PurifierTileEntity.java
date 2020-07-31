@@ -32,12 +32,12 @@ public class PurifierTileEntity extends TileEntity implements ITickable
 		{
 			if (((BasicSink) ic2EnergySink == null))
 			{
-				ic2EnergySink = new BasicSink(this,10000,2);
+				ic2EnergySink = new BasicSink(this,5000,2);
 			}
 			((BasicSink) ic2EnergySink).onLoad(); // notify the energy sink
 		}
-		energyStorage.capacity = 10000;
-		energyStorage.maxReceive = 20000;
+		energyStorage.capacity = 20000;
+		energyStorage.maxReceive = 4000;
 		super.onLoad();
 	}
 	 
@@ -75,7 +75,7 @@ public class PurifierTileEntity extends TileEntity implements ITickable
 		{
 	        if ((BasicSink) ic2EnergySink == null)
 			{
-				ic2EnergySink = new BasicSink(this,10000,2);
+				ic2EnergySink = new BasicSink(this,5000,2);
 			}	
 	        ((BasicSink) ic2EnergySink).readFromNBT(tag);
 		}
@@ -89,7 +89,7 @@ public class PurifierTileEntity extends TileEntity implements ITickable
 		{
 	        if ((BasicSink) ic2EnergySink == null)
 			{
-				ic2EnergySink = new BasicSink(this,10000,2);
+				ic2EnergySink = new BasicSink(this,5000,2);
 			}	
 	        ((BasicSink) ic2EnergySink).writeToNBT(tag);
 		}
@@ -164,7 +164,7 @@ public class PurifierTileEntity extends TileEntity implements ITickable
 		}  
 		else if (Loader.isModLoaded("ic2"))
 		{
-			((BasicSink) ic2EnergySink).setCapacity(10000);
+			((BasicSink) ic2EnergySink).setCapacity(5000);
         	if (((BasicSink) ic2EnergySink).useEnergy(10))
         	{
         		return true;

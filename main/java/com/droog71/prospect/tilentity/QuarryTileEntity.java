@@ -60,7 +60,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
 		{
 			if (((BasicSink) ic2EnergySink == null))
 			{
-				ic2EnergySink = new BasicSink(this,400000,4);
+				ic2EnergySink = new BasicSink(this,256000,4);
 			}
 			((BasicSink) ic2EnergySink).onLoad(); // notify the energy sink
 		}
@@ -116,7 +116,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
 		{
 	        if ((BasicSink) ic2EnergySink == null)
 			{
-	        	ic2EnergySink = new BasicSink(this,400000,4);
+	        	ic2EnergySink = new BasicSink(this,256000,4);
 			}	
 	        ((BasicSink) ic2EnergySink).readFromNBT(compound);
 		}
@@ -150,7 +150,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
 		{
 	        if ((BasicSink) ic2EnergySink == null)
 			{
-	        	ic2EnergySink = new BasicSink(this,400000,4);
+	        	ic2EnergySink = new BasicSink(this,256000,4);
 			}	
 	        ((BasicSink) ic2EnergySink).writeToNBT(compound);
 		}
@@ -423,7 +423,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
     	{
     		if (Loader.isModLoaded("ic2"))
     		{
-    			((BasicSink) ic2EnergySink).setCapacity(400000); //FE is not in use, IC2 is installed, so EU is enabled.
+    			((BasicSink) ic2EnergySink).setCapacity(256000); //FE is not in use, IC2 is installed, so EU is enabled.
         		if (((BasicSink) ic2EnergySink).getEnergyStored() > 0)
         		{
         			energyStored = (int) ((BasicSink) ic2EnergySink).getEnergyStored(); //Return EU stored.

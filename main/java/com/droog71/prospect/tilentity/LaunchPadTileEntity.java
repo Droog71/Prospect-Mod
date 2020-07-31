@@ -54,12 +54,12 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
 		{
 			if (((BasicSink) ic2EnergySink == null))
 			{
-				ic2EnergySink = new BasicSink(this,10000,2);
+				ic2EnergySink = new BasicSink(this,5000,2);
 			}
 			((BasicSink) ic2EnergySink).onLoad(); // notify the energy sink			
 		}	
-		energyStorage.capacity = 10000;
-		energyStorage.maxReceive = 20000;
+		energyStorage.capacity = 20000;
+		energyStorage.maxReceive = 4000;
 	}
 	 
 	@Override
@@ -198,7 +198,7 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
 		{
 	        if ((BasicSink) ic2EnergySink == null)
 			{
-	        	ic2EnergySink = new BasicSink(this,10000,2);
+	        	ic2EnergySink = new BasicSink(this,5000,2);
 			}	
 	        ((BasicSink) ic2EnergySink).readFromNBT(compound);
 		}
@@ -218,7 +218,7 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
 		{
 	        if ((BasicSink) ic2EnergySink == null)
 			{
-	        	ic2EnergySink = new BasicSink(this,10000,2);
+	        	ic2EnergySink = new BasicSink(this,5000,2);
 			}	
 	        ((BasicSink) ic2EnergySink).writeToNBT(compound);
 		}
@@ -370,7 +370,7 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
     	{
     		if (Loader.isModLoaded("ic2"))
     		{
-    			((BasicSink) ic2EnergySink).setCapacity(1000);
+    			((BasicSink) ic2EnergySink).setCapacity(5000);
         		if (((BasicSink) ic2EnergySink).getEnergyStored() > 0)
         		{
         			energyStored = (int) ((BasicSink) ic2EnergySink).getEnergyStored();

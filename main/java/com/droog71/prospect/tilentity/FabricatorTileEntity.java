@@ -60,12 +60,12 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
 		{
 			if (((BasicSink) ic2EnergySink == null))
 			{
-				ic2EnergySink = new BasicSink(this,400000,4);      		
+				ic2EnergySink = new BasicSink(this,64000,3);
 			}	
 			((BasicSink) ic2EnergySink).onLoad(); // notify the energy sink
 		}
-		energyStorage.capacity = 80000;
-		energyStorage.maxReceive = 16000;
+		energyStorage.capacity = 45000;
+		energyStorage.maxReceive = 9000;
 	}
 	 
 	@Override
@@ -204,7 +204,7 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
 		{
 	        if ((BasicSink) ic2EnergySink == null)
 			{
-	        	ic2EnergySink = new BasicSink(this,400000,4);
+	        	ic2EnergySink = new BasicSink(this,64000,3);
 			}	
 	        ((BasicSink) ic2EnergySink).readFromNBT(compound);
 		}
@@ -223,7 +223,7 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
 		{
 	        if ((BasicSink) ic2EnergySink == null)
 			{
-	        	ic2EnergySink = new BasicSink(this,400000,4);
+	        	ic2EnergySink = new BasicSink(this,64000,3);
 			}	
 	        ((BasicSink) ic2EnergySink).writeToNBT(compound);
 		}
@@ -350,24 +350,24 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
     {
     	if (Loader.isModLoaded("ic2"))
 		{
-        	if (((BasicSink) ic2EnergySink).useEnergy(512))
+        	if (((BasicSink) ic2EnergySink).useEnergy(128))
         	{
         		return true;
         	}   
         	else if (energyStorage != null)
         	{
-    			if (energyStorage.getEnergyStored() >= 2048)
+    			if (energyStorage.getEnergyStored() >= 512)
         		{
-        			energyStorage.useEnergy(2048);
+        			energyStorage.useEnergy(512);
         			return true;
         		}                		
         	}
 		}
     	else if (energyStorage != null)
     	{
-			if (energyStorage.getEnergyStored() >= 2048)
+			if (energyStorage.getEnergyStored() >= 512)
     		{
-				energyStorage.useEnergy(2048);
+				energyStorage.useEnergy(512);
     			return true;
     		}                		
     	}
