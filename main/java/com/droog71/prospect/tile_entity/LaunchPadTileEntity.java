@@ -1,4 +1,4 @@
-package com.droog71.prospect.tilentity;
+package com.droog71.prospect.tile_entity;
 
 import com.droog71.prospect.fe.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectBlocks;
@@ -384,24 +384,24 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
     {
     	if (Loader.isModLoaded("ic2"))
 		{
-        	if (((BasicSink) ic2EnergySink).useEnergy(10))
+        	if (((BasicSink) ic2EnergySink).useEnergy(8))
         	{
         		return true;
         	}   
         	else if (energyStorage != null)
         	{
-    			if (energyStorage.getEnergyStored() >= 40)
+    			if (energyStorage.getEnergyStored() >= 32)
         		{
-        			energyStorage.useEnergy(40);
+        			energyStorage.useEnergy(32);
         			return true;
         		}                		
         	}
 		}
     	else if (energyStorage != null)
     	{
-			if (energyStorage.getEnergyStored() >= 40)
+			if (energyStorage.getEnergyStored() >= 32)
     		{
-    			energyStorage.useEnergy(40);
+    			energyStorage.useEnergy(32);
     			return true;
     		}                		
     	}

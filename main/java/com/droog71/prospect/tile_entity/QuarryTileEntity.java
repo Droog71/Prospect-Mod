@@ -1,4 +1,4 @@
-package com.droog71.prospect.tilentity;
+package com.droog71.prospect.tile_entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -487,14 +487,14 @@ public class QuarryTileEntity extends TileEntity implements ITickable
 					}
 					
 					//Speed of quarry scales with the amount of power received.
-					if (getEnergyStored() >= 1024)
-					{
-						useEnergy(1024);
-						quarryTimer += 32;
-					}
-					else if (getEnergyStored() >= 512)
+					if (getEnergyStored() >= 512)
 					{
 						useEnergy(512);
+						quarryTimer += 32;
+					}
+					else if (getEnergyStored() >= 256)
+					{
+						useEnergy(256);
 						quarryTimer += 16;
 					}
 					else if (getEnergyStored() >= 128)

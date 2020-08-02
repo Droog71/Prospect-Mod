@@ -1,7 +1,7 @@
 package com.droog71.prospect.gui;
 
 import com.droog71.prospect.inventory.ReplicatorContainer;
-import com.droog71.prospect.tilentity.ReplicatorTileEntity;
+import com.droog71.prospect.tile_entity.ReplicatorTileEntity;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;

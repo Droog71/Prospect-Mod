@@ -1,7 +1,7 @@
 package com.droog71.prospect.gui;
 
 import com.droog71.prospect.inventory.FabricatorContainer;
-import com.droog71.prospect.tilentity.FabricatorTileEntity;
+import com.droog71.prospect.tile_entity.FabricatorTileEntity;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;

@@ -1,7 +1,7 @@
 package com.droog71.prospect.blocks.energy;
 
 import com.droog71.prospect.blocks.ProspectBlock;
-import com.droog71.prospect.tilentity.TransformerTileEntity;
+import com.droog71.prospect.tile_entity.TransformerTileEntity;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;

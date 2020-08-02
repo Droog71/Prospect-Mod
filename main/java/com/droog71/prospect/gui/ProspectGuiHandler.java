@@ -5,11 +5,12 @@ import com.droog71.prospect.inventory.LaunchPadContainer;
 import com.droog71.prospect.inventory.PressContainer;
 import com.droog71.prospect.inventory.FabricatorContainer;
 import com.droog71.prospect.inventory.ReplicatorContainer;
-import com.droog71.prospect.tilentity.ExtruderTileEntity;
-import com.droog71.prospect.tilentity.LaunchPadTileEntity;
-import com.droog71.prospect.tilentity.PressTileEntity;
-import com.droog71.prospect.tilentity.FabricatorTileEntity;
-import com.droog71.prospect.tilentity.ReplicatorTileEntity;
+import com.droog71.prospect.tile_entity.ExtruderTileEntity;
+import com.droog71.prospect.tile_entity.FabricatorTileEntity;
+import com.droog71.prospect.tile_entity.LaunchPadTileEntity;
+import com.droog71.prospect.tile_entity.PressTileEntity;
+import com.droog71.prospect.tile_entity.ReplicatorTileEntity;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

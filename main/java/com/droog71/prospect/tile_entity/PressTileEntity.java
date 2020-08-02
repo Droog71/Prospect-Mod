@@ -1,4 +1,4 @@
-package com.droog71.prospect.tilentity;
+package com.droog71.prospect.tile_entity;
 
 import com.droog71.prospect.fe.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectItems;

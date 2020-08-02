@@ -1,7 +1,7 @@
 package com.droog71.prospect.gui;
 
 import com.droog71.prospect.inventory.PressContainer;
-import com.droog71.prospect.tilentity.PressTileEntity;
+import com.droog71.prospect.tile_entity.PressTileEntity;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;

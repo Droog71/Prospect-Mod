@@ -1,4 +1,4 @@
-package com.droog71.prospect.tilentity;
+package com.droog71.prospect.tile_entity;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -152,20 +152,20 @@ public class PurifierTileEntity extends TileEntity implements ITickable
 	
 	private boolean useEnergy()
     {
-		if (energyStorage.getEnergyStored() >= 40)
+		if (energyStorage.getEnergyStored() >= 32)
 		{
 			if (Loader.isModLoaded("ic2"))
     		{
 				((BasicSink) ic2EnergySink).setEnergyStored(0);
     			((BasicSink) ic2EnergySink).setCapacity(0);  			
     		}
-			energyStorage.useEnergy(40);
+			energyStorage.useEnergy(32);
 			return true;
 		}  
 		else if (Loader.isModLoaded("ic2"))
 		{
 			((BasicSink) ic2EnergySink).setCapacity(5000);
-        	if (((BasicSink) ic2EnergySink).useEnergy(10))
+        	if (((BasicSink) ic2EnergySink).useEnergy(8))
         	{
         		return true;
         	}   

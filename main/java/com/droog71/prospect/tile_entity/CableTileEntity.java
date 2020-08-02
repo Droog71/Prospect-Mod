@@ -1,4 +1,4 @@
-package com.droog71.prospect.tilentity;
+package com.droog71.prospect.tile_entity;
 
 import com.droog71.prospect.fe.ProspectEnergyStorage;
 import net.minecraft.util.EnumFacing;
@@ -9,34 +9,28 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-public class TransformerTileEntity extends TileEntity implements ITickable
+public class CableTileEntity extends TileEntity implements ITickable
 {
 	private ProspectEnergyStorage energyStorage = new ProspectEnergyStorage();
-	private int maxReceive;
-	private int capacity;
 	private int rating;
-	private int stepDownRating;
-	private int stepDownMaxReceive;
+	private int capacity;
 		
-	public TransformerTileEntity()
+	public CableTileEntity()
 	{
 		
 	}
 	
-	public TransformerTileEntity(int maxReceive, int capacity, int rating)
-	{		
-		this.maxReceive = maxReceive;
-		this.capacity = capacity;
+	public CableTileEntity(int rating, int capacity)
+	{			
 		this.rating = rating;
+		this.capacity = capacity;
 	}
 	
 	@Override
     public void onLoad() 
-	{		
-		energyStorage.maxReceive = maxReceive;	
-		energyStorage.capacity = capacity;
-		stepDownMaxReceive = maxReceive;
-		stepDownRating = rating;
+	{
+		energyStorage.maxReceive = rating;
+		energyStorage.capacity = capacity;	
 	}
 	
 	@Override
@@ -47,23 +41,16 @@ public class TransformerTileEntity extends TileEntity implements ITickable
 	
     @Override
     public void readFromNBT(NBTTagCompound tag) 
-    {       
-        maxReceive = tag.getInteger("maxReceive");
-        capacity = tag.getInteger("capacity");
+    {
         rating = tag.getInteger("rating");
-        stepDownMaxReceive = tag.getInteger("stepDownMaxReceive");
-        stepDownRating = tag.getInteger("stepDownRating");       
+        capacity = tag.getInteger("capacity");
     }
  
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound tag) 
     {
-        
-        tag.setInteger("maxReceive", maxReceive);
-        tag.setInteger("capacity", capacity);
         tag.setInteger("rating", rating);
-        tag.setInteger("stepDownMaxReceive", stepDownMaxReceive);
-        tag.setInteger("stepDownRating", stepDownRating); 
+        tag.setInteger("capacity", capacity);
         return tag;
     }
 	
@@ -78,17 +65,6 @@ public class TransformerTileEntity extends TileEntity implements ITickable
             }
 			else
 			{
-				if (world.isBlockPowered(pos))
-				{
-					energyStorage.maxReceive = stepDownRating;
-					rating = stepDownMaxReceive;
-				}
-				else
-				{
-					energyStorage.maxReceive = stepDownMaxReceive;
-					rating = stepDownRating;
-				}
-				
 				for (IEnergyStorage sink : energyStorage.receivers(world, pos))
 				{
 					energyStorage.giveEnergy(energyStorage, sink, rating);

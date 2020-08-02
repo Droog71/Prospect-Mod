@@ -5,7 +5,8 @@ import java.util.Random;
 import com.droog71.prospect.Prospect;
 import com.droog71.prospect.blocks.ProspectBlockContainer;
 import com.droog71.prospect.init.ProspectBlocks;
-import com.droog71.prospect.tilentity.LaunchPadTileEntity;
+import com.droog71.prospect.tile_entity.LaunchPadTileEntity;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;

@@ -1,19 +1,17 @@
-package com.droog71.prospect.tilentity;
+package com.droog71.prospect.tile_entity;
 
 import com.droog71.prospect.fe.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
-import com.droog71.prospect.inventory.ReplicatorContainer;
+import com.droog71.prospect.inventory.ExtruderContainer;
+
 import ic2.api.energy.prefab.BasicSink;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -21,6 +19,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.Loader;
@@ -28,21 +27,18 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class ReplicatorTileEntity extends TileEntity implements ITickable, ISidedInventory
+public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedInventory
 {
     private static final int[] SLOTS_TOP = new int[] {0};
     private static final int[] SLOTS_BOTTOM = new int[] {2, 1};
     private static final int[] SLOTS_SIDES = new int[] {1};
-    private NonNullList<ItemStack> replicatorItemStacks = NonNullList.<ItemStack>withSize(3, ItemStack.EMPTY);
+    private NonNullList<ItemStack> extruderItemStacks = NonNullList.<ItemStack>withSize(3, ItemStack.EMPTY);
     private int energyStored;
     private int energyCapacity;
-    private int replicatorSpendTime;
-    private int currentCreditSpendTime;
-    private int replicateTime;
-    private int totalreplicateTime;
+    private int extrudeTime;
+    private int totalextrudeTime;
+    private int effectsTimer = 250;
     private Object ic2EnergySink;
-	private int effectsTimer;
-	private int itemTier;
 	private ProspectEnergyStorage energyStorage = new ProspectEnergyStorage();
     
 	@Override
@@ -52,12 +48,12 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 		{
 			if (((BasicSink) ic2EnergySink == null))
 			{
-        		ic2EnergySink = new BasicSink(this,256000,4);       		
-			}	
+				ic2EnergySink = new BasicSink(this,1000,1);
+			}
 			((BasicSink) ic2EnergySink).onLoad(); // notify the energy sink
-		}
-		energyStorage.capacity = 80000;
-		energyStorage.maxReceive = 16000;
+		}	
+		energyStorage.capacity = 5000;
+		energyStorage.maxReceive = 1000;
 	}
 	 
 	@Override
@@ -65,12 +61,12 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     {
 		if (Loader.isModLoaded("ic2"))
 		{
-			if (((BasicSink) ic2EnergySink) != null)
+			if (((BasicSink) ic2EnergySink != null))
 			{
 				((BasicSink) ic2EnergySink).invalidate(); // notify the energy sink
-			}	
-			super.invalidate(); // this is important for mc!
+			}
 		}
+		super.invalidate(); // this is important for mc!
     }
  
     @Override
@@ -78,34 +74,32 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     {
     	if (Loader.isModLoaded("ic2"))
 		{
-    		if (((BasicSink) ic2EnergySink) != null)
+    		if (((BasicSink) ic2EnergySink != null))
 			{
     			((BasicSink) ic2EnergySink).onChunkUnload(); // notify the energy sink
 			}
 		}
     }
     
-	
     /**
      * Returns the number of slots in the inventory.
      */
     @Override
 	public int getSizeInventory()
     {
-        return replicatorItemStacks.size();
+        return extruderItemStacks.size();
     }
 
     @Override
 	public boolean isEmpty()
     {
-        for (ItemStack itemstack : replicatorItemStacks)
+        for (ItemStack itemstack : extruderItemStacks)
         {
             if (!itemstack.isEmpty())
             {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -115,7 +109,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     @Override
 	public ItemStack getStackInSlot(int index)
     {
-        return replicatorItemStacks.get(index);
+        return extruderItemStacks.get(index);
     }
 
     /**
@@ -124,7 +118,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     @Override
 	public ItemStack decrStackSize(int index, int count)
     {
-        return ItemStackHelper.getAndSplit(replicatorItemStacks, index, count);
+        return ItemStackHelper.getAndSplit(extruderItemStacks, index, count);
     }
 
     /**
@@ -133,7 +127,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     @Override
 	public ItemStack removeStackFromSlot(int index)
     {
-        return ItemStackHelper.getAndRemove(replicatorItemStacks, index);
+        return ItemStackHelper.getAndRemove(extruderItemStacks, index);
     }
 
     /**
@@ -142,9 +136,9 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     @Override
 	public void setInventorySlotContents(int index, ItemStack stack)
     {
-        ItemStack itemstack = replicatorItemStacks.get(index);
+        ItemStack itemstack = extruderItemStacks.get(index);
         boolean flag = !stack.isEmpty() && stack.isItemEqual(itemstack) && ItemStack.areItemStackTagsEqual(stack, itemstack);
-        replicatorItemStacks.set(index, stack);
+        extruderItemStacks.set(index, stack);
 
         if (stack.getCount() > getInventoryStackLimit())
         {
@@ -153,8 +147,8 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 
         if (index == 0 && !flag)
         {
-            totalreplicateTime = getreplicateTime();
-            replicateTime = 0;
+            totalextrudeTime = getextrudeTime(stack);
+            extrudeTime = 0;
             markDirty();
         }
     }
@@ -165,7 +159,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     @Override
 	public String getName()
     {
-        return "Replicator";
+        return "Extruder";
     }
 
     /**
@@ -185,20 +179,18 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     @Override
 	public void readFromNBT(NBTTagCompound compound)
     {
-        super.readFromNBT(compound);
-        replicatorItemStacks = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
-        ItemStackHelper.loadAllItems(compound, replicatorItemStacks);
+        super.readFromNBT(compound);       
+        extruderItemStacks = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
+        ItemStackHelper.loadAllItems(compound, extruderItemStacks);
         energyStored = compound.getInteger("EnergyStored");
-        replicatorSpendTime = compound.getInteger("SpendTime");
-        replicateTime = compound.getInteger("replicateTime");
-        totalreplicateTime = compound.getInteger("replicateTimeTotal");
-        currentCreditSpendTime = getCreditSpendTime();
-        energyCapacity = compound.getInteger("EnergyCapacity");
+        extrudeTime = compound.getInteger("extrudeTime");
+        totalextrudeTime = compound.getInteger("TotalextrudeTime");        
+        energyCapacity = compound.getInteger("EnergyCapacity");  
         if (Loader.isModLoaded("ic2"))
 		{
 	        if ((BasicSink) ic2EnergySink == null)
 			{
-	        	ic2EnergySink = new BasicSink(this,256000,4);
+				ic2EnergySink = new BasicSink(this,1000,1);
 			}	
 	        ((BasicSink) ic2EnergySink).readFromNBT(compound);
 		}
@@ -210,15 +202,14 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
         super.writeToNBT(compound);       
         compound.setInteger("EnergyStored", (short)energyStored);
         compound.setInteger("EnergyCapacity", (short)energyCapacity);
-        compound.setInteger("SpendTime", (short)replicatorSpendTime);
-        compound.setInteger("replicateTime", (short)replicateTime);
-        compound.setInteger("replicateTimeTotal", (short)totalreplicateTime);
-        ItemStackHelper.saveAllItems(compound, replicatorItemStacks);   
+        compound.setInteger("extrudeTime", (short)extrudeTime);
+        compound.setInteger("TotalextrudeTime", (short)totalextrudeTime);
+        ItemStackHelper.saveAllItems(compound, extruderItemStacks);
         if (Loader.isModLoaded("ic2"))
 		{
 	        if ((BasicSink) ic2EnergySink == null)
 			{
-	        	ic2EnergySink = new BasicSink(this,256000,4); 
+				ic2EnergySink = new BasicSink(this,1000,1);
 			}	
 	        ((BasicSink) ic2EnergySink).writeToNBT(compound);
 		}
@@ -259,17 +250,6 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     @SideOnly(Side.CLIENT)
     public static boolean isEnergized(IInventory inventory)
     {
-        return inventory.getField(5) > 0;
-    }
-    
-    public boolean isReplicating()
-    {
-        return replicatorSpendTime > 0;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static boolean isReplicating(IInventory inventory)
-    {
         return inventory.getField(0) > 0;
     }
 
@@ -278,66 +258,58 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
      */
     @Override
 	public void update()
-    {
-        boolean flag1 = false;
-
+    {                 
         if (!world.isRemote)
         {
-        	if (energyStorage.overloaded)
+            if (energyStorage.overloaded)
             {
-        		energyStorage.explode(world,pos);
+            	energyStorage.explode(world,pos);
             }
-			else
-			{
-	        	updateEnergy();
-	        	
-	            ItemStack itemstack = replicatorItemStacks.get(1);
-	
-	            if (!itemstack.isEmpty() && !replicatorItemStacks.get(0).isEmpty())
-	            {
-	                if (isEnergized() && canReplicate())
-	                {
-	                	if (useEnergy())
-	                	{
-	                		--replicatorSpendTime;
-	                		if (replicatorSpendTime <= 0)
-	                		{
-	                            itemstack.shrink(1);
-	                            replicatorSpendTime = getCreditSpendTime();
-	                            flag1 = true;
-	                		}	                		
-                           
-		                    ++replicateTime;
-		                    if (replicateTime == totalreplicateTime)
-		                    {
-		                        replicateTime = 0;
-		                        totalreplicateTime = getreplicateTime();
-		                        replicateItem();
-		                        flag1 = true;
-		                    }
-		                    
-		                    effectsTimer++;
-		    				if (effectsTimer > 40)
-		    				{
-		    					world.playSound(null, pos, ProspectSounds.replicatorSoundEvent,  SoundCategory.BLOCKS, 0.25f, 1);
-		    					effectsTimer = 0;
-		    				}
-	                	}
-	                }
-	                else
-	                {
-	                    replicateTime = 0;
-	                }
-	            }
-	            
-	            if (flag1)
-	            {
-	                markDirty();
-	            }
-			}
+            else
+            {
+            	updateEnergy();            	
+            	if (isEnergized())
+                {            	
+                    if (canExtrude())
+                    {
+                    	if (useEnergy())
+                    	{
+                    		doWork();
+                    	}
+                    }
+                    else
+                    {
+                        extrudeTime = 0;
+                    }
+                }
+                else if (!isEnergized() && extrudeTime > 0)
+                {
+                    extrudeTime = MathHelper.clamp(extrudeTime - 2, 0, totalextrudeTime);
+                }
+            }                   
+        }       
+    }
+    
+    private void doWork()
+    {
+    	boolean flag1 = false;   
+    	++extrudeTime;
+    	
+        if (extrudeTime == totalextrudeTime)
+        {
+            extrudeTime = 0;
+            totalextrudeTime = getextrudeTime(extruderItemStacks.get(0));
+            extrudeItem();
+            flag1 = true;
         }
         
-        if (flag1)
+        effectsTimer++;
+		if (effectsTimer > 200)
+		{	
+			world.playSound(null, pos, ProspectSounds.extruderSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
+			effectsTimer = 0;
+		}
+		if (flag1)
         {
             markDirty();
         }
@@ -359,7 +331,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	{
     		if (Loader.isModLoaded("ic2"))
     		{
-    			((BasicSink) ic2EnergySink).setCapacity(256000);
+    			((BasicSink) ic2EnergySink).setCapacity(1000);
         		if (((BasicSink) ic2EnergySink).getEnergyStored() > 0)
         		{
         			energyStored = (int) ((BasicSink) ic2EnergySink).getEnergyStored();
@@ -373,211 +345,114 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     {
     	if (Loader.isModLoaded("ic2"))
 		{
-        	if (((BasicSink) ic2EnergySink).useEnergy(512))
+        	if (((BasicSink) ic2EnergySink).useEnergy(2))
         	{
         		return true;
         	}   
         	else if (energyStorage != null)
         	{
-    			if (energyStorage.getEnergyStored() >= 2048)
+    			if (energyStorage.getEnergyStored() >= 8)
         		{
-        			energyStorage.useEnergy(2048);
+        			energyStorage.useEnergy(8);
         			return true;
         		}                		
         	}
 		}
     	else if (energyStorage != null)
     	{
-			if (energyStorage.getEnergyStored() >= 2048)
+			if (energyStorage.getEnergyStored() >= 8)
     		{
-				energyStorage.useEnergy(2048);
+    			energyStorage.useEnergy(8);
     			return true;
     		}                		
     	}
     	return false;
     }
     
-    public int getreplicateTime()
+    public int getextrudeTime(ItemStack stack) //Could be used for varying extrude time for different ingots.
     {
-    	if (itemTier == 5)
-    	{
-    		return 200;
-    	}
-    	if (itemTier == 4)
-    	{
-    		return 150;
-    	}
-    	return 50;
+        return 50;
     }
 
-    private boolean invalidReplicatorItem(ItemStack stack)
+    private boolean isCopperIngot(ItemStack stack)
     {
-    	Item i = stack.getItem();
-    	if (i == Items.ENDER_PEARL || i == Items.GHAST_TEAR || i == Items.BLAZE_POWDER || i == Items.NETHER_WART)
-    	{
-    		itemTier = 5;
-    		return false;
-    	}
-    	if (i == Items.DIAMOND || i == Items.EMERALD)
-    	{
-    		itemTier = 4;
-    		return false;
-    	}
-    	if (i == Items.IRON_INGOT || i == Items.GOLD_INGOT || i == Items.REDSTONE)
-    	{
-    		itemTier = 3;
-    		return false;
-    	}
-    	if (i == Items.GLOWSTONE_DUST || i == Items.CLAY_BALL || i == Items.QUARTZ || i == Items.COAL || i == Items.STRING)
-    	{
-    		itemTier = 2;
-    		return false;
-    	}
-    	if (i == Item.getItemFromBlock(Blocks.PLANKS) || i == Item.getItemFromBlock(Blocks.COBBLESTONE) || i == Item.getItemFromBlock(Blocks.WOOL))
-    	{
-    		itemTier = 1;
-    		return false;
-    	}
     	NonNullList<ItemStack> copper = OreDictionary.getOres("ingotCopper");
     	for (ItemStack s : copper)
-    	{ 		
+    	{ 		   	
     		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
     		{
     			if (s.getMetadata() == stack.getMetadata())
     			{
-    				itemTier = 3;
-    				return false;
-    			}			
-    		}
-    	}
-    	NonNullList<ItemStack> tin = OreDictionary.getOres("ingotTin");
-    	for (ItemStack s : tin)
-    	{
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
+    				return true;
     			}
     		}
     	}
-    	NonNullList<ItemStack> silver = OreDictionary.getOres("ingotSilver");
-    	for (ItemStack s : silver)
-    	{
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}
-    		}
-    	}
-    	NonNullList<ItemStack> lead = OreDictionary.getOres("ingotLead");
-    	for (ItemStack s : lead)
-    	{
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}
-    		}
-    	}
-    	NonNullList<ItemStack> aluminum = OreDictionary.getOres("ingotAluminum");
-    	for (ItemStack s : aluminum)
-    	{
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}
-    		}
-    	}
-    	NonNullList<ItemStack> silicon = OreDictionary.getOres("silicon");
-    	for (ItemStack s : silicon)
-    	{
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}
-    		}
-    	}
-    	System.out.println("Invalid replicator item!");
-    	return true;
+    	return false;
     }
     
     /**
-     * Returns true if the transmitter can transmit an item, i.e. has a source item, destination stack isn't full, etc.
+     * Returns true if the extruder can extrude an item, i.e. has a source item, destination stack isn't full, etc.
      */
-    private boolean canReplicate()
-    {  	
-        if (replicatorItemStacks.get(0).isEmpty() || invalidReplicatorItem(replicatorItemStacks.get(0)))
+    private boolean canExtrude()
+    {
+        if (extruderItemStacks.get(0).isEmpty() || !isCopperIngot(extruderItemStacks.get(0)))
         {
-        	return false;
+            return false;
         }
         else
         {
-        	ItemStack input = replicatorItemStacks.get(0);
-            ItemStack output = replicatorItemStacks.get(2);
+            ItemStack itemstack = new ItemStack(ProspectItems.copper_wire,6);
 
-            if (output.isEmpty())
-            {
-                return true;
-            }
-            else if (!output.isItemEqual(input))
+            if (itemstack.isEmpty())
             {
                 return false;
             }
             else
             {
-                return output.getCount() + input.getCount() <= output.getMaxStackSize();
+                ItemStack itemstack1 = extruderItemStacks.get(2);
+
+                if (itemstack1.isEmpty())
+                {
+                    return true;
+                }
+                else if (!itemstack1.isItemEqual(itemstack))
+                {
+                    return false;
+                }
+                else if (itemstack1.getCount() + itemstack.getCount() <= getInventoryStackLimit() && itemstack1.getCount() + itemstack.getCount() <= itemstack1.getMaxStackSize())  // Forge fix: respect stack sizes
+                {
+                    return true;
+                }
+                else
+                {
+                    return itemstack1.getCount() + itemstack.getCount() <= itemstack.getMaxStackSize(); // Forge fix: respect stack sizes
+                }
             }
         }
     }
 
-    public void replicateItem()
+    /**
+     * Turn one item from the extruder source stack into the appropriate resulting item in the extruder result stack
+     */
+    public void extrudeItem()
     {
-        if (canReplicate())
-        {           
-            ItemStack itemstack = replicatorItemStacks.get(0);
-            ItemStack itemstack1 = itemstack.copy();
-            ItemStack itemstack2 = replicatorItemStacks.get(2);
+        if (canExtrude())
+        {
+            ItemStack itemstack = extruderItemStacks.get(0);
+            ItemStack itemstack1 = new ItemStack(ProspectItems.copper_wire,6);
+            ItemStack itemstack2 = extruderItemStacks.get(2);
 
             if (itemstack2.isEmpty())
             {
-                replicatorItemStacks.set(2, itemstack1.copy());
+                extruderItemStacks.set(2, itemstack1.copy());
             }
             else if (itemstack2.getItem() == itemstack1.getItem())
             {
                 itemstack2.grow(itemstack1.getCount());
             }
+
+            itemstack.shrink(1);
         }
-    }
-
-    public int getCreditSpendTime() //Could eventually be used for differing denominations of currency.
-    {
-    	if (itemTier == 5)
-    	{
-    		return 10;
-    	}
-    	if (itemTier == 4)
-    	{
-    		return 15;
-    	}
-    	return 50;
-    }
-
-    public static boolean isCredit(ItemStack stack)
-    {
-        return stack.getItem() == ProspectItems.credit;
     }
 
     /**
@@ -599,11 +474,13 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     @Override
 	public void openInventory(EntityPlayer player)
     {
+    	
     }
 
     @Override
 	public void closeInventory(EntityPlayer player)
     {
+    	
     }
 
     /**
@@ -613,17 +490,13 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     @Override
 	public boolean isItemValidForSlot(int index, ItemStack stack)
     {
-        if (index == 2)
-        {
-            return false;
-        }
-        else if (index != 1)
+        if (index == 0)
         {
             return true;
         }
         else
         {
-            return stack.getItem() == ProspectItems.credit;
+        	return false;
         }
     }
 
@@ -655,11 +528,6 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     @Override
 	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
     {
-        if (direction == EnumFacing.DOWN && index == 1)
-        {
-        	return false;
-        }
-
         return true;
     }
 
@@ -670,7 +538,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 
     public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
     {
-        return new ReplicatorContainer(playerInventory, this);
+        return new ExtruderContainer(playerInventory, this);
     }
 
     @Override
@@ -679,17 +547,13 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
         switch (id)
         {
             case 0:
-                return replicatorSpendTime;
-            case 1:
-                return currentCreditSpendTime;
-            case 2:
-                return replicateTime;
-            case 3:
-                return totalreplicateTime;
-            case 4:
-                return energyCapacity;
-            case 5:
                 return energyStored;
+            case 1:
+                return energyCapacity;
+            case 2:
+                return extrudeTime;
+            case 3:
+                return totalextrudeTime;
             default:
                 return 0;
         }
@@ -701,36 +565,29 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
         switch (id)
         {
             case 0:
-                replicatorSpendTime = value;
+                energyStored = value;
                 break;
             case 1:
-                currentCreditSpendTime = value;
+                energyCapacity = value;
                 break;
             case 2:
-                replicateTime = value;
+                extrudeTime = value;
                 break;
             case 3:
-                totalreplicateTime = value;
-                break;
-            case 4:
-            	energyCapacity = value;
-                break;
-            case 5:
-            	energyStored = value;
-                break;
+                totalextrudeTime = value;
         }
     }
 
     @Override
 	public int getFieldCount()
     {
-        return 6;
+        return 4;
     }
 
     @Override
 	public void clear()
     {
-        replicatorItemStacks.clear();
+        extruderItemStacks.clear();
     }
 
     net.minecraftforge.items.IItemHandler handlerTop = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.UP);

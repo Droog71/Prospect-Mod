@@ -1,4 +1,4 @@
-package com.droog71.prospect.tilentity;
+package com.droog71.prospect.tile_entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -350,24 +350,24 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
     {
     	if (Loader.isModLoaded("ic2"))
 		{
-        	if (((BasicSink) ic2EnergySink).useEnergy(128))
+        	if (((BasicSink) ic2EnergySink).useEnergy(64))
         	{
         		return true;
         	}   
         	else if (energyStorage != null)
         	{
-    			if (energyStorage.getEnergyStored() >= 512)
+    			if (energyStorage.getEnergyStored() >= 256)
         		{
-        			energyStorage.useEnergy(512);
+        			energyStorage.useEnergy(256);
         			return true;
         		}                		
         	}
 		}
     	else if (energyStorage != null)
     	{
-			if (energyStorage.getEnergyStored() >= 512)
+			if (energyStorage.getEnergyStored() >= 256)
     		{
-				energyStorage.useEnergy(512);
+				energyStorage.useEnergy(256);
     			return true;
     		}                		
     	}

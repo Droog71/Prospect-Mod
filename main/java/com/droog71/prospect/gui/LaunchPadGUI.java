@@ -1,7 +1,8 @@
 package com.droog71.prospect.gui;
 
 import com.droog71.prospect.inventory.LaunchPadContainer;
-import com.droog71.prospect.tilentity.LaunchPadTileEntity;
+import com.droog71.prospect.tile_entity.LaunchPadTileEntity;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;

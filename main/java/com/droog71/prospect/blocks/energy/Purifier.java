@@ -1,7 +1,8 @@
 package com.droog71.prospect.blocks.energy;
 
 import com.droog71.prospect.blocks.ProspectBlock;
-import com.droog71.prospect.tilentity.PurifierTileEntity;
+import com.droog71.prospect.tile_entity.PurifierTileEntity;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
