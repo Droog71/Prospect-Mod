@@ -22,10 +22,6 @@ public class ProspectGuiHandler implements IGuiHandler
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) 
 	{
-		if (ID == 0)
-		{
-			return null;
-		}
 		if (ID == 1)
 		{
 			return new FabricatorContainer(player.inventory, (FabricatorTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
@@ -52,13 +48,9 @@ public class ProspectGuiHandler implements IGuiHandler
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) 
 	{
-		if (ID == 0)
-		{
-			return null;
-		}
 		if (ID == 1)
 		{
-			return new PrinterGUI(player.inventory, (FabricatorTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
+			return new FabricatorGUI(player.inventory, (FabricatorTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
 		}
 		if (ID == 2)
 		{

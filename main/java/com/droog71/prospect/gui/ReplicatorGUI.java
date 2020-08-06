@@ -62,22 +62,22 @@ public class ReplicatorGUI extends GuiContainer
 
         if (ReplicatorTileEntity.isEnergized(this.tileReplicator))
         {
-            int k = this.getBurnLeftScaled(13);
+            int k = this.getPowerScaled(13);
             this.drawTexturedModalRect(i + 56, j + 36 + 12 - k, 176, 12 - k, 14, k + 1);
         }
 
-        int l = this.getCookProgressScaled(24);
+        int l = this.getReplicationProgressScaled(24);
         this.drawTexturedModalRect(i + 79, j + 34, 176, 14, l + 1, 16);
     }
 
-    private int getCookProgressScaled(int pixels)
+    private int getReplicationProgressScaled(int pixels)
     {
         int i = this.tileReplicator.getField(2);
         int j = this.tileReplicator.getField(3);
         return j != 0 && i != 0 ? i * pixels / j : 0;
     }
 
-    private int getBurnLeftScaled(int pixels)
+    private int getPowerScaled(int pixels)
     {
         int i = this.tileReplicator.getField(4);
 

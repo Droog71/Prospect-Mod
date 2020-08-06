@@ -1,9 +1,11 @@
 package com.droog71.prospect.tile_entity;
 
-import com.droog71.prospect.fe.ProspectEnergyStorage;
+import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.ReplicatorContainer;
+import com.droog71.prospect.items.ReplicatorItems;
+
 import ic2.api.energy.prefab.BasicSink;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -34,16 +36,17 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     private static final int[] SLOTS_BOTTOM = new int[] {2, 1};
     private static final int[] SLOTS_SIDES = new int[] {1};
     private NonNullList<ItemStack> replicatorItemStacks = NonNullList.<ItemStack>withSize(3, ItemStack.EMPTY);
+    private ReplicatorItems replicatorItems;
+    private ProspectEnergyStorage energyStorage = new ProspectEnergyStorage();
+    private Object ic2EnergySink;
     private int energyStored;
     private int energyCapacity;
     private int replicatorSpendTime;
     private int currentCreditSpendTime;
     private int replicateTime;
     private int totalreplicateTime;
-    private Object ic2EnergySink;
 	private int effectsTimer;
-	private int itemTier;
-	private ProspectEnergyStorage energyStorage = new ProspectEnergyStorage();
+	public int itemTier;
     
 	@Override
     public void onLoad() 
@@ -409,117 +412,13 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	}
     	return 50;
     }
-
-    private boolean invalidReplicatorItem(ItemStack stack)
-    {
-    	Item i = stack.getItem();
-    	if (i == Items.ENDER_PEARL || i == Items.GHAST_TEAR || i == Items.BLAZE_POWDER || i == Items.NETHER_WART)
-    	{
-    		itemTier = 5;
-    		return false;
-    	}
-    	if (i == Items.DIAMOND || i == Items.EMERALD)
-    	{
-    		itemTier = 4;
-    		return false;
-    	}
-    	if (i == Items.IRON_INGOT || i == Items.GOLD_INGOT || i == Items.REDSTONE)
-    	{
-    		itemTier = 3;
-    		return false;
-    	}
-    	if (i == Items.GLOWSTONE_DUST || i == Items.CLAY_BALL || i == Items.QUARTZ || i == Items.COAL || i == Items.STRING)
-    	{
-    		itemTier = 2;
-    		return false;
-    	}
-    	if (i == Item.getItemFromBlock(Blocks.PLANKS) || i == Item.getItemFromBlock(Blocks.COBBLESTONE) || i == Item.getItemFromBlock(Blocks.WOOL))
-    	{
-    		itemTier = 1;
-    		return false;
-    	}
-    	NonNullList<ItemStack> copper = OreDictionary.getOres("ingotCopper");
-    	for (ItemStack s : copper)
-    	{ 		
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}			
-    		}
-    	}
-    	NonNullList<ItemStack> tin = OreDictionary.getOres("ingotTin");
-    	for (ItemStack s : tin)
-    	{
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}
-    		}
-    	}
-    	NonNullList<ItemStack> silver = OreDictionary.getOres("ingotSilver");
-    	for (ItemStack s : silver)
-    	{
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}
-    		}
-    	}
-    	NonNullList<ItemStack> lead = OreDictionary.getOres("ingotLead");
-    	for (ItemStack s : lead)
-    	{
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}
-    		}
-    	}
-    	NonNullList<ItemStack> aluminum = OreDictionary.getOres("ingotAluminum");
-    	for (ItemStack s : aluminum)
-    	{
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}
-    		}
-    	}
-    	NonNullList<ItemStack> silicon = OreDictionary.getOres("silicon");
-    	for (ItemStack s : silicon)
-    	{
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}
-    		}
-    	}
-    	System.out.println("Invalid replicator item!");
-    	return true;
-    }
     
     /**
      * Returns true if the transmitter can transmit an item, i.e. has a source item, destination stack isn't full, etc.
      */
     private boolean canReplicate()
     {  	
-        if (replicatorItemStacks.get(0).isEmpty() || invalidReplicatorItem(replicatorItemStacks.get(0)))
+        if (replicatorItemStacks.get(0).isEmpty() || replicatorItems.replicatorItem(this,replicatorItemStacks.get(0)))
         {
         	return false;
         }

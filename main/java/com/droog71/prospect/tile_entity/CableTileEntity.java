@@ -1,11 +1,13 @@
 package com.droog71.prospect.tile_entity;
 
-import com.droog71.prospect.fe.ProspectEnergyStorage;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+
+import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 

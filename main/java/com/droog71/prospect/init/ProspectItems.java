@@ -20,7 +20,6 @@ public class ProspectItems
 	public static Item suit;
 	public static Item pants;
 	public static Item boots;
-	
 	public static Item filter;
 	public static Item suit_material;	
 	public static Item gem;
@@ -103,11 +102,13 @@ public class ProspectItems
 	
 	public static void init() 
 	{		
+		// Armor
 		helmet = new ProspectArmor("helmet",Prospect.tabProspect,ProspectArmor.PROSPECTOR_ARMOR, 0, EntityEquipmentSlot.HEAD);
 		suit = new ProspectArmor("suit",Prospect.tabProspect,ProspectArmor.PROSPECTOR_ARMOR, 0, EntityEquipmentSlot.CHEST);
 		pants = new ProspectArmor("pants",Prospect.tabProspect,ProspectArmor.PROSPECTOR_ARMOR, 1, EntityEquipmentSlot.LEGS);
 		boots = new ProspectArmor("boots",Prospect.tabProspect,ProspectArmor.PROSPECTOR_ARMOR, 0, EntityEquipmentSlot.FEET);
 		
+		// Items
 		filter = new SporeFilter("filter").setMaxDamage(100000).setCreativeTab(Prospect.tabProspect).setMaxStackSize(1);
 		gem = new ProspectItem("gem").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);		
 		credit = new ProspectItem("credit").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);	
@@ -141,7 +142,8 @@ public class ProspectItems
 		lead_plate = new ProspectItem("lead_plate").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		aluminum_plate = new ProspectItem("aluminum_plate").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		silicon = new ProspectItem("silicon").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
-				
+			
+		// Schematics
 		boots_schematic = new Schematic("boots_schematic",0).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		pants_schematic = new Schematic("pants_schematic",1).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		suit_schematic = new Schematic("suit_schematic",2).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
@@ -190,12 +192,14 @@ public class ProspectItems
 	
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event) 
-	{		
+	{	
+		// Armor
 		event.getRegistry().registerAll(helmet);
 		event.getRegistry().registerAll(suit);
 		event.getRegistry().registerAll(pants);
 		event.getRegistry().registerAll(boots);	
 		
+		// Items
 		event.getRegistry().registerAll(filter);
 		event.getRegistry().registerAll(gem);
 		event.getRegistry().registerAll(credit);
@@ -230,6 +234,7 @@ public class ProspectItems
 		event.getRegistry().registerAll(aluminum_plate);
 		event.getRegistry().registerAll(silicon);
 		
+		// Schematics
 		event.getRegistry().registerAll(purifier_schematic);
 		event.getRegistry().registerAll(launch_pad_schematic);
 		event.getRegistry().registerAll(fabricator_schematic);
@@ -271,7 +276,6 @@ public class ProspectItems
 		event.getRegistry().registerAll(iv_coil_schematic);
 		event.getRegistry().registerAll(circuit_schematic);
 		event.getRegistry().registerAll(prepared_circuit_schematic);
-		
 		event.getRegistry().registerAll(chest_schematic);
 		event.getRegistry().registerAll(hopper_schematic);
 		event.getRegistry().registerAll(piston_schematic);
@@ -280,12 +284,14 @@ public class ProspectItems
 	@SubscribeEvent
 	public static void registerRenders(ModelRegistryEvent event) 
 	{
+		// Armor
 		registerRender(filter);
 		registerRender(helmet);
 		registerRender(suit);
 		registerRender(pants);
 		registerRender(boots);	
 		
+		// Items
 		registerRender(gem);
 		registerRender(credit);
 		registerRender(suit_material);
@@ -319,6 +325,7 @@ public class ProspectItems
 		registerRender(aluminum_plate);
 		registerRender(silicon);
 			
+		// Schematics
 		registerRender(helmet_schematic);
 		registerRender(suit_schematic);
 		registerRender(pants_schematic);
@@ -360,7 +367,6 @@ public class ProspectItems
 		registerRender(iv_coil_schematic);
 		registerRender(circuit_schematic);
 		registerRender(prepared_circuit_schematic);		
-		
 		registerRender(chest_schematic);
 		registerRender(hopper_schematic);
 		registerRender(piston_schematic);

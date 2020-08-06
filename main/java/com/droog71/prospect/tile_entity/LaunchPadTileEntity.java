@@ -1,6 +1,6 @@
 package com.droog71.prospect.tile_entity;
 
-import com.droog71.prospect.fe.ProspectEnergyStorage;
+import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectBlocks;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
@@ -283,77 +283,67 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
                     {
                     	if (useEnergy())
                     	{        
-                    		if (capsuleYpos == 0)
-                    		{
-                    			WorldServer w = (WorldServer) world;
-                    			w.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 1, null);
-                    	    	w.spawnParticle(EnumParticleTypes.LAVA, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);
-                    	    	w.spawnParticle(EnumParticleTypes.FLAME, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null); 
-                    			world.playSound(null, pos, ProspectSounds.capsuleSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
-                    			capsuleYpos = 1;
-                    		}
-                    		else if (capsuleYpos < 500)
-                    		{
-                    			if (capsuleYpos > 1)
-                    			{
-                    				world.setBlockToAir(new BlockPos(pos.getX(),pos.getY()+capsuleYpos-1,pos.getZ()));
-                    			}               			
-                    			world.setBlockState(new BlockPos(pos.getX(),pos.getY()+capsuleYpos,pos.getZ()), ProspectBlocks.capsule.getDefaultState());
-                    			capsuleYpos++;
-                    		}   
-                    		else
-                    		{
-                    			world.setBlockToAir(new BlockPos(pos.getX(),pos.getY()+capsuleYpos-1,pos.getZ()));
-                    			capsuleYpos = 0;
-                    		}
                     		doWork();
-                    	}
-                    	else
-                    	{
-                    		if (capsuleYpos > 1)
-                        	{
-                        		world.setBlockToAir(new BlockPos(pos.getX(),pos.getY()+capsuleYpos-1,pos.getZ()));
-                        	}
-                    		capsuleYpos = 0;
                     	}
                     }
                     else
                     {
-                    	if (capsuleYpos > 1)
-                    	{
-                    		world.setBlockToAir(new BlockPos(pos.getX(),pos.getY()+capsuleYpos-1,pos.getZ()));
-                    	}                   	
-                    	capsuleYpos = 0;
-                        launchTime = 0;
+                    	launchTime = 0;
                     }
-                }
-                else if (!isEnergized() && launchTime > 0)
+                }  
+                else if (launchTime > 0)
                 {
-                    launchTime = MathHelper.clamp(launchTime - 2, 0, totalLaunchTime);
+                	launchTime = MathHelper.clamp(launchTime - 2, 0, totalLaunchTime);
                 }
-        	}       	
+        	} 
+        	if (capsuleYpos > 0 && capsuleYpos < 500)
+    		{
+    			moveCapsule();
+    		}   
+    		else if (capsuleYpos > 500)
+    		{
+    			world.setBlockToAir(new BlockPos(pos.getX(),pos.getY()+capsuleYpos-1,pos.getZ()));
+    			capsuleYpos = 0;
+    		}
         }       
     }
     
+    // Spawns particle effects, plays sound and moves capsule 1 block above the launch pad
+    private void launchCapsule()
+    {
+    	WorldServer w = (WorldServer) world;
+		w.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 1, null);
+    	w.spawnParticle(EnumParticleTypes.LAVA, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);
+    	w.spawnParticle(EnumParticleTypes.FLAME, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null); 
+		world.playSound(null, pos, ProspectSounds.capsuleSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
+		capsuleYpos = 1;
+    }
+    
+    // Continues moving the capsule up 1 block each tick
+    private void moveCapsule()
+    {
+    	if (capsuleYpos > 1)
+		{
+			world.setBlockToAir(new BlockPos(pos.getX(),pos.getY()+capsuleYpos-1,pos.getZ()));
+		}               			
+		world.setBlockState(new BlockPos(pos.getX(),pos.getY()+capsuleYpos,pos.getZ()), ProspectBlocks.capsule.getDefaultState());
+		capsuleYpos++;
+    }
+    
+    // Increases the progress each tick and launches the capsule at the end
     private void doWork()
     {
-    	boolean flag1 = false;   
-    	++launchTime;
-    	
+    	++launchTime;   	
         if (launchTime == totalLaunchTime)
         {
             launchTime = 0;
             totalLaunchTime = getlaunchTime(launchPadItemStacks.get(0));
             launchItem();
-            flag1 = true;
-        }
-        
-		if (flag1)
-        {
             markDirty();
         }
     }
     
+    // Get values from the energy storage or ic2 energy sink
     private void updateEnergy()
     {
     	if (energyStorage.getEnergyStored() > 0)
@@ -380,6 +370,7 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
     	}   	 
     }
     
+    // Remove energy from the buffer
     private boolean useEnergy()
     {
     	if (Loader.isModLoaded("ic2"))
@@ -408,11 +399,13 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
     	return false;
     }
     
-    public int getlaunchTime(ItemStack stack) //Could be used to vary launch times depending on the item.
+    // How long it takes to launch an item
+    public int getlaunchTime(ItemStack stack)
     {
         return 100;
     }
 
+    // Returns the amount of IGC the current item is worth
     private int getCurrentPayout()
     {
     	Item item = launchPadItemStacks.get(0).getItem();  	 
@@ -557,12 +550,19 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
     }
 
     /**
-     * Turn one item from the launch pad source stack into the appropriate resulting item in the launch pad result stack
+     * Launch the capsule, remove the item from the inventory and add IGC to the output slot
      */
     public void launchItem()
     {
         if (canLaunch())
         {
+        	if (capsuleYpos > 1)
+        	{
+        		world.setBlockToAir(new BlockPos(pos.getX(),pos.getY()+capsuleYpos-1,pos.getZ()));
+    			capsuleYpos = 0;
+        	}
+        	launchCapsule();
+        	
             ItemStack itemstack = launchPadItemStacks.get(0);
             ItemStack itemstack1 = new ItemStack(ProspectItems.credit,currentPayout);
             ItemStack itemstack2 = launchPadItemStacks.get(2);
@@ -598,14 +598,12 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
 
     @Override
 	public void openInventory(EntityPlayer player)
-    {
-    	
+    {    	
     }
 
     @Override
 	public void closeInventory(EntityPlayer player)
-    {
-    	
+    {   	
     }
 
     /**
@@ -656,6 +654,7 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
         return true;
     }
 
+    // Not used
     public String getGuiID()
     {
         return null;

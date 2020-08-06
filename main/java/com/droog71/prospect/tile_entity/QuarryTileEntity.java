@@ -3,7 +3,8 @@ package com.droog71.prospect.tile_entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import com.droog71.prospect.fe.ProspectEnergyStorage;
+
+import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectBlocks;
 import com.droog71.prospect.init.ProspectSounds;
 import ic2.api.energy.prefab.BasicSink;
@@ -158,7 +159,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
         return compound;
     }
  
-    //Puts mined blocks and items into adjacent storage.
+    // Puts mined blocks and items into adjacent storage
     private void transferItemOut(ItemStack stack)
     {
         IInventory iinventory = getInventoryForTransfer();
@@ -217,7 +218,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
         }
     }
 
-    //Checks if the block being mined is a liquid.
+    // Checks if the block being mined is a liquid
     private boolean isLiquid(ItemStack stack)
     {
     	Block b = Block.getBlockFromItem(stack.getItem());
@@ -231,7 +232,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
     	}
     }
     
-    //Checks if an itemstack can be combined with another.
+    // Checks if an itemstack can be combined with another
     private static boolean canCombine(ItemStack stack1, ItemStack stack2)
     {
         if (stack1.getItem() != stack2.getItem())
@@ -252,7 +253,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
         }
     }
 
-    //Checks if given inventory is full.
+    // Checks if given inventory is full
     private boolean isInventoryFull(IInventory inventoryIn)
     {
         if (inventoryIn instanceof ISidedInventory)
@@ -275,7 +276,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
         return true;
     }
     
-    //Checks if given inventory has any empty slots.
+    // Checks if given inventory has any empty slots
     private boolean inventoryHasEmptySlot(IInventory inventoryIn)
     {
         if (inventoryIn instanceof ISidedInventory)
@@ -298,7 +299,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
         return false;
     }
     
-    //The adjacent inventory the quarry will use to transfer items out.
+    // The adjacent inventory the quarry will use to transfer items out
     public IInventory getInventoryForTransfer()
     {
     	List<IInventory> invList = new ArrayList<IInventory>();
@@ -346,7 +347,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
     	return null;
     }
     
-    //Returns instance of IInventory at a given position.
+    // Returns instance of IInventory at a given position
     public static IInventory getInventoryAtPosition(World worldIn, double x, double y, double z)
     {
         IInventory iinventory = null;
@@ -385,7 +386,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
         return iinventory;
     }
     
-    //Sets the starting position for the quarry.
+    // Sets the starting position for the quarry
     private void initPos()
     {
     	if (miningX == 100000000)
@@ -398,7 +399,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
 		}
     }
     
-    //Sound played when a block is mined.
+    // Sound played when a block is mined
     private void playMiningSound(BlockPos p)
     {
     	if (world.getBlockState(p).getBlock() != Blocks.AIR)
@@ -407,7 +408,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
     	}	
     }
 
-    //Amount of energy stored.
+    // Amount of energy stored
     private int getEnergyStored()
     {
     	if (energyStorage.getEnergyStored() > 0)
@@ -433,7 +434,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
     	return energyStored;
     }
     
-    //Attempts to consume energy and returns true if successful.
+    // Attempts to consume energy and returns true if successful
     private boolean useEnergy(int amount)
     {
     	if (Loader.isModLoaded("ic2"))
@@ -462,6 +463,146 @@ public class QuarryTileEntity extends TileEntity implements ITickable
     	return false;
     }
     
+    // Builds the quarry frame and tube 1 block below the quarry.
+    private void buildLevelOne(BlockPos p)
+    {
+    	if (p.getX() == pos.getX() && p.getZ() == pos.getZ())
+		{
+			world.setBlockState(p, ProspectBlocks.quarry_tube.getDefaultState());
+			world.getBlockState(p).getBlock().setHardness(1000.0f);
+			quarryPositions.add(p);
+		}
+		else if (p.getX() == pos.getX() - 10 || p.getX() == pos.getX() + 10 || p.getZ() == pos.getZ() - 10 || p.getZ() == pos.getZ() + 10) 
+		{
+			world.setBlockState(p, ProspectBlocks.quarry_frame.getDefaultState());
+			world.getBlockState(p).getBlock().setHardness(1000.0f);
+			quarryPositions.add(p);
+		}	
+		else if (p.getX() == pos.getX() && p.getZ() != pos.getZ())
+		{
+			world.setBlockState(p, ProspectBlocks.quarry_frame.getDefaultState());
+			world.getBlockState(p).getBlock().setHardness(1000.0f);
+			quarryPositions.add(p);
+		}
+		else if (p.getX() != pos.getX() && p.getZ() == pos.getZ())
+		{
+			world.setBlockState(p, ProspectBlocks.quarry_frame.getDefaultState());
+			world.getBlockState(p).getBlock().setHardness(1000.0f);
+			quarryPositions.add(p);
+		}
+    }
+    
+    // Mines blocks, places quarry frames, tubes and drills
+    private void mineBlock(Block b, BlockPos p)
+    {
+    	ItemStack stack = new ItemStack(Items.AIR);
+		Item itemDropped = b.getItemDropped(b.getDefaultState(), new Random(), 0);
+		if (itemDropped != Item.getItemFromBlock(b))
+		{
+			stack = new ItemStack(itemDropped); //Used for blocks that drop items; diamonds, coal, etc.
+		}
+		else
+		{
+			stack = new ItemStack(Item.getItemFromBlock(b)); //All other blocks.
+		}	
+		if (stack.getItem() != Items.AIR)
+		{
+			transferItemOut(stack); //Put the item collected in an adjacent storage container.
+		}									
+		
+		if (level == 1)
+		{
+			buildLevelOne(p);
+		}
+		else
+		{
+			if (p.getX() == pos.getX() && p.getZ() == pos.getZ())
+			{
+				world.setBlockState(p, ProspectBlocks.quarry_tube.getDefaultState());
+				world.getBlockState(p).getBlock().setHardness(1000.0f);
+				quarryPositions.add(p);
+			}
+			else if (p.getX() == pos.getX() - 10 && p.getZ() == pos.getZ() - 10 || p.getX() == pos.getX() + 10 && p.getZ() == pos.getZ() + 10 || p.getX() == pos.getX() + 10 && p.getZ() == pos.getZ() - 10 || p.getX() == pos.getX() - 10 && p.getZ() == pos.getZ() + 10) 
+			{
+				world.setBlockState(p, ProspectBlocks.quarry_frame.getDefaultState());
+				world.getBlockState(p).getBlock().setHardness(1000.0f);
+				quarryPositions.add(p);
+			}
+			else
+			{											
+				if (level == 2) //Prevents the frame on level 1 from being destroyed by the quarry.
+				{
+					if (p.getX() != pos.getX() && p.getZ() != pos.getZ())
+					{
+						if (p.getX() != pos.getX() - 10 && p.getX() != pos.getX() + 10 && p.getZ() != pos.getZ() - 10 && p.getZ() != pos.getZ() + 10) 
+						{
+							miningBlock = true; //A block will be removed at this position.
+						}
+						else
+						{
+							miningBlock = false;
+						}
+					}
+				}
+				else
+				{
+					miningBlock = true; //A block will be removed at this position.
+					if (world.getBlockState(p).getBlock() != Blocks.AIR)
+					{
+						//Play sound and spawn particles at each block mined.
+						playMiningSound(p);
+						WorldServer w = (WorldServer) world;
+						w.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, p.getX(), p.getY(), p.getZ(), 1, 0, 0, 0, 1, null);
+					}											
+				}	
+				world.setBlockState(p, ProspectBlocks.quarry_drill.getDefaultState()); //Move the drill down to the next level.
+				world.getBlockState(p).getBlock().setHardness(1000.0f);
+				quarryPositions.add(p);	
+				if (miningBlock == true)
+				{
+					//Remove the old drill block.
+					world.setBlockToAir(p.add(0,1,0));
+					miningBlock = false;
+				}											
+			}	
+		}
+    }
+    
+    // Speed of quarry scales with the amount of power received.
+    private void increaseQuarryTimer()
+    {
+    	if (getEnergyStored() >= 512)
+		{
+			useEnergy(512);
+			quarryTimer += 32;
+		}
+		else if (getEnergyStored() >= 256)
+		{
+			useEnergy(256);
+			quarryTimer += 16;
+		}
+		else if (getEnergyStored() >= 128)
+		{
+			useEnergy(128);
+			quarryTimer += 8;
+		}
+		else if (getEnergyStored() >= 32)
+		{
+			useEnergy(32);
+			quarryTimer += 4;
+		}
+		else if (getEnergyStored() >= 5)
+		{
+			useEnergy(5);
+			quarryTimer += 2;
+		}	
+		else if (getEnergyStored() >= 1)
+		{
+			useEnergy(1);
+			quarryTimer += 1;
+		}
+    }
+    
 	@Override
 	public void update() 
 	{
@@ -485,38 +626,9 @@ public class QuarryTileEntity extends TileEntity implements ITickable
 							soundTimer = 0;
 						}					
 					}
+										
+					increaseQuarryTimer();
 					
-					//Speed of quarry scales with the amount of power received.
-					if (getEnergyStored() >= 512)
-					{
-						useEnergy(512);
-						quarryTimer += 32;
-					}
-					else if (getEnergyStored() >= 256)
-					{
-						useEnergy(256);
-						quarryTimer += 16;
-					}
-					else if (getEnergyStored() >= 128)
-					{
-						useEnergy(128);
-						quarryTimer += 8;
-					}
-					else if (getEnergyStored() >= 32)
-					{
-						useEnergy(32);
-						quarryTimer += 4;
-					}
-					else if (getEnergyStored() >= 5)
-					{
-						useEnergy(5);
-						quarryTimer += 2;
-					}	
-					else if (getEnergyStored() >= 1)
-					{
-						useEnergy(1);
-						quarryTimer += 1;
-					}
 					if (quarryTimer >= 32)
 					{
 						initPos();
@@ -528,100 +640,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
 								Block b = world.getBlockState(p).getBlock();
 								if (b != Blocks.BEDROCK) //Quarry stops when it hits bedrock.
 								{
-									ItemStack stack = new ItemStack(Items.AIR);
-									Item itemDropped = b.getItemDropped(b.getDefaultState(), new Random(), 0);
-									if (itemDropped != Item.getItemFromBlock(b))
-									{
-										stack = new ItemStack(itemDropped); //Used for blocks that drop items; diamonds, coal, etc.
-									}
-									else
-									{
-										stack = new ItemStack(Item.getItemFromBlock(b)); //All other blocks.
-									}	
-									if (stack.getItem() != Items.AIR)
-									{
-										transferItemOut(stack); //Put the item collected in an adjacent storage container.
-									}									
-									
-									if (level == 1) //Builds the quarry frame and tube 1 block below the quarry.
-									{
-										if (p.getX() == pos.getX() && p.getZ() == pos.getZ())
-										{
-											world.setBlockState(p, ProspectBlocks.quarry_tube.getDefaultState());
-											world.getBlockState(p).getBlock().setHardness(1000.0f);
-											quarryPositions.add(p);
-										}
-										else if (p.getX() == pos.getX() - 10 || p.getX() == pos.getX() + 10 || p.getZ() == pos.getZ() - 10 || p.getZ() == pos.getZ() + 10) 
-										{
-											world.setBlockState(p, ProspectBlocks.quarry_frame.getDefaultState());
-											world.getBlockState(p).getBlock().setHardness(1000.0f);
-											quarryPositions.add(p);
-										}	
-										else if (p.getX() == pos.getX() && p.getZ() != pos.getZ())
-										{
-											world.setBlockState(p, ProspectBlocks.quarry_frame.getDefaultState());
-											world.getBlockState(p).getBlock().setHardness(1000.0f);
-											quarryPositions.add(p);
-										}
-										else if (p.getX() != pos.getX() && p.getZ() == pos.getZ())
-										{
-											world.setBlockState(p, ProspectBlocks.quarry_frame.getDefaultState());
-											world.getBlockState(p).getBlock().setHardness(1000.0f);
-											quarryPositions.add(p);
-										}
-									}
-									else
-									{
-										if (p.getX() == pos.getX() && p.getZ() == pos.getZ())
-										{
-											world.setBlockState(p, ProspectBlocks.quarry_tube.getDefaultState());
-											world.getBlockState(p).getBlock().setHardness(1000.0f);
-											quarryPositions.add(p);
-										}
-										else if (p.getX() == pos.getX() - 10 && p.getZ() == pos.getZ() - 10 || p.getX() == pos.getX() + 10 && p.getZ() == pos.getZ() + 10 || p.getX() == pos.getX() + 10 && p.getZ() == pos.getZ() - 10 || p.getX() == pos.getX() - 10 && p.getZ() == pos.getZ() + 10) 
-										{
-											world.setBlockState(p, ProspectBlocks.quarry_frame.getDefaultState());
-											world.getBlockState(p).getBlock().setHardness(1000.0f);
-											quarryPositions.add(p);
-										}
-										else
-										{											
-											if (level == 2) //Prevents the frame on level 1 from being destroyed by the quarry.
-											{
-												if (p.getX() != pos.getX() && p.getZ() != pos.getZ())
-												{
-													if (p.getX() != pos.getX() - 10 && p.getX() != pos.getX() + 10 && p.getZ() != pos.getZ() - 10 && p.getZ() != pos.getZ() + 10) 
-													{
-														miningBlock = true; //A block will be removed at this position.
-													}
-													else
-													{
-														miningBlock = false;
-													}
-												}
-											}
-											else
-											{
-												miningBlock = true; //A block will be removed at this position.
-												if (world.getBlockState(p).getBlock() != Blocks.AIR)
-												{
-													//Play sound and spawn particles at each block mined.
-													playMiningSound(p);
-													WorldServer w = (WorldServer) world;
-													w.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, p.getX(), p.getY(), p.getZ(), 1, 0, 0, 0, 1, null);
-												}											
-											}	
-											world.setBlockState(p, ProspectBlocks.quarry_drill.getDefaultState()); //Move the drill down to the next level.
-											world.getBlockState(p).getBlock().setHardness(1000.0f);
-											quarryPositions.add(p);	
-											if (miningBlock == true)
-											{
-												//Remove the old drill block.
-												world.setBlockToAir(p.add(0,1,0));
-												miningBlock = false;
-											}											
-										}	
-									}														
+									mineBlock(b,p);														
 								}
 								else
 								{

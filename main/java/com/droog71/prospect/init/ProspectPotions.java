@@ -8,8 +8,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod.EventBusSubscriber(modid = Prospect.MODID)
-public class ProspectPotions {
-
+public class ProspectPotions 
+{
 	public static final Potion spore = new PotionSpore();
 
 	@SubscribeEvent

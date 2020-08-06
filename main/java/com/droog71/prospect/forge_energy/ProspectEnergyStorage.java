@@ -1,4 +1,4 @@
-package com.droog71.prospect.fe;
+package com.droog71.prospect.forge_energy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,17 +26,20 @@ public class ProspectEnergyStorage implements IEnergyStorage
     public int maxReceive;
     public boolean overloaded;
 
+    // Load the amount of energy stored.
     public void readFromNBT(NBTTagCompound compound)
     {
     	energy = compound.getInteger("energy");
     }
 
+    // Save the amount of energy stored.
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
     	compound.setInteger("energy",energy);
     	return compound;
     }
 
+    // Add energy to the buffer.
     public int generateEnergy(int amount)
     {
     	int energyAdded = Math.min(capacity - energy, amount);
@@ -44,6 +47,7 @@ public class ProspectEnergyStorage implements IEnergyStorage
         return energyAdded;     
     }
     
+    // Remove energy from the buffer.
     public int useEnergy(int energyToUse)
     {
         int energyUsed = Math.min(energy, energyToUse);
@@ -71,7 +75,7 @@ public class ProspectEnergyStorage implements IEnergyStorage
 		}  	
     }
  
-    //Give energy to an adjacent block.
+    // A list of all adjacent blocks capable of receiving energy.
     public List<IEnergyStorage> receivers(World world, BlockPos pos)
 	{		
     	List<IEnergyStorage> receiversFound = new ArrayList<IEnergyStorage>();
@@ -103,6 +107,7 @@ public class ProspectEnergyStorage implements IEnergyStorage
 		return receiversFound;
 	}
     
+    // Give energy to receivers
     public void giveEnergy(ProspectEnergyStorage source, IEnergyStorage sink, int rating)
     {
     	if (sink != null)
@@ -141,18 +146,14 @@ public class ProspectEnergyStorage implements IEnergyStorage
     	world.setBlockToAir(pos);    	
     }
     
-    @Override
-    public int extractEnergy(int maxExtract, boolean simulate)
-    {
-        return 0;
-    }
-
+    // Get the amount of energy in the buffer.
     @Override
     public int getEnergyStored()
     {
         return energy;
     }
 
+    // Get the maximum capacity of the buffer.
     @Override
     public int getMaxEnergyStored()
     {
@@ -160,14 +161,22 @@ public class ProspectEnergyStorage implements IEnergyStorage
     }
 
     @Override
+    public boolean canReceive()
+    {
+        return maxReceive > 0;
+    }
+    
+    // Not used.
+    @Override
     public boolean canExtract()
     {
         return false;
     }
 
+    // Not used.
     @Override
-    public boolean canReceive()
+    public int extractEnergy(int maxExtract, boolean simulate)
     {
-        return maxReceive > 0;
+        return 0;
     }
 }

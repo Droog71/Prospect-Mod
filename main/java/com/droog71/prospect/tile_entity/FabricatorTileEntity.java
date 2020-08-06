@@ -3,7 +3,7 @@ package com.droog71.prospect.tile_entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.droog71.prospect.fe.ProspectEnergyStorage;
+import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.FabricatorContainer;
 import com.droog71.prospect.items.Schematic;
@@ -300,6 +300,7 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
         }
     }
     
+    // Fabricate items and plays the sound effect
     private void doWork()
     {
     	++fabricateTime;
@@ -320,6 +321,7 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
 		}
     }
     
+    // Get values from the energy storage or ic2 energy sink
     private void updateEnergy()
     {
     	if (energyStorage.getEnergyStored() > 0)
@@ -346,6 +348,7 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
     	}   	 
     }
     
+    // Remove energy from the buffer
     private boolean useEnergy()
     {
     	if (Loader.isModLoaded("ic2"))
@@ -374,11 +377,15 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
     	return false;
     }
     
-    public int getfabricateTime(ItemStack stack) //For now, all schematics take the same amount of time. This may change.
+    // How long it takes to fabricate the item
+    public int getfabricateTime(ItemStack stack)
     {
     	return 50;
     }
   
+    /**
+     * Returns true if all ingredients relevant to the schematic are present in an adjacent inventory
+     */
     private boolean canCraft(ItemStack[] stacks, IInventory iinventory)
     {
         if (iinventory != null)
@@ -412,6 +419,7 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
         return false;
     }
     
+    // Consumes ingredients in adjacent inventory when crafting an item
     private void consumeItems()
     {
     	ItemStack[] stacks = null;
@@ -458,6 +466,7 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
         }
     }
     
+    // Returns an adjacent inventory containing the necessary ingredients for the current schematic
     public IInventory getInventoryForCrafting(ItemStack[] stacks)
     {
     	List<IInventory> invList = new ArrayList<IInventory>();
@@ -479,6 +488,7 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
     	return null;
     }
     
+    // Returns IInventory instance at a given position
     public static IInventory getInventoryAtPosition(World worldIn, double x, double y, double z)
     {
         IInventory iinventory = null;
@@ -518,7 +528,7 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
     }
     
     /**
-     * Returns true if the fabricator can fabricate an item, i.e. has a source item, destination stack isn't full, etc.
+     * Returns true if the fabricator can craft an item, i.e. has a source item, destination stack isn't full, etc.
      */
     private boolean canFabricate()
     {    	
@@ -548,6 +558,7 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
         }
     }
 
+    // Creates the resulting item for the current schematic
     public void fabricateItem()
     {        
         ItemStack result = new ItemStack(Items.AIR);   
@@ -650,11 +661,13 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
         return true;
     }
 
+    // Not used
     public String getGuiID()
     {
         return null;
     }
 
+    // Creates the container
     public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
     {
         return new FabricatorContainer(playerInventory, this);

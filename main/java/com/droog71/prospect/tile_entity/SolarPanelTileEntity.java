@@ -1,6 +1,7 @@
 package com.droog71.prospect.tile_entity;
 
-import com.droog71.prospect.fe.ProspectEnergyStorage;
+import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
+
 import ic2.api.energy.prefab.BasicSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -110,6 +111,7 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 		}
 	}
 	
+	// Add energy to the buffer
 	private void addEnergy() 
 	{
 		if (world.canBlockSeeSky(pos.offset(EnumFacing.UP))) 
@@ -125,6 +127,7 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 		}
 	}
 	
+	// Distributes energy
 	private void doWork()
 	{		
 		boolean connectedFE = false;

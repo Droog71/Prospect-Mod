@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import com.droog71.prospect.blocks.energy.Purifier;
 import com.droog71.prospect.config.ConfigHandler;
-import com.droog71.prospect.fe.ProspectEnergyStorage;
+import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectSounds;
 import ic2.api.energy.prefab.BasicSink;
 import net.minecraft.util.EnumFacing;
@@ -121,6 +121,7 @@ public class PurifierTileEntity extends TileEntity implements ITickable
 		}
 	}
     
+	// Spawn particles, play sound
     private void doWork()
     {   	
 		effectsTimer++;
@@ -150,6 +151,7 @@ public class PurifierTileEntity extends TileEntity implements ITickable
 		}	
     }
 	
+    //Remove energy from the buffer
 	private boolean useEnergy()
     {
 		if (energyStorage.getEnergyStored() >= 32)

@@ -12,18 +12,18 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class PrinterGUI extends GuiContainer
+public class FabricatorGUI extends GuiContainer
 {
-    private static final ResourceLocation PRINTER_GUI_TEXTURES = new ResourceLocation("prospect:textures/gui/printer.png");
+    private static final ResourceLocation FABRICATOR_GUI_TEXTURES = new ResourceLocation("prospect:textures/gui/fabricator.png");
     /** The player inventory bound to this GUI. */
     private final InventoryPlayer playerInventory;
-    private final IInventory tilePrinter;
+    private final IInventory tileFabricator;
 
-    public PrinterGUI(InventoryPlayer playerInv, IInventory printerInv)
+    public FabricatorGUI(InventoryPlayer playerInv, IInventory fabricatorInv)
     {
-        super(new FabricatorContainer(playerInv, printerInv));
+        super(new FabricatorContainer(playerInv, fabricatorInv));
         this.playerInventory = playerInv;
-        this.tilePrinter = printerInv;
+        this.tileFabricator = fabricatorInv;
     }
 
     /**
@@ -43,7 +43,7 @@ public class PrinterGUI extends GuiContainer
     @Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        String s = this.tilePrinter.getName();
+        String s = this.tileFabricator.getName();
         this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
         this.fontRenderer.drawString(this.playerInventory.getDisplayName().getUnformattedText(), 8, this.ySize - 96 + 2, 4210752);
     }
@@ -55,37 +55,37 @@ public class PrinterGUI extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(PRINTER_GUI_TEXTURES);
+        this.mc.getTextureManager().bindTexture(FABRICATOR_GUI_TEXTURES);
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
 
-        if (FabricatorTileEntity.isEnergized(this.tilePrinter))
+        if (FabricatorTileEntity.isEnergized(this.tileFabricator))
         {
-            int k = this.getBurnLeftScaled(13);
+            int k = this.getPowerScaled(13);
             this.drawTexturedModalRect(i + 56, j + 36 + 12 - k, 176, 12 - k, 14, k + 1);
         }
 
-        int l = this.getCookProgressScaled(24);
+        int l = this.getFabricationProgressScaled(24);
         this.drawTexturedModalRect(i + 79, j + 34, 176, 14, l + 1, 16);
     }
 
-    private int getCookProgressScaled(int pixels)
+    private int getFabricationProgressScaled(int pixels)
     {
-        int i = this.tilePrinter.getField(2);
-        int j = this.tilePrinter.getField(3);
+        int i = this.tileFabricator.getField(2);
+        int j = this.tileFabricator.getField(3);
         return j != 0 && i != 0 ? i * pixels / j : 0;
     }
 
-    private int getBurnLeftScaled(int pixels)
+    private int getPowerScaled(int pixels)
     {
-        int i = this.tilePrinter.getField(1);
+        int i = this.tileFabricator.getField(1);
 
         if (i == 0)
         {
             i = 200;
         }
         
-        return this.tilePrinter.getField(0) * pixels / i;       
+        return this.tileFabricator.getField(0) * pixels / i;       
     }
 }

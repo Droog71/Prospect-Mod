@@ -1,6 +1,6 @@
 package com.droog71.prospect.tile_entity;
 
-import com.droog71.prospect.fe.ProspectEnergyStorage;
+import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.PressContainer;
@@ -281,7 +281,7 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
                         pressTime = 0;
                     }
                 }
-                else if (!isEnergized() && pressTime > 0)
+                else if (pressTime > 0)
                 {
                     pressTime = MathHelper.clamp(pressTime - 2, 0, totalpressTime);
                 }
@@ -290,16 +290,14 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
     }
     
     private void doWork()
-    {
-    	boolean flag1 = false;   
-    	++pressTime;
-    	
+    { 
+    	++pressTime;	
         if (pressTime == totalpressTime)
         {
             pressTime = 0;
             totalpressTime = getpressTime(pressItemStacks.get(0));
             pressItem();
-            flag1 = true;
+            markDirty();
         }
         
         effectsTimer++;
@@ -308,12 +306,9 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
 			world.playSound(null, pos, ProspectSounds.pressSoundEvent,  SoundCategory.BLOCKS, 1.0f, 1);
 			effectsTimer = 0;
 		}
-		if (flag1)
-        {
-            markDirty();
-        }
     }
     
+    // Get values from the energy storage or ic2 energy sink
     private void updateEnergy()
     {
     	if (energyStorage.getEnergyStored() > 0)
@@ -339,7 +334,8 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
     		}  
     	}   	 
     }
-    
+
+    // Remove energy from the buffer
     private boolean useEnergy()
     {
     	if (Loader.isModLoaded("ic2"))
@@ -368,11 +364,13 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
     	return false;
     }
     
-    public int getpressTime(ItemStack stack) //Could be used for varying press time for different ingots.
+    // The amount of time it takes to press an ingot
+    public int getpressTime(ItemStack stack)
     {
         return 50;
     }
 
+    // Returns the plate the current ingot produces
     private ItemStack getPlate(ItemStack stack)
     {
     	NonNullList<ItemStack> copper = OreDictionary.getOres("ingotCopper");
@@ -519,14 +517,12 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
 
     @Override
 	public void openInventory(EntityPlayer player)
-    {
-    	
+    {   	
     }
 
     @Override
 	public void closeInventory(EntityPlayer player)
-    {
-    	
+    {  	
     }
 
     /**
@@ -577,6 +573,7 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
         return true;
     }
 
+    // Not used
     public String getGuiID()
     {
         return null;
