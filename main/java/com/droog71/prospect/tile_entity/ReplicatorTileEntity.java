@@ -5,17 +5,13 @@ import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.ReplicatorContainer;
 import com.droog71.prospect.items.ReplicatorItems;
-
 import ic2.api.energy.prefab.BasicSink;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -23,12 +19,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class ReplicatorTileEntity extends TileEntity implements ITickable, ISidedInventory
 {
@@ -282,7 +278,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     @Override
 	public void update()
     {
-        boolean flag1 = false;
+        boolean needsNetworkUpdate = false;
 
         if (!world.isRemote)
         {
@@ -293,54 +289,50 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 			else
 			{
 	        	updateEnergy();
-	        	
-	            ItemStack itemstack = replicatorItemStacks.get(1);
-	
-	            if (!itemstack.isEmpty() && !replicatorItemStacks.get(0).isEmpty())
-	            {
-	                if (isEnergized() && canReplicate())
-	                {
-	                	if (useEnergy())
-	                	{
-	                		--replicatorSpendTime;
-	                		if (replicatorSpendTime <= 0)
-	                		{
-	                            itemstack.shrink(1);
-	                            replicatorSpendTime = getCreditSpendTime();
-	                            flag1 = true;
-	                		}	                		
-                           
-		                    ++replicateTime;
-		                    if (replicateTime == totalreplicateTime)
-		                    {
-		                        replicateTime = 0;
-		                        totalreplicateTime = getreplicateTime();
-		                        replicateItem();
-		                        flag1 = true;
-		                    }
-		                    
-		                    effectsTimer++;
-		    				if (effectsTimer > 40)
-		    				{
-		    					world.playSound(null, pos, ProspectSounds.replicatorSoundEvent,  SoundCategory.BLOCKS, 0.25f, 1);
-		    					effectsTimer = 0;
-		    				}
-	                	}
-	                }
-	                else
-	                {
-	                    replicateTime = 0;
-	                }
-	            }
+
+                if (canReplicate() && useEnergy())
+                {
+                	ItemStack itemstack = replicatorItemStacks.get(1);
+                	if (!itemstack.isEmpty() && !replicatorItemStacks.get(0).isEmpty())
+    	            {
+                		--replicatorSpendTime;
+                		if (replicatorSpendTime <= 0)
+                		{
+                            itemstack.shrink(1);
+                            replicatorSpendTime = getCreditSpendTime();
+                            needsNetworkUpdate = true;
+                		}	                		
+                       
+                        ++replicateTime;
+                        if (replicateTime == totalreplicateTime)
+                        {
+                            replicateTime = 0;
+                            totalreplicateTime = getreplicateTime();
+                            replicateItem();
+                            needsNetworkUpdate = true;
+                        }
+                        
+                        effectsTimer++;
+        				if (effectsTimer > 40)
+        				{
+        					world.playSound(null, pos, ProspectSounds.replicatorSoundEvent,  SoundCategory.BLOCKS, 0.25f, 1);
+        					effectsTimer = 0;
+        				}
+    	            }
+                }
+                else if (replicateTime > 0)
+                {
+                	replicateTime = MathHelper.clamp(replicateTime - 1, 0, totalreplicateTime);
+                } 
 	            
-	            if (flag1)
+	            if (needsNetworkUpdate)
 	            {
 	                markDirty();
 	            }
 			}
         }
         
-        if (flag1)
+        if (needsNetworkUpdate)
         {
             markDirty();
         }
@@ -418,7 +410,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
      */
     private boolean canReplicate()
     {  	
-        if (replicatorItemStacks.get(0).isEmpty() || replicatorItems.replicatorItem(this,replicatorItemStacks.get(0)))
+        if (replicatorItemStacks.get(0).isEmpty() || !replicatorItems.replicatorItem(this,replicatorItemStacks.get(0)))
         {
         	return false;
         }

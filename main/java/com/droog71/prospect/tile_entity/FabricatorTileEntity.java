@@ -281,21 +281,19 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
             }
         	else
         	{
-        		updateEnergy();           	
-                if (isEnergized())
-                {      
-                	if (itemsConsumed)
-                	{
-                		if (useEnergy())
-                    	{
-                    		doWork();
-                    	}
-                	}
-                	else if (canFabricate())
-                	{
-                		consumeItems();
-                	}
-                }
+        		updateEnergy();        	
+            	if (itemsConsumed && useEnergy())
+            	{
+                	doWork();
+            	}
+            	else if (canFabricate() && useEnergy())
+            	{
+            		consumeItems();
+            	}
+            	else if (fabricateTime > 0)
+                {
+                	fabricateTime = MathHelper.clamp(fabricateTime - 1, 0, totalfabricateTime);
+                }            
         	}      	
         }
     }

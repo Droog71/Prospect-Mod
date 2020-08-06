@@ -268,23 +268,13 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
             else
             {
             	updateEnergy();            	
-            	if (isEnergized())
+            	if (canExtrude() && useEnergy())
                 {            	
-                    if (canExtrude())
-                    {
-                    	if (useEnergy())
-                    	{
-                    		doWork();
-                    	}
-                    }
-                    else
-                    {
-                        extrudeTime = 0;
-                    }
+                	doWork();
                 }
                 else if (extrudeTime > 0)
                 {
-                    extrudeTime = MathHelper.clamp(extrudeTime - 2, 0, totalextrudeTime);
+                    extrudeTime = MathHelper.clamp(extrudeTime - 1, 0, totalextrudeTime);
                 }
             }                   
         }       

@@ -267,23 +267,13 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
             else
             {
             	updateEnergy();            	
-            	if (isEnergized())
+            	if (canPress() && useEnergy())
                 {            	
-                    if (canPress())
-                    {
-                    	if (useEnergy())
-                    	{
-                    		doWork();
-                    	}
-                    }
-                    else
-                    {
-                        pressTime = 0;
-                    }
+                	doWork();
                 }
                 else if (pressTime > 0)
                 {
-                    pressTime = MathHelper.clamp(pressTime - 2, 0, totalpressTime);
+                	pressTime = MathHelper.clamp(pressTime - 1, 0, totalpressTime);
                 }
             }                   
         }       

@@ -18,7 +18,7 @@ import com.droog71.prospect.init.ProspectItems;
 
 public class PotionSpore extends PotionProspect
 {
-	private SporeArmorList sporeArmorList;
+	private SporeArmorList sporeArmorList = new SporeArmorList();
 	private int hurtTimer;
 	private int message;
 	
@@ -51,12 +51,12 @@ public class PotionSpore extends PotionProspect
 		EntityPlayer player = (EntityPlayer) living;
 		if (player != null && ConfigHandler.toxicSporesEnabled())
 		{					
-			if (!nearPurifier(player) && !filterInstalled(player) || !wearingProtectiveArmor(player)) 
+			if (!nearPurifier(player) && (!filterInstalled(player) || !wearingProtectiveArmor(player))) 
 			{
 				hurtTimer++;
 				if (hurtTimer >= 200)
 				{
-					player.attackEntityFrom(DamageSource.GENERIC, 0.5F);											
+					player.attackEntityFrom(DamageSource.GENERIC, 0.5F);									
 				}	
 				if (hurtTimer >= 240)
 				{
