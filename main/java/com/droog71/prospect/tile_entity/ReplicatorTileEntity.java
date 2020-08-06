@@ -36,7 +36,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     private static final int[] SLOTS_BOTTOM = new int[] {2, 1};
     private static final int[] SLOTS_SIDES = new int[] {1};
     private NonNullList<ItemStack> replicatorItemStacks = NonNullList.<ItemStack>withSize(3, ItemStack.EMPTY);
-    private ReplicatorItems replicatorItems;
+    private ReplicatorItems replicatorItems = new ReplicatorItems();
     private ProspectEnergyStorage energyStorage = new ProspectEnergyStorage();
     private Object ic2EnergySink;
     private int energyStored;
