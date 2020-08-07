@@ -16,14 +16,18 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Mod.EventBusSubscriber(modid=Prospect.MODID)
 public class ProspectItems 
 {
+	// Armor
 	public static Item helmet;
 	public static Item suit;
 	public static Item pants;
 	public static Item boots;
+	
+	// Items
 	public static Item filter;
 	public static Item suit_material;	
 	public static Item gem;
 	public static Item credit;
+	public static Item bio_fuel;
 	public static Item copper_wire;
 	public static Item mv_wire;
 	public static Item hv_wire;
@@ -54,6 +58,7 @@ public class ProspectItems
 	public static Item aluminum_plate;
 	public static Item silicon;
 	
+	// Schematics
 	public static Item mv_wire_schematic;
 	public static Item hv_wire_schematic;
 	public static Item ev_wire_schematic;
@@ -95,7 +100,6 @@ public class ProspectItems
 	public static Item hv_solar_panel_schematic;
 	public static Item ev_solar_panel_schematic;
 	public static Item iv_solar_panel_schematic;
-	
 	public static Item chest_schematic;
 	public static Item hopper_schematic;
 	public static Item piston_schematic;
@@ -111,7 +115,8 @@ public class ProspectItems
 		// Items
 		filter = new SporeFilter("filter").setMaxDamage(100000).setCreativeTab(Prospect.tabProspect).setMaxStackSize(1);
 		gem = new ProspectItem("gem").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);		
-		credit = new ProspectItem("credit").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);	
+		credit = new ProspectItem("credit").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		bio_fuel = new ProspectItem("bio_fuel").setCreativeTab(Prospect.tabProspect).setMaxStackSize(1);
 		suit_material = new ProspectItem("suit_material").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		copper_wire = new ProspectItem("copper_wire").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		mv_wire = new ProspectItem("mv_wire").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
@@ -203,6 +208,7 @@ public class ProspectItems
 		event.getRegistry().registerAll(filter);
 		event.getRegistry().registerAll(gem);
 		event.getRegistry().registerAll(credit);
+		event.getRegistry().registerAll(bio_fuel);
 		event.getRegistry().registerAll(suit_material);
 		event.getRegistry().registerAll(copper_wire);
 		event.getRegistry().registerAll(mv_wire);
@@ -294,6 +300,7 @@ public class ProspectItems
 		// Items
 		registerRender(gem);
 		registerRender(credit);
+		registerRender(bio_fuel);
 		registerRender(suit_material);
 		registerRender(copper_wire);
 		registerRender(mv_wire);

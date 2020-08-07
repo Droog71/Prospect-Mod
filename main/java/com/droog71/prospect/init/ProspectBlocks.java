@@ -2,6 +2,7 @@ package com.droog71.prospect.init;
 
 import com.droog71.prospect.Prospect;
 import com.droog71.prospect.blocks.ProspectBlock;
+import com.droog71.prospect.blocks.energy.BioFuelGenerator;
 import com.droog71.prospect.blocks.energy.Cable;
 import com.droog71.prospect.blocks.energy.Extruder;
 import com.droog71.prospect.blocks.energy.LaunchPad;
@@ -13,6 +14,7 @@ import com.droog71.prospect.blocks.energy.Replicator;
 import com.droog71.prospect.blocks.energy.SolarPanel;
 import com.droog71.prospect.blocks.energy.Transformer;
 import com.droog71.prospect.blocks.ore.LivingOre;
+import com.droog71.prospect.tile_entity.BioGenTileEntity;
 import com.droog71.prospect.tile_entity.CableTileEntity;
 import com.droog71.prospect.tile_entity.ExtruderTileEntity;
 import com.droog71.prospect.tile_entity.FabricatorTileEntity;
@@ -64,6 +66,7 @@ public class ProspectBlocks
 	public static Block mv_transformer;
 	public static Block hv_transformer;
 	public static Block ev_transformer;
+	public static Block bio_fuel_generator;
 	public static Block lv_solar_panel;
 	public static Block mv_solar_panel;
 	public static Block hv_solar_panel;
@@ -75,6 +78,7 @@ public class ProspectBlocks
 	static FabricatorTileEntity fabricatorTileEntity;
 	static QuarryTileEntity quarryTileEntity;
 	static ReplicatorTileEntity replicatorTileEntity;
+	static BioGenTileEntity bioGenTileEntity;
 	static SolarPanelTileEntity solarPanelTileEntity;
 	static LaunchPadTileEntity launchPadTileEntity;
 	static CableTileEntity cableTileEntity;
@@ -109,6 +113,7 @@ public class ProspectBlocks
 		mv_transformer = new Transformer("mv_transformer",Material.IRON,9000,45000,4000).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		hv_transformer = new Transformer("hv_transformer",Material.IRON,16000,80000,9000).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		ev_transformer = new Transformer("ev_transformer",Material.IRON,25000,125000,16000).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
+		bio_fuel_generator = new BioFuelGenerator("bio_fuel_generator",Material.IRON).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		lv_solar_panel = new SolarPanel("lv_solar_panel",Material.IRON,64,32,1).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		mv_solar_panel = new SolarPanel("mv_solar_panel",Material.IRON,256,128,2).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		hv_solar_panel = new SolarPanel("hv_solar_panel",Material.IRON,1024,512,3).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
@@ -120,6 +125,7 @@ public class ProspectBlocks
 		fabricatorTileEntity = new FabricatorTileEntity();
 		quarryTileEntity = new QuarryTileEntity();
 		replicatorTileEntity = new ReplicatorTileEntity();
+		bioGenTileEntity = new BioGenTileEntity();
 		solarPanelTileEntity = new SolarPanelTileEntity();
 		launchPadTileEntity = new LaunchPadTileEntity();
 		cableTileEntity = new CableTileEntity(0,0);
@@ -130,6 +136,7 @@ public class ProspectBlocks
 		GameRegistry.registerTileEntity(fabricatorTileEntity.getClass(), "prospect:fabricatorTileEntity");
 		GameRegistry.registerTileEntity(quarryTileEntity.getClass(), "prospect:quarryTileEntity");
 		GameRegistry.registerTileEntity(replicatorTileEntity.getClass(), "prospect:replicatorTileEntity");
+		GameRegistry.registerTileEntity(bioGenTileEntity.getClass(), "prospect:bioGenTileEntity");
 		GameRegistry.registerTileEntity(solarPanelTileEntity.getClass(), "prospect:solarPanelTileEntity");
 		GameRegistry.registerTileEntity(launchPadTileEntity.getClass(), "prospect:launchPadTileEntity");
 		GameRegistry.registerTileEntity(cableTileEntity.getClass(), "prospect:cableTileEntity");
@@ -166,6 +173,7 @@ public class ProspectBlocks
 		event.getRegistry().registerAll(mv_transformer);
 		event.getRegistry().registerAll(hv_transformer);
 		event.getRegistry().registerAll(ev_transformer);
+		event.getRegistry().registerAll(bio_fuel_generator);
 		event.getRegistry().registerAll(lv_solar_panel);
 		event.getRegistry().registerAll(mv_solar_panel);
 		event.getRegistry().registerAll(hv_solar_panel);
@@ -203,6 +211,7 @@ public class ProspectBlocks
 		event.getRegistry().registerAll(new ItemBlock(mv_transformer).setRegistryName(mv_transformer.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(hv_transformer).setRegistryName(hv_transformer.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(ev_transformer).setRegistryName(ev_transformer.getRegistryName()));
+		event.getRegistry().registerAll(new ItemBlock(bio_fuel_generator).setRegistryName(bio_fuel_generator.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(lv_solar_panel).setRegistryName(lv_solar_panel.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(mv_solar_panel).setRegistryName(mv_solar_panel.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(hv_solar_panel).setRegistryName(hv_solar_panel.getRegistryName()));
@@ -240,6 +249,7 @@ public class ProspectBlocks
 		registerRender(Item.getItemFromBlock(mv_transformer));
 		registerRender(Item.getItemFromBlock(hv_transformer));
 		registerRender(Item.getItemFromBlock(ev_transformer));
+		registerRender(Item.getItemFromBlock(bio_fuel_generator));
 		registerRender(Item.getItemFromBlock(lv_solar_panel));
 		registerRender(Item.getItemFromBlock(mv_solar_panel));
 		registerRender(Item.getItemFromBlock(hv_solar_panel));

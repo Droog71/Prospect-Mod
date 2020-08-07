@@ -107,7 +107,7 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 		if (!world.isRemote) //Everything is done on the server.
 		{
 			addEnergy();
-			doWork();			
+			distributeEnergy();			
 		}
 	}
 	
@@ -128,7 +128,7 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 	}
 	
 	// Distributes energy
-	private void doWork()
+	private void distributeEnergy()
 	{		
 		boolean connectedFE = false;
 		if (energyStorage.receivers(world, pos).size() > 0)

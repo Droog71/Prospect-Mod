@@ -1,0 +1,31 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "CPC",
+    "IUI",
+    "IFI"  ],
+  "key": {
+    "I": {
+        "item": "minecraft:heavy_weighted_pressure_plate"
+    },
+    "C": {
+        "type": "forge:ore_dict",
+        "ore": "ingotCopper"
+    },
+    "U": {
+        "item": "minecraft:cauldron"
+    },
+    "F": {
+        "item": "minecraft:flint_and_steel"
+    },
+    "P": {
+        "item": "minecraft:piston"
+    }
+},
+  "result": {
+    "item": "prospect:bio_fuel_generator",
+    "data": 0
+  }
+}
+
+

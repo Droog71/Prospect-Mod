@@ -11,6 +11,7 @@ import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.worldgen.OreGen;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;

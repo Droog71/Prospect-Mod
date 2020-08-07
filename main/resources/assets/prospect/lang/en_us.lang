@@ -1,6 +1,7 @@
 item.gem.name=Gem
 item.credit.name=IGC
 item.circuit.name=Circuit
+item.bio_fuel.name=Bio Fuel
 item.suit_material.name=Suit Material
 item.prepared_circuit.name=Prepared Circuit
 item.quantum_circuit.name=Quantum Circuit
@@ -80,6 +81,7 @@ item.suit.name=Prospector's Suit
 item.pants.name=Prospector's Pants
 item.boots.name=Prospector's Boots
 tile.quarry.name=Industrial Quarry
+tile.bio_fuel_generator.name=Bio Fuel Generator
 tile.lv_solar_panel.name=LV Solar Panel
 tile.mv_solar_panel.name=MV Solar Panel
 tile.hv_solar_panel.name=HV Solar Panel

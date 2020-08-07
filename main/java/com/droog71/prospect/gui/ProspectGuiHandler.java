@@ -5,6 +5,7 @@ import com.droog71.prospect.inventory.LaunchPadContainer;
 import com.droog71.prospect.inventory.PressContainer;
 import com.droog71.prospect.inventory.FabricatorContainer;
 import com.droog71.prospect.inventory.ReplicatorContainer;
+import com.droog71.prospect.tile_entity.BioGenTileEntity;
 import com.droog71.prospect.tile_entity.ExtruderTileEntity;
 import com.droog71.prospect.tile_entity.FabricatorTileEntity;
 import com.droog71.prospect.tile_entity.LaunchPadTileEntity;
@@ -42,6 +43,10 @@ public class ProspectGuiHandler implements IGuiHandler
 		{
 			return new PressContainer(player.inventory, (PressTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
 		}
+		if (ID == 6)
+		{
+			return new PressContainer(player.inventory, (BioGenTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
+		}
 		return null;
 	}
 
@@ -67,6 +72,10 @@ public class ProspectGuiHandler implements IGuiHandler
 		if (ID == 5)
 		{
 			return new PressGUI(player.inventory, (PressTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
+		}
+		if (ID == 6)
+		{
+			return new PressGUI(player.inventory, (BioGenTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
 		}
 		return null;
 	}
