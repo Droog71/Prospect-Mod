@@ -257,7 +257,9 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
      */
     @Override
 	public void update()
-    {                 
+    {   
+    	boolean needsNetworkUpdate = false;
+    	
         if (!world.isRemote)
         {
             if (energyStorage.overloaded)
@@ -269,35 +271,35 @@ public class PressTileEntity extends TileEntity implements ITickable, ISidedInve
             	updateEnergy();            	
             	if (canPress() && useEnergy())
                 {            	
-                	doWork();
+            		++pressTime;	
+                    if (pressTime == totalpressTime)
+                    {
+                        pressTime = 0;
+                        totalpressTime = getpressTime(pressItemStacks.get(0));
+                        pressItem();
+                        needsNetworkUpdate = true;
+                    }
+                    
+                    effectsTimer++;
+            		if (effectsTimer > 55)
+            		{	
+            			world.playSound(null, pos, ProspectSounds.pressSoundEvent,  SoundCategory.BLOCKS, 1.0f, 1);
+            			effectsTimer = 0;
+            		}
                 }
                 else if (pressTime > 0)
                 {
                 	pressTime = MathHelper.clamp(pressTime - 1, 0, totalpressTime);
                 }
             }                   
-        }       
-    }
-    
-    private void doWork()
-    { 
-    	++pressTime;	
-        if (pressTime == totalpressTime)
+        }   
+        
+        if (needsNetworkUpdate)
         {
-            pressTime = 0;
-            totalpressTime = getpressTime(pressItemStacks.get(0));
-            pressItem();
             markDirty();
         }
-        
-        effectsTimer++;
-		if (effectsTimer > 55)
-		{	
-			world.playSound(null, pos, ProspectSounds.pressSoundEvent,  SoundCategory.BLOCKS, 1.0f, 1);
-			effectsTimer = 0;
-		}
     }
-    
+
     // Get values from the energy storage or ic2 energy sink
     private void updateEnergy()
     {

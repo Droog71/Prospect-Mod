@@ -1,7 +1,7 @@
 {
     "parent": "block/cube_bottom_top",
     "textures": {
-        "side": "prospect:blocks/bio_fuel_generator",
+        "side": "prospect:blocks/bio_fuel_generator_running",
         "bottom": "prospect:blocks/plating_dark",
         "top": "prospect:blocks/plating_dark"
     }

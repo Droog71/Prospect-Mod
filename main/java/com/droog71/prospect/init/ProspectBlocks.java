@@ -67,6 +67,7 @@ public class ProspectBlocks
 	public static Block hv_transformer;
 	public static Block ev_transformer;
 	public static Block bio_fuel_generator;
+	public static Block bio_fuel_generator_running;
 	public static Block lv_solar_panel;
 	public static Block mv_solar_panel;
 	public static Block hv_solar_panel;
@@ -114,6 +115,7 @@ public class ProspectBlocks
 		hv_transformer = new Transformer("hv_transformer",Material.IRON,16000,80000,9000).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		ev_transformer = new Transformer("ev_transformer",Material.IRON,25000,125000,16000).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		bio_fuel_generator = new BioFuelGenerator("bio_fuel_generator",Material.IRON).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
+		bio_fuel_generator_running = new BioFuelGenerator("bio_fuel_generator_running",Material.IRON).setHardness(1.0f);
 		lv_solar_panel = new SolarPanel("lv_solar_panel",Material.IRON,64,32,1).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		mv_solar_panel = new SolarPanel("mv_solar_panel",Material.IRON,256,128,2).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		hv_solar_panel = new SolarPanel("hv_solar_panel",Material.IRON,1024,512,3).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
@@ -174,6 +176,7 @@ public class ProspectBlocks
 		event.getRegistry().registerAll(hv_transformer);
 		event.getRegistry().registerAll(ev_transformer);
 		event.getRegistry().registerAll(bio_fuel_generator);
+		event.getRegistry().registerAll(bio_fuel_generator_running);
 		event.getRegistry().registerAll(lv_solar_panel);
 		event.getRegistry().registerAll(mv_solar_panel);
 		event.getRegistry().registerAll(hv_solar_panel);
@@ -212,6 +215,7 @@ public class ProspectBlocks
 		event.getRegistry().registerAll(new ItemBlock(hv_transformer).setRegistryName(hv_transformer.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(ev_transformer).setRegistryName(ev_transformer.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(bio_fuel_generator).setRegistryName(bio_fuel_generator.getRegistryName()));
+		event.getRegistry().registerAll(new ItemBlock(bio_fuel_generator_running).setRegistryName(bio_fuel_generator_running.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(lv_solar_panel).setRegistryName(lv_solar_panel.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(mv_solar_panel).setRegistryName(mv_solar_panel.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(hv_solar_panel).setRegistryName(hv_solar_panel.getRegistryName()));
@@ -250,6 +254,7 @@ public class ProspectBlocks
 		registerRender(Item.getItemFromBlock(hv_transformer));
 		registerRender(Item.getItemFromBlock(ev_transformer));
 		registerRender(Item.getItemFromBlock(bio_fuel_generator));
+		registerRender(Item.getItemFromBlock(bio_fuel_generator_running));
 		registerRender(Item.getItemFromBlock(lv_solar_panel));
 		registerRender(Item.getItemFromBlock(mv_solar_panel));
 		registerRender(Item.getItemFromBlock(hv_solar_panel));

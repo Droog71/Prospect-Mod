@@ -267,7 +267,9 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
      */
     @Override
 	public void update()
-    {                 
+    {   
+    	boolean needsNetworkUpdate = false;
+    	
         if (!world.isRemote)
         {
         	if (energyStorage.overloaded)
@@ -277,24 +279,21 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
         	else
         	{
         		updateEnergy();
-                if (isEnergized())
-                {            	
-                    if (canLaunch())
+                if (canLaunch() && useEnergy())
+                {
+            		++launchTime;   	
+                    if (launchTime == totalLaunchTime)
                     {
-                    	if (useEnergy())
-                    	{        
-                    		doWork();
-                    	}
+                        launchTime = 0;
+                        totalLaunchTime = getlaunchTime(launchPadItemStacks.get(0));
+                        launchItem();
+                        needsNetworkUpdate = true;
                     }
-                    else
-                    {
-                    	launchTime = 0;
-                    }
-                }  
+                }
                 else if (launchTime > 0)
                 {
                 	launchTime = MathHelper.clamp(launchTime - 2, 0, totalLaunchTime);
-                }
+                }              
         	} 
         	if (capsuleYpos > 0 && capsuleYpos < 500)
     		{
@@ -305,7 +304,12 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
     			world.setBlockToAir(new BlockPos(pos.getX(),pos.getY()+capsuleYpos-1,pos.getZ()));
     			capsuleYpos = 0;
     		}
-        }       
+        }    
+        
+        if (needsNetworkUpdate)
+        {
+            markDirty();
+        }
     }
     
     // Spawns particle effects, plays sound and moves capsule 1 block above the launch pad
@@ -329,20 +333,7 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
 		world.setBlockState(new BlockPos(pos.getX(),pos.getY()+capsuleYpos,pos.getZ()), ProspectBlocks.capsule.getDefaultState());
 		capsuleYpos++;
     }
-    
-    // Increases the progress each tick and launches the capsule at the end
-    private void doWork()
-    {
-    	++launchTime;   	
-        if (launchTime == totalLaunchTime)
-        {
-            launchTime = 0;
-            totalLaunchTime = getlaunchTime(launchPadItemStacks.get(0));
-            launchItem();
-            markDirty();
-        }
-    }
-    
+
     // Get values from the energy storage or ic2 energy sink
     private void updateEnergy()
     {

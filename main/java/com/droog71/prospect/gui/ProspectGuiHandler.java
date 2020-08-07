@@ -1,5 +1,6 @@
 package com.droog71.prospect.gui;
 
+import com.droog71.prospect.inventory.BioGenContainer;
 import com.droog71.prospect.inventory.ExtruderContainer;
 import com.droog71.prospect.inventory.LaunchPadContainer;
 import com.droog71.prospect.inventory.PressContainer;
@@ -45,7 +46,7 @@ public class ProspectGuiHandler implements IGuiHandler
 		}
 		if (ID == 6)
 		{
-			return new PressContainer(player.inventory, (BioGenTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
+			return new BioGenContainer(player.inventory, (BioGenTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
 		}
 		return null;
 	}
@@ -75,7 +76,7 @@ public class ProspectGuiHandler implements IGuiHandler
 		}
 		if (ID == 6)
 		{
-			return new PressGUI(player.inventory, (BioGenTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
+			return new BioGenGUI(player.inventory, (BioGenTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
 		}
 		return null;
 	}

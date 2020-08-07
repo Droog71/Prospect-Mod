@@ -1,5 +1,6 @@
 package com.droog71.prospect.tile_entity;
 
+import com.droog71.prospect.blocks.energy.BioFuelGenerator;
 import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
@@ -19,7 +20,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -148,7 +148,6 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
         if (index == 0 && !flag)
         {
             totalburnTime = getburnTime(stack);
-            burnTime = 0;
             markDirty();
         }
     }
@@ -258,36 +257,57 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
      */
     @Override
 	public void update()
-    {                 
+    {      
+    	boolean needsNetworkUpdate = false;
+    	boolean clientIsGenerating = burnTime > 0 && burnTime < totalburnTime;
         if (!world.isRemote)
-        {       	        	
-        	if (canGenerate())
+        {   
+        	if (burnTime == 0)
+    		{
+        		if (canConsumeFuel())
+        		{
+        			burnTime = 1;
+        			consumeFuel();
+        	        needsNetworkUpdate = true;
+        		}     		
+    		}	
+        	
+        	if (burnTime > 0 && burnTime < totalburnTime)
             {   
         		updateEnergy();
         		addEnergy();
         		distributeEnergy();
         		
-        		++burnTime;    	
-        	    if (burnTime == totalburnTime)
-        	    {
-        	    	burnTime = 0;
-        	    	totalburnTime = getburnTime(bioGenItemStacks.get(0));
-        	        burnFuel();
-        	        markDirty();
-        	    }
-        	    
-        	    effectsTimer++;
+        		burnTime++;
+        		effectsTimer++;
         		if (effectsTimer > 200)
         		{	
-        			world.playSound(null, pos, ProspectSounds.extruderSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
+        			world.playSound(null, pos, ProspectSounds.bioFuelGeneratorSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
         			effectsTimer = 0;
         		}
-            }
-            else if (burnTime > 0)
-            {
-                burnTime = MathHelper.clamp(burnTime - 1, 0, totalburnTime);
-            }                  
-        }       
+        		
+        		needsNetworkUpdate = true;
+            }	
+        	
+        	if (burnTime == totalburnTime)
+    	    {
+    	    	burnTime = 0;
+    	    	totalburnTime = getburnTime(bioGenItemStacks.get(0));
+    	    	needsNetworkUpdate = true;
+    	    }
+    	    
+        	if (clientIsGenerating != burnTime > 0 && burnTime < totalburnTime)
+        	{
+        		needsNetworkUpdate = true;
+        	}
+        	
+        	BioFuelGenerator.setState(burnTime > 0 && burnTime < totalburnTime, world, pos);
+        } 
+        
+        if (needsNetworkUpdate)
+        {
+            markDirty();
+        }
     }
     
     // Add energy to the buffer
@@ -366,9 +386,9 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     }
     
     /**
-     * Returns true if the genrator can generate power, i.e. has a source item, destination stack isn't full, etc.
+     * Returns true if the generator can consume fuel, i.e. has a source item, destination stack isn't full, etc.
      */
-    private boolean canGenerate()
+    private boolean canConsumeFuel()
     {
         if (bioGenItemStacks.get(0).isEmpty() || !isFuel(bioGenItemStacks.get(0)))
         {
@@ -409,25 +429,22 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     /**
      * Turn one item from the generator source stack into the appropriate resulting item in the generator result stack
      */
-    public void burnFuel()
+    public void consumeFuel()
     {
-        if (canGenerate())
+        ItemStack itemstack = bioGenItemStacks.get(0);
+        ItemStack itemstack1 = new ItemStack(Items.BUCKET);
+        ItemStack itemstack2 = bioGenItemStacks.get(2);
+
+        if (itemstack2.isEmpty())
         {
-            ItemStack itemstack = bioGenItemStacks.get(0);
-            ItemStack itemstack1 = new ItemStack(Items.BUCKET);
-            ItemStack itemstack2 = bioGenItemStacks.get(2);
-
-            if (itemstack2.isEmpty())
-            {
-                bioGenItemStacks.set(2, itemstack1.copy());
-            }
-            else if (itemstack2.getItem() == itemstack1.getItem())
-            {
-                itemstack2.grow(itemstack1.getCount());
-            }
-
-            itemstack.shrink(1);
+            bioGenItemStacks.set(2, itemstack1.copy());
         }
+        else if (itemstack2.getItem() == itemstack1.getItem())
+        {
+            itemstack2.grow(itemstack1.getCount());
+        }
+
+        itemstack.shrink(1);
     }
 
     /**

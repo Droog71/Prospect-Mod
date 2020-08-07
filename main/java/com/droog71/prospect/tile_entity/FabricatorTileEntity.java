@@ -272,7 +272,9 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
      */
     @Override
 	public void update()
-    {       
+    {      
+    	boolean needsNetworkUpdate = false;
+    	
         if (!world.isRemote)
         {
         	if (energyStorage.overloaded)
@@ -284,7 +286,22 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
         		updateEnergy();        	
             	if (itemsConsumed && useEnergy())
             	{
-                	doWork();
+            		++fabricateTime;
+                	
+                    if (fabricateTime == totalfabricateTime)
+                    {
+                    	fabricateTime = 0;
+                    	totalfabricateTime = getfabricateTime(fabricatorItemStacks.get(0));
+                        fabricateItem();
+                        needsNetworkUpdate = true;
+                    }
+            		
+            		effectsTimer++;
+            		if (effectsTimer > 40)
+            		{
+            			world.playSound(null, pos, ProspectSounds.fabricatorSoundEvent,  SoundCategory.BLOCKS, 0.25f, 1);
+            			effectsTimer = 0;
+            		}
             	}
             	else if (canFabricate() && useEnergy())
             	{
@@ -296,27 +313,17 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
                 }            
         	}      	
         }
+        
+        if (needsNetworkUpdate)
+        {
+            markDirty();
+        }
     }
     
     // Fabricate items and plays the sound effect
     private void doWork()
     {
-    	++fabricateTime;
     	
-        if (fabricateTime == totalfabricateTime)
-        {
-        	fabricateTime = 0;
-        	totalfabricateTime = getfabricateTime(fabricatorItemStacks.get(0));
-            fabricateItem();
-            markDirty();
-        }
-		
-		effectsTimer++;
-		if (effectsTimer > 40)
-		{
-			world.playSound(null, pos, ProspectSounds.fabricatorSoundEvent,  SoundCategory.BLOCKS, 0.25f, 1);
-			effectsTimer = 0;
-		}
     }
     
     // Get values from the energy storage or ic2 energy sink

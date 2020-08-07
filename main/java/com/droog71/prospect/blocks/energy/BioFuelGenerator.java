@@ -5,9 +5,13 @@ import com.droog71.prospect.Prospect;
 import com.droog71.prospect.blocks.ProspectBlockContainer;
 import com.droog71.prospect.init.ProspectBlocks;
 import com.droog71.prospect.tile_entity.BioGenTileEntity;
+
+import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
@@ -20,12 +24,39 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class BioFuelGenerator extends ProspectBlockContainer
-{
+{	
+	private static boolean keepInventory;
+	
     public BioFuelGenerator(String name, Material material)
     {   	
     	super(name, material);
     }
 
+    public static void setState(boolean active, World worldIn, BlockPos pos)
+    {
+        TileEntity tileentity = worldIn.getTileEntity(pos);
+        keepInventory = true;
+        
+        if (active)
+        {
+            worldIn.setBlockState(pos, ProspectBlocks.bio_fuel_generator_running.getDefaultState());
+            worldIn.setBlockState(pos, ProspectBlocks.bio_fuel_generator_running.getDefaultState());
+        }
+        else
+        {
+            worldIn.setBlockState(pos, ProspectBlocks.bio_fuel_generator.getDefaultState());
+            worldIn.setBlockState(pos, ProspectBlocks.bio_fuel_generator.getDefaultState());
+        }
+
+        keepInventory = true;
+        
+        if (tileentity != null)
+        {
+            tileentity.validate();
+            worldIn.setTileEntity(pos, tileentity);
+        }
+    }
+    
     @Override
 	public EnumBlockRenderType getRenderType(IBlockState state)
     {
@@ -79,14 +110,17 @@ public class BioFuelGenerator extends ProspectBlockContainer
     @Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
     {
-        TileEntity tileentity = worldIn.getTileEntity(pos);
-
-        if (tileentity instanceof BioGenTileEntity)
+    	if (!keepInventory)
         {
-            InventoryHelper.dropInventoryItems(worldIn, pos, (BioGenTileEntity)tileentity);
-            worldIn.updateComparatorOutputLevel(pos, this);
+	        TileEntity tileentity = worldIn.getTileEntity(pos);
+	
+	        if (tileentity instanceof BioGenTileEntity)
+	        {
+	            InventoryHelper.dropInventoryItems(worldIn, pos, (BioGenTileEntity)tileentity);
+	            worldIn.updateComparatorOutputLevel(pos, this);
+	        }   
         }
-        super.breakBlock(worldIn, pos, state);
+    	super.breakBlock(worldIn, pos, state);
     }
 
     @Override

@@ -65,15 +65,15 @@ public class BioGenGUI extends GuiContainer
             this.drawTexturedModalRect(i + 56, j + 36 + 12 - k, 176, 12 - k, 14, k + 1);
         }
 
-        int l = this.getBurnProgressScaled(24);
-        this.drawTexturedModalRect(i + 79, j + 34, 176, 14, l + 1, 16);
+        int h = this.getBurnProgressScaled(16);
+        this.drawTexturedModalRect(i + 79, j + 34, 176, 14, 24, h + 1);
     }
 
     private int getBurnProgressScaled(int pixels)
     {
         int i = this.tileBioGen.getField(2);
         int j = this.tileBioGen.getField(3);
-        return j != 0 && i != 0 ? i * pixels / j : 0;
+        return j != 0 && i != 0 ? i * pixels / j : 16;
     }
 
     private int getPowerScaled(int pixels)

@@ -17,6 +17,7 @@ public class ProspectSounds
     static ResourceLocation capsuleSoundLocation;
     static ResourceLocation extruderSoundLocation;
     static ResourceLocation pressSoundLocation;
+    static ResourceLocation bioFuelGeneratorSoundLocation;
 	public static SoundEvent fabricatorSoundEvent;
     public static SoundEvent purifierSoundEvent;
     public static SoundEvent quarrySoundEvent;
@@ -25,6 +26,7 @@ public class ProspectSounds
     public static SoundEvent capsuleSoundEvent;
     public static SoundEvent extruderSoundEvent;
     public static SoundEvent pressSoundEvent;
+    public static SoundEvent bioFuelGeneratorSoundEvent;
 	
 	public static void init() 
 	{
@@ -36,6 +38,7 @@ public class ProspectSounds
         capsuleSoundLocation = new ResourceLocation("prospect", "capsule");
         extruderSoundLocation = new ResourceLocation("prospect", "extruder");
         pressSoundLocation = new ResourceLocation("prospect", "press");
+        bioFuelGeneratorSoundLocation = new ResourceLocation("prospect", "bio_fuel_generator");
 		fabricatorSoundEvent = new SoundEvent(fabricatorSoundLocation);
         purifierSoundEvent = new SoundEvent(purifierSoundLocation);
         quarrySoundEvent = new SoundEvent(quarrySoundLocation);
@@ -44,6 +47,8 @@ public class ProspectSounds
         capsuleSoundEvent = new SoundEvent(capsuleSoundLocation);
         extruderSoundEvent = new SoundEvent(extruderSoundLocation);
         pressSoundEvent = new SoundEvent(pressSoundLocation);
+        bioFuelGeneratorSoundEvent = new SoundEvent(bioFuelGeneratorSoundLocation);
+        
 	}
 	
 	public static void registerSoundEvent(String name, SoundEvent event)

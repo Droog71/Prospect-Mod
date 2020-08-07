@@ -324,11 +324,6 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
                 {
                 	replicateTime = MathHelper.clamp(replicateTime - 1, 0, totalreplicateTime);
                 } 
-	            
-	            if (needsNetworkUpdate)
-	            {
-	                markDirty();
-	            }
 			}
         }
         

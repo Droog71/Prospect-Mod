@@ -258,7 +258,9 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
      */
     @Override
 	public void update()
-    {                 
+    {   
+    	boolean needsNetworkUpdate = false;
+    	
         if (!world.isRemote)
         {
             if (energyStorage.overloaded)
@@ -270,33 +272,33 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
             	updateEnergy();            	
             	if (canExtrude() && useEnergy())
                 {            	
-                	doWork();
+            		++extrudeTime;    	
+                    if (extrudeTime == totalextrudeTime)
+                    {
+                        extrudeTime = 0;
+                        totalextrudeTime = getextrudeTime(extruderItemStacks.get(0));
+                        extrudeItem();
+                        needsNetworkUpdate = true;
+                    }
+                    
+                    effectsTimer++;
+            		if (effectsTimer > 200)
+            		{	
+            			world.playSound(null, pos, ProspectSounds.extruderSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
+            			effectsTimer = 0;
+            		}
                 }
                 else if (extrudeTime > 0)
                 {
                     extrudeTime = MathHelper.clamp(extrudeTime - 1, 0, totalextrudeTime);
                 }
             }                   
-        }       
-    }
-    
-    private void doWork()
-    { 
-    	++extrudeTime;    	
-        if (extrudeTime == totalextrudeTime)
+        } 
+        
+        if (needsNetworkUpdate)
         {
-            extrudeTime = 0;
-            totalextrudeTime = getextrudeTime(extruderItemStacks.get(0));
-            extrudeItem();
             markDirty();
         }
-        
-        effectsTimer++;
-		if (effectsTimer > 200)
-		{	
-			world.playSound(null, pos, ProspectSounds.extruderSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
-			effectsTimer = 0;
-		}
     }
     
     // Get values from the energy storage or ic2 energy sink
