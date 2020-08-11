@@ -9,7 +9,8 @@
         "item": "prospect:in_ev_wire"
     },
     "A": {
-        "item": "prospect:aluminum_plate"
+      "type": "forge:ore_dict",
+      "ore": "ingotAluminum"
     }
 },
   "result": {

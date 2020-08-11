@@ -104,7 +104,6 @@ public class PotionSpore extends PotionProspect
 			{
 				return true;
 			}
-			i++;
 		}
 		return false;
 	}
