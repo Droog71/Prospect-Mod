@@ -1,6 +1,5 @@
 package com.droog71.prospect;
 
-import org.apache.logging.log4j.Logger;
 import com.droog71.prospect.common.CommonProxy;
 import com.droog71.prospect.config.ConfigHandler;
 import com.droog71.prospect.event.FMLEventHandler;
@@ -9,11 +8,9 @@ import com.droog71.prospect.init.ProspectBlocks;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.worldgen.OreGen;
-
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -30,7 +27,6 @@ public class Prospect
     public static final String MODID = "prospect";
     public static final String NAME = "Prospect";
     public static final String VERSION = "1.0";
-    private static Logger logger;
 
     @Instance
 	public static Prospect instance;
@@ -45,7 +41,6 @@ public class Prospect
     	ProspectItems.init();
     	ProspectSounds.init();
     	ConfigHandler.createConfigFile();
-        logger = event.getModLog();
     }
 
     @EventHandler
@@ -65,7 +60,7 @@ public class Prospect
     	OreDictionary.registerOre("ingotSilver", ProspectItems.silver_ingot);
     	OreDictionary.registerOre("ingotLead", ProspectItems.lead_ingot);
     	OreDictionary.registerOre("silicon", ProspectItems.silicon);
-    	FMLCommonHandler.instance().bus().register(FMLEventHandler.INSTANCE);
+    	MinecraftForge.EVENT_BUS.register(FMLEventHandler.INSTANCE);
     	NetworkRegistry.INSTANCE.registerGuiHandler(instance, new ProspectGuiHandler());
     }
     

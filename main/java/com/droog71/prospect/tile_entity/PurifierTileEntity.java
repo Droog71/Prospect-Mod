@@ -175,6 +175,7 @@ public class PurifierTileEntity extends TileEntity implements ITickable
     	return false;
     }
 	
+	@SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @javax.annotation.Nullable net.minecraft.util.EnumFacing facing)
     {

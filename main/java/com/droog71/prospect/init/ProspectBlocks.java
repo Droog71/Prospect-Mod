@@ -30,6 +30,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -132,17 +133,17 @@ public class ProspectBlocks
 		launchPadTileEntity = new LaunchPadTileEntity();
 		cableTileEntity = new CableTileEntity(0,0);
 		transformerTileEntity = new TransformerTileEntity(0,0,0);
-		GameRegistry.registerTileEntity(pressTileEntity.getClass(),"prospect:pressTileEntity");
-		GameRegistry.registerTileEntity(extruderTileEntity.getClass(),"prospect:extruderTileEntity");
-		GameRegistry.registerTileEntity(purifierTileEntity.getClass(), "prospect:purifierTileEntity");
-		GameRegistry.registerTileEntity(fabricatorTileEntity.getClass(), "prospect:fabricatorTileEntity");
-		GameRegistry.registerTileEntity(quarryTileEntity.getClass(), "prospect:quarryTileEntity");
-		GameRegistry.registerTileEntity(replicatorTileEntity.getClass(), "prospect:replicatorTileEntity");
-		GameRegistry.registerTileEntity(bioGenTileEntity.getClass(), "prospect:bioGenTileEntity");
-		GameRegistry.registerTileEntity(solarPanelTileEntity.getClass(), "prospect:solarPanelTileEntity");
-		GameRegistry.registerTileEntity(launchPadTileEntity.getClass(), "prospect:launchPadTileEntity");
-		GameRegistry.registerTileEntity(cableTileEntity.getClass(), "prospect:cableTileEntity");
-		GameRegistry.registerTileEntity(transformerTileEntity.getClass(), "prospect:transformerTileEntity");
+		GameRegistry.registerTileEntity(pressTileEntity.getClass(),new ResourceLocation("prospect:pressTileEntity"));
+		GameRegistry.registerTileEntity(extruderTileEntity.getClass(),new ResourceLocation("prospect:extruderTileEntity"));
+		GameRegistry.registerTileEntity(purifierTileEntity.getClass(), new ResourceLocation("prospect:purifierTileEntity"));
+		GameRegistry.registerTileEntity(fabricatorTileEntity.getClass(), new ResourceLocation("prospect:fabricatorTileEntity"));
+		GameRegistry.registerTileEntity(quarryTileEntity.getClass(), new ResourceLocation("prospect:quarryTileEntity"));
+		GameRegistry.registerTileEntity(replicatorTileEntity.getClass(), new ResourceLocation("prospect:replicatorTileEntity"));
+		GameRegistry.registerTileEntity(bioGenTileEntity.getClass(), new ResourceLocation("prospect:bioGenTileEntity"));
+		GameRegistry.registerTileEntity(solarPanelTileEntity.getClass(), new ResourceLocation("prospect:solarPanelTileEntity"));
+		GameRegistry.registerTileEntity(launchPadTileEntity.getClass(), new ResourceLocation("prospect:launchPadTileEntity"));
+		GameRegistry.registerTileEntity(cableTileEntity.getClass(), new ResourceLocation("prospect:cableTileEntity"));
+		GameRegistry.registerTileEntity(transformerTileEntity.getClass(), new ResourceLocation("prospect:transformerTileEntity"));
 	}
 	
 	@SubscribeEvent

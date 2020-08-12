@@ -26,6 +26,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
@@ -222,7 +223,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
     private boolean isLiquid(ItemStack stack)
     {
     	Block b = Block.getBlockFromItem(stack.getItem());
-    	if (b instanceof BlockLiquid || b instanceof BlockFluidBase || b instanceof IFluidBlock || b.getMaterial(b.getDefaultState()).isLiquid())
+    	if (b instanceof BlockLiquid || b instanceof BlockFluidBase || b instanceof IFluidBlock)
     	{
     		return true;
     	}
@@ -402,9 +403,11 @@ public class QuarryTileEntity extends TileEntity implements ITickable
     // Sound played when a block is mined
     private void playMiningSound(BlockPos p)
     {
-    	if (world.getBlockState(p).getBlock() != Blocks.AIR)
+    	IBlockState state = world.getBlockState(p);
+    	Block b = state.getBlock();
+    	if (b != Blocks.AIR)
     	{
-    		world.playSound(null, p, world.getBlockState(p).getBlock().getSoundType().getBreakSound(), SoundCategory.BLOCKS, 1.0f, 1);
+    		world.playSound(null, p, b.getSoundType(state,world,p,null).getBreakSound(), SoundCategory.BLOCKS, 1.0f, 1);
     	}	
     }
 
@@ -669,6 +672,7 @@ public class QuarryTileEntity extends TileEntity implements ITickable
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @javax.annotation.Nullable net.minecraft.util.EnumFacing facing)
     {

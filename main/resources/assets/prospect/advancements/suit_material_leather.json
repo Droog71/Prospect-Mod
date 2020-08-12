@@ -1,0 +1,25 @@
+{
+ "parent": "minecraft:recipes/root",
+ "rewards": {
+  "recipes": [
+   "prospect:suit_material_leather"
+  ]
+ },
+ "criteria": {
+  "has_item": {
+   "trigger": "minecraft:inventory_changed",
+   "conditions": {
+    "items": [
+     {
+      "item": "minecraft:leather"
+     }
+    ]
+   }
+  }
+ },
+ "requirements": [
+  [
+   "has_item"
+  ]
+ ]
+}

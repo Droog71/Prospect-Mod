@@ -5,13 +5,9 @@ import com.droog71.prospect.Prospect;
 import com.droog71.prospect.blocks.ProspectBlockContainer;
 import com.droog71.prospect.init.ProspectBlocks;
 import com.droog71.prospect.tile_entity.BioGenTileEntity;
-
-import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;

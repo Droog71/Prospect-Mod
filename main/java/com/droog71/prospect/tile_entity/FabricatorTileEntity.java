@@ -319,13 +319,7 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
             markDirty();
         }
     }
-    
-    // Fabricate items and plays the sound effect
-    private void doWork()
-    {
-    	
-    }
-    
+
     // Get values from the energy storage or ic2 energy sink
     private void updateEnergy()
     {

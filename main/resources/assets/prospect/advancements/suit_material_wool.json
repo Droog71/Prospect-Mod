@@ -2,7 +2,7 @@
  "parent": "minecraft:recipes/root",
  "rewards": {
   "recipes": [
-   "prospect:suit_material"
+   "prospect:suit_material_wool"
   ]
  },
  "criteria": {
@@ -11,7 +11,8 @@
    "conditions": {
     "items": [
      {
-      "item": "minecraft:leather"
+      "item": "minecraft:wool",
+      "data": 0
      }
     ]
    }
