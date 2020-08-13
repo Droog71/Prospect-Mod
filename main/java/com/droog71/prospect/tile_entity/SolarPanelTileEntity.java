@@ -146,7 +146,10 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 		}
 		if (connectedFE == false)
 		{
-			((BasicSource) ic2EnergySource).setCapacity(energyStorage.capacity/4);
+			if (Loader.isModLoaded("ic2"))
+			{
+				((BasicSource) ic2EnergySource).setCapacity(energyStorage.capacity/4);
+			}
 		}
 	}
 	

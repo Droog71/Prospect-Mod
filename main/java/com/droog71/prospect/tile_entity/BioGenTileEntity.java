@@ -275,17 +275,19 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
         	if (burnTime > 0 && burnTime < totalburnTime)
             {   
         		updateEnergy();
-        		addEnergy();
-        		distributeEnergy();
-        		
-        		burnTime++;
-        		effectsTimer++;
-        		if (effectsTimer > 200)
-        		{	
-        			world.playSound(null, pos, ProspectSounds.bioFuelGeneratorSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
-        			effectsTimer = 0;
+        		System.out.println("PROSPECT DEBUG: "+energyStored+" {} "+energyCapacity);
+        		if (energyStored < energyCapacity)
+        		{
+        			burnTime++;
+            		effectsTimer++;
+            		if (effectsTimer > 200)
+            		{	
+            			world.playSound(null, pos, ProspectSounds.bioFuelGeneratorSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
+            			effectsTimer = 0;
+            		}
+            		addEnergy();
         		}
-        		
+        		distributeEnergy();
         		needsNetworkUpdate = true;
             }	
         	
@@ -326,7 +328,7 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     // Get values from the energy storage or ic2 energy sink
     private void updateEnergy()
     {
-    	if (energyStorage.getEnergyStored() > 0)
+    	if (energyStorage.receivers(world, pos).size() > 0)
     	{
     		energyStored = energyStorage.getEnergyStored();
     		energyCapacity = energyStorage.getMaxEnergyStored();
@@ -369,7 +371,7 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
 		}
 		if (connectedFE == false)
 		{
-			((BasicSource) ic2EnergySource).setCapacity(4);
+			((BasicSource) ic2EnergySource).setCapacity(8);
 		}
 	}
     
