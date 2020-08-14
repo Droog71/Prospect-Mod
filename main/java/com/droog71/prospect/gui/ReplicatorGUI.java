@@ -22,8 +22,8 @@ public class ReplicatorGUI extends GuiContainer
     public ReplicatorGUI(InventoryPlayer playerInv, IInventory replicatorInv)
     {
         super(new ReplicatorContainer(playerInv, replicatorInv));
-        this.playerInventory = playerInv;
-        this.tileReplicator = replicatorInv;
+        playerInventory = playerInv;
+        tileReplicator = replicatorInv;
     }
 
     /**
@@ -32,9 +32,9 @@ public class ReplicatorGUI extends GuiContainer
     @Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawDefaultBackground();
+        drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
-        this.renderHoveredToolTip(mouseX, mouseY);
+        renderHoveredToolTip(mouseX, mouseY);
     }
 
     /**
@@ -43,9 +43,9 @@ public class ReplicatorGUI extends GuiContainer
     @Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        String s = this.tileReplicator.getName();
-        this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
-        this.fontRenderer.drawString(this.playerInventory.getDisplayName().getUnformattedText(), 8, this.ySize - 96 + 2, 4210752);
+        String s = tileReplicator.getName();
+        fontRenderer.drawString(s, xSize / 2 - fontRenderer.getStringWidth(s) / 2, 6, 4210752);
+        fontRenderer.drawString(playerInventory.getDisplayName().getUnformattedText(), 8, ySize - 96 + 2, 4210752);
     }
 
     /**
@@ -55,37 +55,30 @@ public class ReplicatorGUI extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(REPLICATOR_GUI_TEXTURES);
-        int i = (this.width - this.xSize) / 2;
-        int j = (this.height - this.ySize) / 2;
-        this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
+        mc.getTextureManager().bindTexture(REPLICATOR_GUI_TEXTURES);
+        int i = (width - xSize) / 2;
+        int j = (height - ySize) / 2;
+        drawTexturedModalRect(i, j, 0, 0, xSize, ySize);
 
-        if (ReplicatorTileEntity.isEnergized(this.tileReplicator))
+        if (ReplicatorTileEntity.isEnergized(tileReplicator))
         {
-            int k = this.getPowerScaled(13);
-            this.drawTexturedModalRect(i + 56, j + 36 + 12 - k, 176, 12 - k, 14, k + 1);
+            int k = getPowerScaled(13);
+            drawTexturedModalRect(i + 56, j + 36 + 12 - k, 176, 12 - k, 14, k + 1);
         }
 
-        int l = this.getReplicationProgressScaled(24);
-        this.drawTexturedModalRect(i + 79, j + 34, 176, 14, l + 1, 16);
+        int l = getReplicationProgressScaled(24);
+        drawTexturedModalRect(i + 79, j + 34, 176, 14, l + 1, 16);
     }
 
     private int getReplicationProgressScaled(int pixels)
     {
-        int i = this.tileReplicator.getField(2);
-        int j = this.tileReplicator.getField(3);
+        int i = tileReplicator.getField(2);
+        int j = tileReplicator.getField(3);
         return j != 0 && i != 0 ? i * pixels / j : 0;
     }
 
     private int getPowerScaled(int pixels)
     {
-        int i = this.tileReplicator.getField(4);
-
-        if (i == 0)
-        {
-            i = 200;
-        }
-
-        return this.tileReplicator.getField(5) * pixels / i;
+        return tileReplicator.getField(5) * pixels / tileReplicator.getField(4);
     }
 }

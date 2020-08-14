@@ -1,9 +1,9 @@
 { 
   "type": "forge:ore_shaped",
   "pattern": [
-    "AAA",
+    "   ",
     "AWA",
-    "AAA"  ],
+    "   "  ],
   "key": {
     "W": {
         "item": "prospect:in_lv_wire"
@@ -14,7 +14,7 @@
 },
   "result": {
     "item": "prospect:lv_cable",
-    "data": 0
+    "count": 10
   }
 }
 

@@ -21,8 +21,8 @@ public class BioGenGUI extends GuiContainer
     public BioGenGUI(InventoryPlayer playerInv, IInventory bioGenInv)
     {
         super(new BioGenContainer(playerInv, bioGenInv));
-        this.playerInventory = playerInv;
-        this.tileBioGen = bioGenInv;
+        playerInventory = playerInv;
+        tileBioGen = bioGenInv;
     }
 
     /**
@@ -31,9 +31,9 @@ public class BioGenGUI extends GuiContainer
     @Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawDefaultBackground();
+        drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
-        this.renderHoveredToolTip(mouseX, mouseY);
+        renderHoveredToolTip(mouseX, mouseY);
     }
 
     /**
@@ -42,9 +42,9 @@ public class BioGenGUI extends GuiContainer
     @Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        String s = this.tileBioGen.getName();
-        this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
-        this.fontRenderer.drawString(this.playerInventory.getDisplayName().getUnformattedText(), 8, this.ySize - 96 + 2, 4210752);
+        String s = tileBioGen.getName();
+        fontRenderer.drawString(s, xSize / 2 - fontRenderer.getStringWidth(s) / 2, 6, 4210752);
+        fontRenderer.drawString(playerInventory.getDisplayName().getUnformattedText(), 8, ySize - 96 + 2, 4210752);
     }
 
     /**
@@ -54,37 +54,30 @@ public class BioGenGUI extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(BIO_GEN_GUI_TEXTURES);
-        int i = (this.width - this.xSize) / 2;
-        int j = (this.height - this.ySize) / 2;
-        this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
+        mc.getTextureManager().bindTexture(BIO_GEN_GUI_TEXTURES);
+        int i = (width - xSize) / 2;
+        int j = (height - ySize) / 2;
+        drawTexturedModalRect(i, j, 0, 0, xSize, ySize);
 
-        if (BioGenTileEntity.isEnergized(this.tileBioGen))
+        if (BioGenTileEntity.isEnergized(tileBioGen))
         {
-            int k = this.getPowerScaled(13);
-            this.drawTexturedModalRect(i + 56, j + 36 + 12 - k, 176, 12 - k, 14, k + 1);
+            int k = getPowerScaled(13);
+            drawTexturedModalRect(i + 56, j + 36 + 12 - k, 176, 12 - k, 14, k + 1);
         }
 
-        int h = this.getBurnProgressScaled(16);
-        this.drawTexturedModalRect(i + 79, j + 34, 176, 14, 24, h + 1);
+        int h = getBurnProgressScaled(16);
+        drawTexturedModalRect(i + 79, j + 34, 176, 14, 24, h + 1);
     }
 
     private int getBurnProgressScaled(int pixels)
     {
-        int i = this.tileBioGen.getField(2);
-        int j = this.tileBioGen.getField(3);
+        int i = tileBioGen.getField(2);
+        int j = tileBioGen.getField(3);
         return j != 0 && i != 0 ? i * pixels / j : 16;
     }
 
     private int getPowerScaled(int pixels)
     {
-        int i = this.tileBioGen.getField(1);
-
-        if (i == 0)
-        {
-            i = 200;
-        }
-
-        return this.tileBioGen.getField(0) * pixels / i;
+        return tileBioGen.getField(0) * pixels / tileBioGen.getField(1);
     }
 }

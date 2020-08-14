@@ -1,21 +1,20 @@
 { 
   "type": "forge:ore_shaped",
   "pattern": [
-    "AAA",
+    "   ",
     "AWA",
-    "AAA"  ],
+    "   "  ],
   "key": {
     "W": {
         "item": "prospect:in_ev_wire"
     },
     "A": {
-      "type": "forge:ore_dict",
-      "ore": "ingotAluminum"
+      "item": "prospect:aluminum_plate"
     }
 },
   "result": {
     "item": "prospect:ev_cable",
-    "data": 0
+    "count": 10
   }
 }
 

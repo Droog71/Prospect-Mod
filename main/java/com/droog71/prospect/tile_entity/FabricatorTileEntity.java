@@ -8,9 +8,6 @@ import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.FabricatorContainer;
 import com.droog71.prospect.items.Schematic;
 import ic2.api.energy.prefab.BasicSink;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
@@ -22,16 +19,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.Loader;
@@ -468,62 +461,38 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
     // Returns an adjacent inventory containing the necessary ingredients for the current schematic
     public IInventory getInventoryForCrafting(ItemStack[] stacks)
     {
-    	List<IInventory> invList = new ArrayList<IInventory>();
+    	List<IInventory> inventoryList = new ArrayList<IInventory>();
     	BlockPos[] positions = {pos.add(0,1,0),pos.add(0,-1,0),pos.add(1,0,0),pos.add(-1,0,0),pos.add(0,0,1),pos.add(0,0,-1)};    	
     	for (BlockPos p : positions)
     	{
-    		invList.add(getInventoryAtPosition(world,p.getX(),p.getY(),p.getZ()));
-    	}   	
-    	for (IInventory inventory : invList)
-    	{
+    		IInventory inventory = getInventoryAtPosition(p);
     		if (inventory != null)
-    		{  		
-    			if (canCraft(stacks,inventory))
-    			{
-    				return inventory;
-    			} 			
+    		{
+    			inventoryList.add(inventory);
     		}
+    	}   	
+    	for (IInventory inventory : inventoryList)
+    	{ 		
+			if (canCraft(stacks,inventory))
+			{
+				return inventory;
+			} 			
     	}
     	return null;
     }
     
     // Returns IInventory instance at a given position
-    public static IInventory getInventoryAtPosition(World worldIn, double x, double y, double z)
+    public IInventory getInventoryAtPosition(BlockPos blockpos)
     {
-        IInventory iinventory = null;
-        int i = MathHelper.floor(x);
-        int j = MathHelper.floor(y);
-        int k = MathHelper.floor(z);
-        BlockPos blockpos = new BlockPos(i, j, k);
-        net.minecraft.block.state.IBlockState state = worldIn.getBlockState(blockpos);
-        Block block = state.getBlock();
-
-        if (block.hasTileEntity(state))
+        TileEntity tileentity = world.getTileEntity(blockpos);
+        if (tileentity != null)
         {
-            TileEntity tileentity = worldIn.getTileEntity(blockpos);
-
             if (tileentity instanceof IInventory)
             {
-                iinventory = (IInventory)tileentity;
-
-                if (iinventory instanceof TileEntityChest && block instanceof BlockChest)
-                {
-                    iinventory = ((BlockChest)block).getContainer(worldIn, blockpos, true);
-                }
+                return (IInventory)tileentity;  
             }
         }
-
-        if (iinventory == null)
-        {
-            List<Entity> list = worldIn.getEntitiesInAABBexcluding((Entity)null, new AxisAlignedBB(x - 0.5D, y - 0.5D, z - 0.5D, x + 0.5D, y + 0.5D, z + 0.5D), EntitySelectors.HAS_INVENTORY);
-
-            if (!list.isEmpty())
-            {
-                iinventory = (IInventory)list.get(worldIn.rand.nextInt(list.size()));
-            }
-        }
-
-        return iinventory;
+        return null;
     }
     
     /**
