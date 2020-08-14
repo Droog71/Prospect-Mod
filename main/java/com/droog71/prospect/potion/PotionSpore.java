@@ -54,11 +54,11 @@ public class PotionSpore extends PotionProspect
 			if (!nearPurifier(player) && (!filterInstalled(player) || !wearingProtectiveArmor(player))) 
 			{
 				hurtTimer++;
-				if (hurtTimer >= 400)
+				if (hurtTimer >= 1200)
 				{
 					player.attackEntityFrom(DamageSource.GENERIC, 0.5F);									
 				}	
-				if (hurtTimer >= 440)
+				if (hurtTimer >= 1220)
 				{
 					sendMessage(player);
 					hurtTimer = 0;	

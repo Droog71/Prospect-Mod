@@ -13,9 +13,14 @@ import com.droog71.prospect.blocks.energy.Quarry;
 import com.droog71.prospect.blocks.energy.Replicator;
 import com.droog71.prospect.blocks.energy.SolarPanel;
 import com.droog71.prospect.blocks.energy.Transformer;
+import com.droog71.prospect.blocks.energy.ZeroPointCooler;
+import com.droog71.prospect.blocks.energy.ZeroPointReactor;
+import com.droog71.prospect.blocks.gas.CopperPipe;
 import com.droog71.prospect.blocks.ore.LivingOre;
 import com.droog71.prospect.tile_entity.BioGenTileEntity;
 import com.droog71.prospect.tile_entity.CableTileEntity;
+import com.droog71.prospect.tile_entity.CoolerTileEntity;
+import com.droog71.prospect.tile_entity.CopperPipeTileEntity;
 import com.droog71.prospect.tile_entity.ExtruderTileEntity;
 import com.droog71.prospect.tile_entity.FabricatorTileEntity;
 import com.droog71.prospect.tile_entity.LaunchPadTileEntity;
@@ -25,6 +30,7 @@ import com.droog71.prospect.tile_entity.QuarryTileEntity;
 import com.droog71.prospect.tile_entity.ReplicatorTileEntity;
 import com.droog71.prospect.tile_entity.SolarPanelTileEntity;
 import com.droog71.prospect.tile_entity.TransformerTileEntity;
+import com.droog71.prospect.tile_entity.ZeroPointTileEntity;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -74,6 +80,9 @@ public class ProspectBlocks
 	public static Block hv_solar_panel;
 	public static Block ev_solar_panel;
 	public static Block iv_solar_panel;
+	public static Block zero_point_reactor;
+	public static Block zero_point_cooler;
+	public static Block copper_pipe;
 	static ExtruderTileEntity extruderTileEntity;
 	static PressTileEntity pressTileEntity;
 	static PurifierTileEntity purifierTileEntity;
@@ -82,6 +91,9 @@ public class ProspectBlocks
 	static ReplicatorTileEntity replicatorTileEntity;
 	static BioGenTileEntity bioGenTileEntity;
 	static SolarPanelTileEntity solarPanelTileEntity;
+	static ZeroPointTileEntity zeroPointTileEntity;
+	static CoolerTileEntity coolerTileEntity;
+	static CopperPipeTileEntity copperPipeTileEntity;
 	static LaunchPadTileEntity launchPadTileEntity;
 	static CableTileEntity cableTileEntity;
 	static TransformerTileEntity transformerTileEntity;
@@ -122,6 +134,9 @@ public class ProspectBlocks
 		hv_solar_panel = new SolarPanel("hv_solar_panel",Material.IRON,1024,512,3).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		ev_solar_panel = new SolarPanel("ev_solar_panel",Material.IRON,4096,2048,4).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		iv_solar_panel = new SolarPanel("iv_solar_panel",Material.IRON,16384,8192,5).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
+		zero_point_reactor = new ZeroPointReactor("zero_point_reactor",Material.IRON).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
+		zero_point_cooler = new ZeroPointCooler("zero_point_cooler",Material.IRON).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
+		copper_pipe = new CopperPipe("copper_pipe",Material.IRON).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		extruderTileEntity = new ExtruderTileEntity();
 		pressTileEntity = new PressTileEntity();
 		purifierTileEntity = new PurifierTileEntity();
@@ -133,6 +148,9 @@ public class ProspectBlocks
 		launchPadTileEntity = new LaunchPadTileEntity();
 		cableTileEntity = new CableTileEntity(0,0);
 		transformerTileEntity = new TransformerTileEntity(0,0,0);
+		zeroPointTileEntity = new ZeroPointTileEntity();
+		coolerTileEntity = new CoolerTileEntity();
+		copperPipeTileEntity = new CopperPipeTileEntity();
 		GameRegistry.registerTileEntity(pressTileEntity.getClass(),new ResourceLocation("prospect:pressTileEntity"));
 		GameRegistry.registerTileEntity(extruderTileEntity.getClass(),new ResourceLocation("prospect:extruderTileEntity"));
 		GameRegistry.registerTileEntity(purifierTileEntity.getClass(), new ResourceLocation("prospect:purifierTileEntity"));
@@ -144,6 +162,9 @@ public class ProspectBlocks
 		GameRegistry.registerTileEntity(launchPadTileEntity.getClass(), new ResourceLocation("prospect:launchPadTileEntity"));
 		GameRegistry.registerTileEntity(cableTileEntity.getClass(), new ResourceLocation("prospect:cableTileEntity"));
 		GameRegistry.registerTileEntity(transformerTileEntity.getClass(), new ResourceLocation("prospect:transformerTileEntity"));
+		GameRegistry.registerTileEntity(zeroPointTileEntity.getClass(), new ResourceLocation("prospect:zeroPointTileEntity"));
+		GameRegistry.registerTileEntity(coolerTileEntity.getClass(), new ResourceLocation("prospect:coolerTileEntity"));
+		GameRegistry.registerTileEntity(copperPipeTileEntity.getClass(), new ResourceLocation("prospect:copperPipeTileEntity"));
 	}
 	
 	@SubscribeEvent
@@ -183,6 +204,9 @@ public class ProspectBlocks
 		event.getRegistry().registerAll(hv_solar_panel);
 		event.getRegistry().registerAll(ev_solar_panel);
 		event.getRegistry().registerAll(iv_solar_panel);
+		event.getRegistry().registerAll(zero_point_reactor);
+		event.getRegistry().registerAll(zero_point_cooler);
+		event.getRegistry().registerAll(copper_pipe);
 	}
 	
 	@SubscribeEvent
@@ -222,6 +246,9 @@ public class ProspectBlocks
 		event.getRegistry().registerAll(new ItemBlock(hv_solar_panel).setRegistryName(hv_solar_panel.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(ev_solar_panel).setRegistryName(ev_solar_panel.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(iv_solar_panel).setRegistryName(iv_solar_panel.getRegistryName()));
+		event.getRegistry().registerAll(new ItemBlock(zero_point_reactor).setRegistryName(zero_point_reactor.getRegistryName()));
+		event.getRegistry().registerAll(new ItemBlock(zero_point_cooler).setRegistryName(zero_point_cooler.getRegistryName()));
+		event.getRegistry().registerAll(new ItemBlock(copper_pipe).setRegistryName(copper_pipe.getRegistryName()));
 	}
 	
 	@SubscribeEvent
@@ -261,6 +288,9 @@ public class ProspectBlocks
 		registerRender(Item.getItemFromBlock(hv_solar_panel));
 		registerRender(Item.getItemFromBlock(ev_solar_panel));
 		registerRender(Item.getItemFromBlock(iv_solar_panel));
+		registerRender(Item.getItemFromBlock(zero_point_reactor));
+		registerRender(Item.getItemFromBlock(zero_point_cooler));
+		registerRender(Item.getItemFromBlock(copper_pipe));
 	}
 	
 	public static void registerRender(Item item) 

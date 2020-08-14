@@ -6,12 +6,14 @@ import com.droog71.prospect.inventory.LaunchPadContainer;
 import com.droog71.prospect.inventory.PressContainer;
 import com.droog71.prospect.inventory.FabricatorContainer;
 import com.droog71.prospect.inventory.ReplicatorContainer;
+import com.droog71.prospect.inventory.ZeroPointContainer;
 import com.droog71.prospect.tile_entity.BioGenTileEntity;
 import com.droog71.prospect.tile_entity.ExtruderTileEntity;
 import com.droog71.prospect.tile_entity.FabricatorTileEntity;
 import com.droog71.prospect.tile_entity.LaunchPadTileEntity;
 import com.droog71.prospect.tile_entity.PressTileEntity;
 import com.droog71.prospect.tile_entity.ReplicatorTileEntity;
+import com.droog71.prospect.tile_entity.ZeroPointTileEntity;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
@@ -48,6 +50,10 @@ public class ProspectGuiHandler implements IGuiHandler
 		{
 			return new BioGenContainer(player.inventory, (BioGenTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
 		}
+		if (ID == 7)
+		{
+			return new ZeroPointContainer(player.inventory, (ZeroPointTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
+		}
 		return null;
 	}
 
@@ -77,6 +83,10 @@ public class ProspectGuiHandler implements IGuiHandler
 		if (ID == 6)
 		{
 			return new BioGenGUI(player.inventory, (BioGenTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
+		}
+		if (ID == 7)
+		{
+			return new ZeroPointReactorGUI(player.inventory, (ZeroPointTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
 		}
 		return null;
 	}

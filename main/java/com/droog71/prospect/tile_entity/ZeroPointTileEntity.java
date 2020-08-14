@@ -1,14 +1,14 @@
 package com.droog71.prospect.tile_entity;
 
-import com.droog71.prospect.blocks.energy.BioFuelGenerator;
+import com.droog71.prospect.blocks.gas.CopperPipe;
 import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
-import com.droog71.prospect.inventory.BioGenContainer;
+import com.droog71.prospect.inventory.ZeroPointContainer;
 import ic2.api.energy.prefab.BasicSource;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -20,6 +20,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -27,14 +28,15 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInventory
+public class ZeroPointTileEntity extends TileEntity implements ITickable, ISidedInventory
 {
     private static final int[] SLOTS_TOP = new int[] {0};
-    private static final int[] SLOTS_BOTTOM = new int[] {2, 1};
-    private static final int[] SLOTS_SIDES = new int[] {1};
-    private NonNullList<ItemStack> bioGenItemStacks = NonNullList.<ItemStack>withSize(3, ItemStack.EMPTY);
+    private static final int[] SLOTS_BOTTOM = new int[] {0};
+    private static final int[] SLOTS_SIDES = new int[] {0};
+    private NonNullList<ItemStack> zeroPointItemStacks = NonNullList.<ItemStack>withSize(1, ItemStack.EMPTY);
     private int energyStored;
     private int energyCapacity;
+    private int overHeatTime;
     private int burnTime;
     private int totalburnTime;
     private int effectsTimer = 250;
@@ -48,11 +50,11 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
 		{
 			if (((BasicSource) ic2EnergySource == null))
 			{
-				ic2EnergySource = new BasicSource(this,8,1);
+				ic2EnergySource = new BasicSource(this,4096,5);
 			}
 			((BasicSource) ic2EnergySource).onLoad(); // notify the energy sink
 		}	
-		energyStorage.capacity = 32;
+		energyStorage.capacity = 16384;
 		energyStorage.maxReceive = 0;
 	}
 	 
@@ -87,13 +89,13 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     @Override
 	public int getSizeInventory()
     {
-        return bioGenItemStacks.size();
+        return zeroPointItemStacks.size();
     }
 
     @Override
 	public boolean isEmpty()
     {
-        for (ItemStack itemstack : bioGenItemStacks)
+        for (ItemStack itemstack : zeroPointItemStacks)
         {
             if (!itemstack.isEmpty())
             {
@@ -109,7 +111,7 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     @Override
 	public ItemStack getStackInSlot(int index)
     {
-        return bioGenItemStacks.get(index);
+        return zeroPointItemStacks.get(index);
     }
 
     /**
@@ -118,7 +120,7 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     @Override
 	public ItemStack decrStackSize(int index, int count)
     {
-        return ItemStackHelper.getAndSplit(bioGenItemStacks, index, count);
+        return ItemStackHelper.getAndSplit(zeroPointItemStacks, index, count);
     }
 
     /**
@@ -127,7 +129,7 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     @Override
 	public ItemStack removeStackFromSlot(int index)
     {
-        return ItemStackHelper.getAndRemove(bioGenItemStacks, index);
+        return ItemStackHelper.getAndRemove(zeroPointItemStacks, index);
     }
 
     /**
@@ -136,9 +138,9 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     @Override
 	public void setInventorySlotContents(int index, ItemStack stack)
     {
-        ItemStack itemstack = bioGenItemStacks.get(index);
+        ItemStack itemstack = zeroPointItemStacks.get(index);
         boolean flag = !stack.isEmpty() && stack.isItemEqual(itemstack) && ItemStack.areItemStackTagsEqual(stack, itemstack);
-        bioGenItemStacks.set(index, stack);
+        zeroPointItemStacks.set(index, stack);
 
         if (stack.getCount() > getInventoryStackLimit())
         {
@@ -158,7 +160,7 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     @Override
 	public String getName()
     {
-        return "Bio Fuel Generator";
+        return "Zero Point Reactor";
     }
 
     /**
@@ -179,8 +181,8 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
 	public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);       
-        bioGenItemStacks = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
-        ItemStackHelper.loadAllItems(compound, bioGenItemStacks);
+        zeroPointItemStacks = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
+        ItemStackHelper.loadAllItems(compound, zeroPointItemStacks);
         energyStored = compound.getInteger("EnergyStored");
         burnTime = compound.getInteger("burnTime");
         totalburnTime = compound.getInteger("TotalburnTime");        
@@ -189,7 +191,7 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
 		{
 	        if ((BasicSource) ic2EnergySource == null)
 			{
-				ic2EnergySource = new BasicSource(this,8,1);
+				ic2EnergySource = new BasicSource(this,4096,1);
 			}	
 	        ((BasicSource) ic2EnergySource).readFromNBT(compound);
 		}
@@ -203,12 +205,12 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
         compound.setInteger("EnergyCapacity", (short)energyCapacity);
         compound.setInteger("burnTime", (short)burnTime);
         compound.setInteger("TotalburnTime", (short)totalburnTime);
-        ItemStackHelper.saveAllItems(compound, bioGenItemStacks);
+        ItemStackHelper.saveAllItems(compound, zeroPointItemStacks);
         if (Loader.isModLoaded("ic2"))
 		{
 	        if ((BasicSource) ic2EnergySource == null)
 			{
-				ic2EnergySource = new BasicSource(this,8,1);
+				ic2EnergySource = new BasicSource(this,4096,1);
 			}	
 	        ((BasicSource) ic2EnergySource).writeToNBT(compound);
 		}
@@ -262,53 +264,82 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     	boolean clientIsGenerating = burnTime > 0 && burnTime < totalburnTime;
         if (!world.isRemote)
         {   
-        	if (burnTime == 0)
+        	if (hasCooler())
     		{
-        		if (canConsumeFuel())
+	        	if (burnTime == 0)
+	    		{
+	        		if (canConsumeFuel())
+	        		{
+	        			burnTime = 1;
+	        			consumeFuel();
+	        	        needsNetworkUpdate = true;
+	        		}     		
+	    		}	
+	        	
+	        	if (burnTime > 0 && burnTime < totalburnTime)
+	            {   
+	        		updateEnergy();
+	        		if (energyStored < energyCapacity)
+	        		{
+	        			burnTime++;
+	            		effectsTimer++;
+	            		if (effectsTimer > 200)
+	            		{	
+	            			world.playSound(null, pos, ProspectSounds.bioFuelGeneratorSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
+	            			effectsTimer = 0;
+	            		}
+	            		addEnergy();
+	        		}
+	        		distributeEnergy();
+	        		needsNetworkUpdate = true;
+	            }	
+	        	
+	        	if (burnTime == totalburnTime)
+	    	    {
+	    	    	burnTime = 0;
+	    	    	totalburnTime = getburnTime(zeroPointItemStacks.get(0));
+	    	    	needsNetworkUpdate = true;
+	    	    }
+	    	    
+	        	if (clientIsGenerating != burnTime > 0 && burnTime < totalburnTime)
+	        	{
+	        		needsNetworkUpdate = true;
+	        	}
+    		}
+        	else
+    		{
+        		overHeatTime++;
+        		if (overHeatTime >= 100)
         		{
-        			burnTime = 1;
-        			consumeFuel();
-        	        needsNetworkUpdate = true;
-        		}     		
-    		}	
-        	
-        	if (burnTime > 0 && burnTime < totalburnTime)
-            {   
-        		updateEnergy();
-        		if (energyStored < energyCapacity)
-        		{
-        			burnTime++;
-            		effectsTimer++;
-            		if (effectsTimer > 200)
-            		{	
-            			world.playSound(null, pos, ProspectSounds.bioFuelGeneratorSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
-            			effectsTimer = 0;
-            		}
-            		addEnergy();
-        		}
-        		distributeEnergy();
-        		needsNetworkUpdate = true;
-            }	
-        	
-        	if (burnTime == totalburnTime)
-    	    {
-    	    	burnTime = 0;
-    	    	totalburnTime = getburnTime(bioGenItemStacks.get(0));
-    	    	needsNetworkUpdate = true;
-    	    }
-    	    
-        	if (clientIsGenerating != burnTime > 0 && burnTime < totalburnTime)
-        	{
-        		needsNetworkUpdate = true;
-        	}
-        	
-        	BioFuelGenerator.setState(burnTime > 0 && burnTime < totalburnTime, world, pos);
+        			energyStorage.explode(world, pos);
+        		}			
+    		}
         } 
         
         if (needsNetworkUpdate)
         {
             markDirty();
         }
+    }
+    
+    private boolean hasCooler()
+    {
+    	BlockPos[] positions = {pos.add(0,1,0),pos.add(0,-1,0),pos.add(1,0,0),pos.add(-1,0,0),pos.add(0,0,1),pos.add(0,0,-1)};	    	
+    	for (BlockPos p : positions)
+    	{
+    		Block b = world.getBlockState(p).getBlock();
+    		if (b != null)
+    		{
+    			if (b instanceof CopperPipe)
+    			{
+    				if (((CopperPipe)b).pressurized)
+					{
+						return true;
+					}
+    			}
+    		}		
+    	}   	
+    	return false;
     }
     
     // Add energy to the buffer
@@ -318,10 +349,10 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
 		{
 			if (((BasicSource) ic2EnergySource).getCapacity() > 0)
 			{
-				((BasicSource) ic2EnergySource).addEnergy(4);
+				((BasicSource) ic2EnergySource).addEnergy(2048);
 			}
 		}
-		energyStorage.generateEnergy(16);
+		energyStorage.generateEnergy(8192);
  	}
     
     // Get values from the energy storage or ic2 energy sink
@@ -341,7 +372,7 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     	{
     		if (Loader.isModLoaded("ic2"))
     		{
-    			((BasicSource) ic2EnergySource).setCapacity(8);
+    			((BasicSource) ic2EnergySource).setCapacity(4096);
         		if (((BasicSource) ic2EnergySource).getEnergyStored() > 0)
         		{
         			energyStored = (int) ((BasicSource) ic2EnergySource).getEnergyStored();
@@ -369,12 +400,12 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
 			}
 			for (IEnergyStorage sink : energyStorage.receivers(world, pos))
 			{
-				energyStorage.giveEnergy(energyStorage, sink, 16);
+				energyStorage.giveEnergy(energyStorage, sink, 8192);
 			}
 		}
 		if (connectedFE == false)
 		{
-			((BasicSource) ic2EnergySource).setCapacity(8);
+			((BasicSource) ic2EnergySource).setCapacity(4096);
 		}
 	}
     
@@ -387,7 +418,7 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     // Checks if the item in question is registered as a copper ingot
     private boolean isFuel(ItemStack stack)
     {
-    	return stack.getItem() == ProspectItems.bio_fuel;
+    	return stack.getItem() == ProspectItems.gem;
     }
     
     /**
@@ -395,40 +426,7 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
      */
     private boolean canConsumeFuel()
     {
-        if (bioGenItemStacks.get(0).isEmpty() || !isFuel(bioGenItemStacks.get(0)))
-        {
-            return false;
-        }
-        else
-        {
-            ItemStack itemstack = new ItemStack(Items.BUCKET);
-
-            if (itemstack.isEmpty())
-            {
-                return false;
-            }
-            else
-            {
-                ItemStack itemstack1 = bioGenItemStacks.get(2);
-
-                if (itemstack1.isEmpty())
-                {
-                    return true;
-                }
-                else if (!itemstack1.isItemEqual(itemstack))
-                {
-                    return false;
-                }
-                else if (itemstack1.getCount() + itemstack.getCount() <= getInventoryStackLimit() && itemstack1.getCount() + itemstack.getCount() <= itemstack1.getMaxStackSize())  // Forge fix: respect stack sizes
-                {
-                    return true;
-                }
-                else
-                {
-                    return itemstack1.getCount() + itemstack.getCount() <= itemstack.getMaxStackSize(); // Forge fix: respect stack sizes
-                }
-            }
-        }
+        return !zeroPointItemStacks.get(0).isEmpty() && isFuel(zeroPointItemStacks.get(0));
     }
 
     /**
@@ -436,20 +434,7 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
      */
     public void consumeFuel()
     {
-        ItemStack itemstack = bioGenItemStacks.get(0);
-        ItemStack itemstack1 = new ItemStack(Items.BUCKET);
-        ItemStack itemstack2 = bioGenItemStacks.get(2);
-
-        if (itemstack2.isEmpty())
-        {
-            bioGenItemStacks.set(2, itemstack1.copy());
-        }
-        else if (itemstack2.getItem() == itemstack1.getItem())
-        {
-            itemstack2.grow(itemstack1.getCount());
-        }
-
-        itemstack.shrink(1);
+        zeroPointItemStacks.get(0).shrink(1);
     }
 
     /**
@@ -531,7 +516,7 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     // Create the container
     public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
     {
-        return new BioGenContainer(playerInventory, this);
+        return new ZeroPointContainer(playerInventory, this);
     }
 
     @Override
@@ -586,7 +571,7 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     @Override
 	public void clear()
     {
-        bioGenItemStacks.clear();
+        zeroPointItemStacks.clear();
     }
 
     net.minecraftforge.items.IItemHandler handlerTop = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.UP);

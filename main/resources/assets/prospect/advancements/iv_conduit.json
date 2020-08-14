@@ -2,7 +2,7 @@
  "parent": "minecraft:recipes/root",
  "rewards": {
   "recipes": [
-   "prospect:iv_cable"
+   "prospect:iv_conduit"
   ]
  },
  "criteria": {

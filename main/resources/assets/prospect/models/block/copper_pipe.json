@@ -1,0 +1,8 @@
+{
+    "parent": "block/cube_bottom_top",
+    "textures": {
+        "side": "prospect:blocks/quarry_tube_sides",
+        "bottom": "prospect:blocks/quarry_tube_sides",
+        "top": "prospect:blocks/quarry_tube_sides"
+    }
+}
