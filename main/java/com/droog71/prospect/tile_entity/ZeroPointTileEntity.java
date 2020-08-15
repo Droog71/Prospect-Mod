@@ -1,14 +1,11 @@
 package com.droog71.prospect.tile_entity;
 
-import com.droog71.prospect.blocks.energy.BioFuelGenerator;
 import com.droog71.prospect.blocks.energy.ZeroPointReactor;
-import com.droog71.prospect.blocks.gas.CopperPipe;
 import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.ZeroPointContainer;
 import ic2.api.energy.prefab.BasicSource;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

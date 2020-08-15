@@ -50,6 +50,54 @@ public class CopperPipeTileEntity extends TileEntity implements ITickable
         return tag;
     }
  
+	@Override
+	public void update() 
+	{
+		if (!world.isRemote) //Everything is done on the server.
+		{
+			if (initialPipe())
+			{
+				getGasFromCooler();
+			}	
+			else
+			{
+				if (input != null)
+				{
+					handleInput();	
+				}
+				else
+				{
+					pressurized = false;
+				}								
+			}
+			
+			if (initialPipe == true || input != null)
+			{
+				if (output == null)
+				{
+					connectPipe();
+				}			
+			}	
+			
+			if (output != null)
+			{
+				handleOutput();
+			}
+			
+			if (pressurized == true)
+			{
+				particleTimer++;
+				if (particleTimer >= 20)
+				{
+					particleTimer = 0;
+					WorldServer w = (WorldServer) world;
+					w.spawnParticle(EnumParticleTypes.DRIP_WATER, pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 1, null);
+				}
+			}
+			CopperPipe.setState(pressurized, world, pos);
+		}
+	}
+    
     private boolean initialPipe()
     {
     	BlockPos[] positions = {pos.add(0,1,0),pos.add(0,-1,0),pos.add(1,0,0),pos.add(-1,0,0),pos.add(0,0,1),pos.add(0,0,-1)};	    	
@@ -145,45 +193,4 @@ public class CopperPipeTileEntity extends TileEntity implements ITickable
 			output = null;
 		}
     }
-    
-	@Override
-	public void update() 
-	{
-		if (!world.isRemote) //Everything is done on the server.
-		{
-			if (initialPipe())
-			{
-				getGasFromCooler();
-			}	
-			else
-			{
-				if (input == null)
-				{
-					pressurized = false;
-				}
-				else
-				{
-					handleInput();
-				}								
-			}
-			
-			if (output == null)
-			{
-				connectPipe();
-			}
-			else
-			{
-				handleOutput();
-			}	
-				
-			particleTimer++;
-			if (particleTimer >= 20)
-			{
-				particleTimer = 0;
-				WorldServer w = (WorldServer) world;
-				w.spawnParticle(EnumParticleTypes.DRIP_WATER, pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 1, null);
-			}
-			CopperPipe.setState(pressurized, world, pos);
-		}
-	}
 }

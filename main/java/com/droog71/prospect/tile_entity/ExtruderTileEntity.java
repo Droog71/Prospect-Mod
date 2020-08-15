@@ -1,6 +1,7 @@
 package com.droog71.prospect.tile_entity;
 
 import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
+import com.droog71.prospect.init.ProspectBlocks;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.ExtruderContainer;
@@ -391,7 +392,15 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
         }
         else
         {
-            ItemStack itemstack = new ItemStack(ProspectItems.copper_wire,6);
+        	ItemStack itemstack = ItemStack.EMPTY;
+        	if (world.isBlockPowered(pos))
+        	{
+        		itemstack = new ItemStack(ProspectItems.copper_wire,6);
+        	}
+        	else
+        	{
+        		itemstack = new ItemStack(ProspectBlocks.copper_pipe);
+        	}      
 
             if (itemstack.isEmpty())
             {
@@ -429,8 +438,17 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
         if (canExtrude())
         {
             ItemStack itemstack = extruderItemStacks.get(0);
-            ItemStack itemstack1 = new ItemStack(ProspectItems.copper_wire,6);
+            ItemStack itemstack1 = ItemStack.EMPTY; 
             ItemStack itemstack2 = extruderItemStacks.get(2);
+            
+            if (world.isBlockPowered(pos))
+        	{
+        		itemstack1 = new ItemStack(ProspectItems.copper_wire,6);
+        	}
+        	else
+        	{
+        		itemstack1 = new ItemStack(ProspectBlocks.copper_pipe);
+        	} 
 
             if (itemstack2.isEmpty())
             {

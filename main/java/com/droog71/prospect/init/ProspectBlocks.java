@@ -2,6 +2,7 @@ package com.droog71.prospect.init;
 
 import com.droog71.prospect.Prospect;
 import com.droog71.prospect.blocks.ProspectBlock;
+import com.droog71.prospect.blocks.conveyor.ConveyorTube;
 import com.droog71.prospect.blocks.energy.BioFuelGenerator;
 import com.droog71.prospect.blocks.energy.Cable;
 import com.droog71.prospect.blocks.energy.Extruder;
@@ -19,6 +20,7 @@ import com.droog71.prospect.blocks.gas.CopperPipe;
 import com.droog71.prospect.blocks.ore.LivingOre;
 import com.droog71.prospect.tile_entity.BioGenTileEntity;
 import com.droog71.prospect.tile_entity.CableTileEntity;
+import com.droog71.prospect.tile_entity.ConveyorTileEntity;
 import com.droog71.prospect.tile_entity.CoolerTileEntity;
 import com.droog71.prospect.tile_entity.CopperPipeTileEntity;
 import com.droog71.prospect.tile_entity.ExtruderTileEntity;
@@ -64,6 +66,7 @@ public class ProspectBlocks
 	public static Block capsule;
 	public static Block extruder;
 	public static Block press;
+	public static Block conveyor_tube;
 	public static Block lv_cable;
 	public static Block mv_cable;
 	public static Block hv_cable;
@@ -88,6 +91,7 @@ public class ProspectBlocks
 	public static Block copper_pipe_pressurized;
 	static ExtruderTileEntity extruderTileEntity;
 	static PressTileEntity pressTileEntity;
+	static ConveyorTileEntity conveyorTileEntity;
 	static PurifierTileEntity purifierTileEntity;
 	static FabricatorTileEntity fabricatorTileEntity;
 	static QuarryTileEntity quarryTileEntity;
@@ -105,6 +109,7 @@ public class ProspectBlocks
 	{		
 		extruder = new Extruder("extruder",Material.IRON).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		press = new Press("press",Material.IRON).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
+		conveyor_tube = new ConveyorTube("conveyor_tube",Material.IRON).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		purifier = new Purifier("purifier",Material.IRON).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		quarry = new Quarry("quarry",Material.IRON).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		fabricator = new Fabricator("fabricator",Material.IRON).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
@@ -157,6 +162,7 @@ public class ProspectBlocks
 		zeroPointTileEntity = new ZeroPointTileEntity();
 		coolerTileEntity = new CoolerTileEntity();
 		copperPipeTileEntity = new CopperPipeTileEntity();
+		conveyorTileEntity = new ConveyorTileEntity();
 		GameRegistry.registerTileEntity(pressTileEntity.getClass(),new ResourceLocation("prospect:pressTileEntity"));
 		GameRegistry.registerTileEntity(extruderTileEntity.getClass(),new ResourceLocation("prospect:extruderTileEntity"));
 		GameRegistry.registerTileEntity(purifierTileEntity.getClass(), new ResourceLocation("prospect:purifierTileEntity"));
@@ -171,6 +177,7 @@ public class ProspectBlocks
 		GameRegistry.registerTileEntity(zeroPointTileEntity.getClass(), new ResourceLocation("prospect:zeroPointTileEntity"));
 		GameRegistry.registerTileEntity(coolerTileEntity.getClass(), new ResourceLocation("prospect:coolerTileEntity"));
 		GameRegistry.registerTileEntity(copperPipeTileEntity.getClass(), new ResourceLocation("prospect:copperPipeTileEntity"));
+		GameRegistry.registerTileEntity(conveyorTileEntity.getClass(), new ResourceLocation("prospect:conveyorTileEntity"));
 	}
 	
 	@SubscribeEvent
@@ -178,6 +185,7 @@ public class ProspectBlocks
 	{
 		event.getRegistry().registerAll(extruder);
 		event.getRegistry().registerAll(press);
+		event.getRegistry().registerAll(conveyor_tube);
 		event.getRegistry().registerAll(living_ore);
 		event.getRegistry().registerAll(purifier);
 		event.getRegistry().registerAll(quarry);
@@ -223,6 +231,7 @@ public class ProspectBlocks
 	{
 		event.getRegistry().registerAll(new ItemBlock(extruder).setRegistryName(extruder.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(press).setRegistryName(press.getRegistryName()));
+		event.getRegistry().registerAll(new ItemBlock(conveyor_tube).setRegistryName(conveyor_tube.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(living_ore).setRegistryName(living_ore.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(purifier).setRegistryName(purifier.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(fabricator).setRegistryName(fabricator.getRegistryName()));
@@ -268,6 +277,7 @@ public class ProspectBlocks
 	{
 		registerRender(Item.getItemFromBlock(extruder));
 		registerRender(Item.getItemFromBlock(press));
+		registerRender(Item.getItemFromBlock(conveyor_tube));
 		registerRender(Item.getItemFromBlock(living_ore));
 		registerRender(Item.getItemFromBlock(purifier));
 		registerRender(Item.getItemFromBlock(quarry));

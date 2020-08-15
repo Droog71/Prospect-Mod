@@ -177,10 +177,12 @@ public class QuarryTileEntity extends TileEntity implements ITickable
             {
             	stack.shrink(quarryStorage.amount);
             	quarryStorage.depositStack.grow(quarryStorage.amount); 
+            	quarryStorage.inventory.markDirty();
             }
             else
             {
             	quarryStorage.inventory.setInventorySlotContents(quarryStorage.depositIndex, stack);  
+            	quarryStorage.inventory.markDirty();
         		stack = ItemStack.EMPTY;               
             }                        
         }

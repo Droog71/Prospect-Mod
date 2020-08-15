@@ -88,6 +88,7 @@ tile.zero_point_cooler.name=Zero Point Cooler
 tile.zero_point_reactor_running.name=Zero Point Reactor
 tile.zero_point_cooler_running.name=Zero Point Cooler
 tile.copper_pipe.name=Copper Pipe
+tile.conveyor_tube.name=Conveyor Tube
 tile.copper_pipe_pressurized.name=Copper Pipe
 tile.lv_solar_panel.name=LV Solar Panel
 tile.mv_solar_panel.name=MV Solar Panel
