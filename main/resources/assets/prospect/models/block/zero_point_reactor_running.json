@@ -1,7 +1,7 @@
 {
     "parent": "block/cube_bottom_top",
     "textures": {
-        "side": "prospect:blocks/zero_point_reactor",
+        "side": "prospect:blocks/zero_point_reactor_running",
         "bottom": "prospect:blocks/plating_dark",
         "top": "prospect:blocks/plating_dark"
     }

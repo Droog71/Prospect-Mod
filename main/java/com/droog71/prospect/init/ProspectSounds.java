@@ -18,6 +18,8 @@ public class ProspectSounds
     static ResourceLocation extruderSoundLocation;
     static ResourceLocation pressSoundLocation;
     static ResourceLocation bioFuelGeneratorSoundLocation;
+    static ResourceLocation zeroPointReactorSoundLocation;
+    static ResourceLocation zeroPointCoolerSoundLocation;
 	public static SoundEvent fabricatorSoundEvent;
     public static SoundEvent purifierSoundEvent;
     public static SoundEvent quarrySoundEvent;
@@ -27,6 +29,8 @@ public class ProspectSounds
     public static SoundEvent extruderSoundEvent;
     public static SoundEvent pressSoundEvent;
     public static SoundEvent bioFuelGeneratorSoundEvent;
+    public static SoundEvent zeroPointReactorSoundEvent;
+    public static SoundEvent zeroPointCoolerSoundEvent;
 	
 	public static void init() 
 	{
@@ -39,6 +43,8 @@ public class ProspectSounds
         extruderSoundLocation = new ResourceLocation("prospect", "extruder");
         pressSoundLocation = new ResourceLocation("prospect", "press");
         bioFuelGeneratorSoundLocation = new ResourceLocation("prospect", "bio_fuel_generator");
+        zeroPointReactorSoundLocation = new ResourceLocation("prospect", "zero_point_reactor");
+        zeroPointCoolerSoundLocation = new ResourceLocation("prospect", "zero_point_cooler");
 		fabricatorSoundEvent = new SoundEvent(fabricatorSoundLocation);
         purifierSoundEvent = new SoundEvent(purifierSoundLocation);
         quarrySoundEvent = new SoundEvent(quarrySoundLocation);
@@ -48,7 +54,8 @@ public class ProspectSounds
         extruderSoundEvent = new SoundEvent(extruderSoundLocation);
         pressSoundEvent = new SoundEvent(pressSoundLocation);
         bioFuelGeneratorSoundEvent = new SoundEvent(bioFuelGeneratorSoundLocation);
-        
+        zeroPointReactorSoundEvent = new SoundEvent(zeroPointReactorSoundLocation);
+        zeroPointCoolerSoundEvent = new SoundEvent(zeroPointCoolerSoundLocation);
 	}
 	
 	public static void registerSoundEvent(String name, SoundEvent event)

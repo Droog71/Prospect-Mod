@@ -81,8 +81,11 @@ public class ProspectBlocks
 	public static Block ev_solar_panel;
 	public static Block iv_solar_panel;
 	public static Block zero_point_reactor;
+	public static Block zero_point_reactor_running;	
 	public static Block zero_point_cooler;
+	public static Block zero_point_cooler_running;
 	public static Block copper_pipe;
+	public static Block copper_pipe_pressurized;
 	static ExtruderTileEntity extruderTileEntity;
 	static PressTileEntity pressTileEntity;
 	static PurifierTileEntity purifierTileEntity;
@@ -135,8 +138,11 @@ public class ProspectBlocks
 		ev_solar_panel = new SolarPanel("ev_solar_panel",Material.IRON,4096,2048,4).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		iv_solar_panel = new SolarPanel("iv_solar_panel",Material.IRON,16384,8192,5).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
 		zero_point_reactor = new ZeroPointReactor("zero_point_reactor",Material.IRON).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
+		zero_point_reactor_running = new ZeroPointReactor("zero_point_reactor_running",Material.IRON).setHardness(1.0f);
 		zero_point_cooler = new ZeroPointCooler("zero_point_cooler",Material.IRON).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
+		zero_point_cooler_running = new ZeroPointCooler("zero_point_cooler_running",Material.IRON).setHardness(1.0f);
 		copper_pipe = new CopperPipe("copper_pipe",Material.IRON).setHardness(1.0f).setCreativeTab(Prospect.tabProspect);
+		copper_pipe_pressurized = new CopperPipe("copper_pipe_pressurized",Material.IRON).setHardness(1.0f);
 		extruderTileEntity = new ExtruderTileEntity();
 		pressTileEntity = new PressTileEntity();
 		purifierTileEntity = new PurifierTileEntity();
@@ -205,8 +211,11 @@ public class ProspectBlocks
 		event.getRegistry().registerAll(ev_solar_panel);
 		event.getRegistry().registerAll(iv_solar_panel);
 		event.getRegistry().registerAll(zero_point_reactor);
+		event.getRegistry().registerAll(zero_point_reactor_running);
 		event.getRegistry().registerAll(zero_point_cooler);
+		event.getRegistry().registerAll(zero_point_cooler_running);
 		event.getRegistry().registerAll(copper_pipe);
+		event.getRegistry().registerAll(copper_pipe_pressurized);
 	}
 	
 	@SubscribeEvent
@@ -248,7 +257,10 @@ public class ProspectBlocks
 		event.getRegistry().registerAll(new ItemBlock(iv_solar_panel).setRegistryName(iv_solar_panel.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(zero_point_reactor).setRegistryName(zero_point_reactor.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(zero_point_cooler).setRegistryName(zero_point_cooler.getRegistryName()));
+		event.getRegistry().registerAll(new ItemBlock(zero_point_reactor_running).setRegistryName(zero_point_reactor_running.getRegistryName()));
+		event.getRegistry().registerAll(new ItemBlock(zero_point_cooler_running).setRegistryName(zero_point_cooler_running.getRegistryName()));
 		event.getRegistry().registerAll(new ItemBlock(copper_pipe).setRegistryName(copper_pipe.getRegistryName()));
+		event.getRegistry().registerAll(new ItemBlock(copper_pipe_pressurized).setRegistryName(copper_pipe_pressurized.getRegistryName()));
 	}
 	
 	@SubscribeEvent
@@ -290,7 +302,10 @@ public class ProspectBlocks
 		registerRender(Item.getItemFromBlock(iv_solar_panel));
 		registerRender(Item.getItemFromBlock(zero_point_reactor));
 		registerRender(Item.getItemFromBlock(zero_point_cooler));
+		registerRender(Item.getItemFromBlock(zero_point_reactor_running));
+		registerRender(Item.getItemFromBlock(zero_point_cooler_running));
 		registerRender(Item.getItemFromBlock(copper_pipe));
+		registerRender(Item.getItemFromBlock(copper_pipe_pressurized));
 	}
 	
 	public static void registerRender(Item item) 

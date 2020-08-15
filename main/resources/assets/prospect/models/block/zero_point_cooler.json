@@ -1,8 +1,8 @@
 {
     "parent": "block/cube_bottom_top",
     "textures": {
-        "side": "prospect:blocks/quarry_drill_bottom",
-        "bottom": "prospect:blocks/quarry_drill_bottom",
-        "top": "prospect:blocks/quarry_drill_bottom"
+        "side": "prospect:blocks/zero_point_cooler",
+        "bottom": "prospect:blocks/plating_dark",
+        "top": "prospect:blocks/zero_point_cooler"
     }
 }

@@ -125,7 +125,7 @@ public class ZeroPointContainer extends Container
                 }
                 else if (index >= 3 && index < 30)
                 {
-                    if (!this.mergeItemStack(itemstack1, 30, 38, false))
+                    if (!this.mergeItemStack(itemstack1, 30, 37, false))
                     {
                         return ItemStack.EMPTY;
                     }
@@ -135,7 +135,7 @@ public class ZeroPointContainer extends Container
                     return ItemStack.EMPTY;
                 }
             }
-            else if (!this.mergeItemStack(itemstack1, 3, 38, false))
+            else if (!this.mergeItemStack(itemstack1, 3, 37, false))
             {
                 return ItemStack.EMPTY;
             }

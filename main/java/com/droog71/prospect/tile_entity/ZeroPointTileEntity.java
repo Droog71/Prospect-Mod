@@ -1,5 +1,7 @@
 package com.droog71.prospect.tile_entity;
 
+import com.droog71.prospect.blocks.energy.BioFuelGenerator;
+import com.droog71.prospect.blocks.energy.ZeroPointReactor;
 import com.droog71.prospect.blocks.gas.CopperPipe;
 import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectItems;
@@ -285,7 +287,7 @@ public class ZeroPointTileEntity extends TileEntity implements ITickable, ISided
 	            		effectsTimer++;
 	            		if (effectsTimer > 200)
 	            		{	
-	            			world.playSound(null, pos, ProspectSounds.bioFuelGeneratorSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
+	            			world.playSound(null, pos, ProspectSounds.zeroPointReactorSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
 	            			effectsTimer = 0;
 	            		}
 	            		addEnergy();
@@ -305,6 +307,8 @@ public class ZeroPointTileEntity extends TileEntity implements ITickable, ISided
 	        	{
 	        		needsNetworkUpdate = true;
 	        	}
+	        	
+	        	ZeroPointReactor.setState(burnTime > 0 && burnTime < totalburnTime, world, pos);
     		}
         	else
     		{
@@ -327,12 +331,12 @@ public class ZeroPointTileEntity extends TileEntity implements ITickable, ISided
     	BlockPos[] positions = {pos.add(0,1,0),pos.add(0,-1,0),pos.add(1,0,0),pos.add(-1,0,0),pos.add(0,0,1),pos.add(0,0,-1)};	    	
     	for (BlockPos p : positions)
     	{
-    		Block b = world.getBlockState(p).getBlock();
-    		if (b != null)
+    		TileEntity t = world.getTileEntity(p);
+    		if (t != null)
     		{
-    			if (b instanceof CopperPipe)
+    			if (t instanceof CopperPipeTileEntity)
     			{
-    				if (((CopperPipe)b).pressurized)
+    				if (((CopperPipeTileEntity)t).pressurized)
 					{
 						return true;
 					}

@@ -1,5 +1,6 @@
 package com.droog71.prospect.tile_entity;
 
+
 import com.droog71.prospect.blocks.energy.ZeroPointCooler;
 import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectSounds;
@@ -17,6 +18,7 @@ public class CoolerTileEntity extends TileEntity implements ITickable
 {
 	private Object ic2EnergySink;
 	private int effectsTimer;
+	public boolean energized;
 	private ProspectEnergyStorage energyStorage = new ProspectEnergyStorage();
 		
 	@Override
@@ -101,20 +103,21 @@ public class CoolerTileEntity extends TileEntity implements ITickable
             }
 			else
 			{
-				ZeroPointCooler cooler = (ZeroPointCooler) world.getBlockState(pos).getBlock();
 				if (useEnergy())
 				{		
-					cooler.powered = true;
+					energized = true;
+					ZeroPointCooler.setState(true, world, pos);
 					effectsTimer++;
 					if (effectsTimer > 40)
 					{	
-						world.playSound(null, pos, ProspectSounds.purifierSoundEvent,  SoundCategory.BLOCKS, 0.25f, 1);
+						world.playSound(null, pos, ProspectSounds.zeroPointCoolerSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
 						effectsTimer = 0;
 					}
 				}
 				else
 				{
-					cooler.powered = false;				
+					energized = false;	
+					ZeroPointCooler.setState(false, world, pos);
 				}
 			}
 		}

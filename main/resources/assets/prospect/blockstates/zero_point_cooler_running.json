@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "normal": [
+            { "model": "prospect:zero_point_cooler_running" }
+        ]
+    }
+}

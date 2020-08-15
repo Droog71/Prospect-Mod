@@ -28,6 +28,31 @@ public class ZeroPointReactor extends ProspectBlockContainer
     	super(name, material);
     }
     
+    public static void setState(boolean active, World worldIn, BlockPos pos)
+    {
+        TileEntity tileentity = worldIn.getTileEntity(pos);
+        keepInventory = true;
+        
+        if (active)
+        {
+            worldIn.setBlockState(pos, ProspectBlocks.zero_point_reactor_running.getDefaultState());
+            worldIn.setBlockState(pos, ProspectBlocks.zero_point_reactor_running.getDefaultState());
+        }
+        else
+        {
+            worldIn.setBlockState(pos, ProspectBlocks.zero_point_reactor.getDefaultState());
+            worldIn.setBlockState(pos, ProspectBlocks.zero_point_reactor.getDefaultState());
+        }
+
+        keepInventory = true;
+        
+        if (tileentity != null)
+        {
+            tileentity.validate();
+            worldIn.setTileEntity(pos, tileentity);
+        }
+    }
+    
     @Override
 	public EnumBlockRenderType getRenderType(IBlockState state)
     {
