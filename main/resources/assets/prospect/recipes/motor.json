@@ -1,9 +1,9 @@
 { 
   "type": "forge:ore_shaped",
   "pattern": [
-    " H ",
+    "LHL",
     "PMP",
-    " H "  ],
+    "LHL"  ],
   "key": {
     "P": {
         "item": "minecraft:piston"
@@ -19,7 +19,7 @@
     }
 },
   "result": {
-    "item": "prospect:ev_transformer",
+    "item": "prospect:motor",
     "data": 0
   }
 }

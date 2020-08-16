@@ -28,6 +28,8 @@ public class ProspectItems
 	public static Item gem;
 	public static Item credit;
 	public static Item bio_fuel;
+	public static Item refrigerant;
+	public static Item motor;
 	public static Item copper_wire;
 	public static Item mv_wire;
 	public static Item hv_wire;
@@ -117,6 +119,8 @@ public class ProspectItems
 		gem = new ProspectItem("gem").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);		
 		credit = new ProspectItem("credit").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		bio_fuel = new ProspectItem("bio_fuel").setCreativeTab(Prospect.tabProspect).setMaxStackSize(1);
+		refrigerant = new ProspectItem("refrigerant").setCreativeTab(Prospect.tabProspect).setMaxStackSize(1);
+		motor = new ProspectItem("motor").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		suit_material = new ProspectItem("suit_material").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		copper_wire = new ProspectItem("copper_wire").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		mv_wire = new ProspectItem("mv_wire").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
@@ -209,6 +213,8 @@ public class ProspectItems
 		event.getRegistry().registerAll(gem);
 		event.getRegistry().registerAll(credit);
 		event.getRegistry().registerAll(bio_fuel);
+		event.getRegistry().registerAll(refrigerant);
+		event.getRegistry().registerAll(motor);
 		event.getRegistry().registerAll(suit_material);
 		event.getRegistry().registerAll(copper_wire);
 		event.getRegistry().registerAll(mv_wire);
@@ -301,6 +307,8 @@ public class ProspectItems
 		registerRender(gem);
 		registerRender(credit);
 		registerRender(bio_fuel);
+		registerRender(refrigerant);
+		registerRender(motor);
 		registerRender(suit_material);
 		registerRender(copper_wire);
 		registerRender(mv_wire);

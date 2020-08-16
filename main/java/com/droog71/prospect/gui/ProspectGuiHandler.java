@@ -1,6 +1,7 @@
 package com.droog71.prospect.gui;
 
 import com.droog71.prospect.inventory.BioGenContainer;
+import com.droog71.prospect.inventory.ConveyorTubeContainer;
 import com.droog71.prospect.inventory.ExtruderContainer;
 import com.droog71.prospect.inventory.LaunchPadContainer;
 import com.droog71.prospect.inventory.PressContainer;
@@ -8,13 +9,13 @@ import com.droog71.prospect.inventory.FabricatorContainer;
 import com.droog71.prospect.inventory.ReplicatorContainer;
 import com.droog71.prospect.inventory.ZeroPointContainer;
 import com.droog71.prospect.tile_entity.BioGenTileEntity;
+import com.droog71.prospect.tile_entity.ConveyorTileEntity;
 import com.droog71.prospect.tile_entity.ExtruderTileEntity;
 import com.droog71.prospect.tile_entity.FabricatorTileEntity;
 import com.droog71.prospect.tile_entity.LaunchPadTileEntity;
 import com.droog71.prospect.tile_entity.PressTileEntity;
 import com.droog71.prospect.tile_entity.ReplicatorTileEntity;
 import com.droog71.prospect.tile_entity.ZeroPointTileEntity;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -54,6 +55,10 @@ public class ProspectGuiHandler implements IGuiHandler
 		{
 			return new ZeroPointContainer(player.inventory, (ZeroPointTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
 		}
+		if (ID == 8)
+		{
+			return new ConveyorTubeContainer(player.inventory, (ConveyorTileEntity)world.getTileEntity(new BlockPos(x,y,z)), player);
+		}
 		return null;
 	}
 
@@ -87,6 +92,10 @@ public class ProspectGuiHandler implements IGuiHandler
 		if (ID == 7)
 		{
 			return new ZeroPointReactorGUI(player.inventory, (ZeroPointTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
+		}
+		if (ID == 8)
+		{
+			return new ConveyorTubeGUI(player.inventory, (ConveyorTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
 		}
 		return null;
 	}

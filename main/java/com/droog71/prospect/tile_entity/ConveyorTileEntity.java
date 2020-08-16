@@ -11,7 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityHopper;
+import net.minecraft.tileentity.TileEntityChest;
 
 final class ConveyorWithdrawl
 {
@@ -45,13 +45,12 @@ final class ConveyorStorage
 	}
 }
 
-public class ConveyorTileEntity extends TileEntity implements ITickable
+public class ConveyorTileEntity extends TileEntityChest implements ITickable
 {	
 	private int actionTimer;
 	private BlockPos inputPos;
 	private BlockPos outputPos;
 	private ItemStack currentItemStack = ItemStack.EMPTY;
-	private IInventory filterHopper;
 	public boolean withdrawlConveyor;
 	public ConveyorTileEntity input;
 	public ConveyorTileEntity output;
@@ -86,6 +85,18 @@ public class ConveyorTileEntity extends TileEntity implements ITickable
         super.writeToNBT(tag);
         return tag;
     }   
+    
+    @Override
+    public String getName()
+    {
+        return "Conveyor Tube";
+    }
+    
+    @Override
+    public void checkForAdjacentChests()
+    {
+    	return;
+    }
     
     @Override
 	public void update() 
@@ -132,32 +143,16 @@ public class ConveyorTileEntity extends TileEntity implements ITickable
 		}
 	}
     
-    private IInventory getfilterHopper()
-    {
-    	BlockPos[] positions = {pos.add(0,1,0),pos.add(0,-1,0),pos.add(1,0,0),pos.add(-1,0,0),pos.add(0,0,1),pos.add(0,0,-1)};    	
-    	for (BlockPos p : positions)
-    	{
-    		IInventory inventory = getInventoryAtPosition(p);
-    		if (inventory != null)
-    		{
-    			if (inventory instanceof TileEntityHopper)
-    			{
-    				return inventory;
-    			}
-    		}
-    	}
-    	return null;
-    }
-    
     private List<Item> filterList()
     {
-    	List<Item> itemlist = new ArrayList<Item>();	
-    	if (filterHopper != null)
+    	List<Item> itemlist = new ArrayList<Item>();
+    	IInventory inventory = getInventoryAtPosition(pos);
+    	if (inventory != null)
     	{
-    		int size = filterHopper.getSizeInventory();
+    		int size = inventory.getSizeInventory();
             for (int index = 0; index < size; ++index)
             {
-            	ItemStack itemstack = filterHopper.getStackInSlot(index);                       
+            	ItemStack itemstack = inventory.getStackInSlot(index);                       
                 if (!itemstack.isEmpty())
                 {
                 	itemlist.add(itemstack.getItem());
@@ -171,7 +166,7 @@ public class ConveyorTileEntity extends TileEntity implements ITickable
     // Returns the slot to withdraw from
     private boolean isWithdrawlConveyor()
     {
-    	if (!world.isBlockPowered(pos))
+    	if (!(world.getStrongPower(pos) >= 15))
     	{
     		withdrawlConveyor = false;
     		return false;
@@ -183,7 +178,10 @@ public class ConveyorTileEntity extends TileEntity implements ITickable
     		IInventory inventory = getInventoryAtPosition(p);
     		if (inventory != null)
     		{
-    			inventoryList.add(inventory);
+    			if (!(inventory instanceof ConveyorTileEntity))
+    			{
+    				inventoryList.add(inventory);
+    			}
     		}
     	}   	
     	for (IInventory inventory : inventoryList)
@@ -194,31 +192,20 @@ public class ConveyorTileEntity extends TileEntity implements ITickable
             	ItemStack itemstack = inventory.getStackInSlot(index);                       
                 if (!itemstack.isEmpty())
                 {
-                	filterHopper = getfilterHopper();
-                	if (filterHopper != null)
-                	{
-                		if (filterList().contains(itemstack.getItem()))
-    					{
-                    		inventory.setInventorySlotContents(index, ItemStack.EMPTY);
-                    		currentItemStack = itemstack;
-                    		withdrawlConveyor = true;
-                        	return true;
-    					}
-                    	else
-                    	{
-                    		currentItemStack = ItemStack.EMPTY;
-                    		withdrawlConveyor = true;
-                        	return true;
-                    	}
-                	}
-                	else
-                	{
+            		if (filterList().contains(itemstack.getItem()))
+					{
                 		inventory.setInventorySlotContents(index, ItemStack.EMPTY);
                 		currentItemStack = itemstack;
                 		withdrawlConveyor = true;
                     	return true;
-                	}
-                }                      
+					}
+                	else
+                	{
+                		currentItemStack = ItemStack.EMPTY;
+                		withdrawlConveyor = true;
+                    	return true;
+                	}  
+                }
             } 			
     	}
     	withdrawlConveyor = false;
@@ -236,13 +223,11 @@ public class ConveyorTileEntity extends TileEntity implements ITickable
             	conveyorStorage.depositStack.grow(conveyorStorage.amount);
             	currentItemStack = ItemStack.EMPTY;  
             	conveyorStorage.inventory.markDirty();
-            	//System.out.println("Combining stacks!");
             }
             else
             {
             	conveyorStorage.inventory.setInventorySlotContents(conveyorStorage.depositIndex, currentItemStack);
             	conveyorStorage.inventory.markDirty();
-            	//System.out.println("Depositing "+stack.getCount()+" "+stack.getDisplayName()+" to slot "+conveyorStorage.depositIndex+" of "+conveyorStorage.inventory);
             	currentItemStack = ItemStack.EMPTY;               
             }                        
         }
@@ -276,7 +261,10 @@ public class ConveyorTileEntity extends TileEntity implements ITickable
     		IInventory inventory = getInventoryAtPosition(p);
     		if (inventory != null)
     		{
-    			inventoryList.add(inventory);
+    			if (!(inventory instanceof ConveyorTileEntity))
+    			{
+    				inventoryList.add(inventory);
+    			}
     		}		
     	}   	
     	for (IInventory inventory : inventoryList)

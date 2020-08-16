@@ -1,0 +1,27 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "AQA",
+    "MRM",
+    "AQA"  ],
+  "key": {
+    "Q": {
+        "item": "prospect:quantum_circuit"
+    },
+    "M": {
+        "item": "prospect:motor"
+    },
+    "A": {
+        "item": "prospect:aluminum_plate"
+    },
+    "R": {
+        "item": "prospect:replicator"
+    }
+},
+  "result": {
+    "item": "prospect:zero_point_reactor",
+    "data": 0
+  }
+}
+
+
