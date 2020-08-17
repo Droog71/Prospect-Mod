@@ -1,0 +1,25 @@
+{
+ "parent": "minecraft:recipes/root",
+ "rewards": {
+  "recipes": [
+   "prospect:zero_point_reactor"
+  ]
+ },
+ "criteria": {
+  "has_item": {
+   "trigger": "minecraft:inventory_changed",
+   "conditions": {
+    "items": [
+     {
+      "item": "prospect:replicator"
+     }
+    ]
+   }
+  }
+ },
+ "requirements": [
+  [
+   "has_item"
+  ]
+ ]
+}

@@ -2,16 +2,23 @@ package com.droog71.prospect.tile_entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.tileentity.TileEntityLockableLoot;
 
 final class ConveyorWithdrawl
 {
@@ -45,12 +52,13 @@ final class ConveyorStorage
 	}
 }
 
-public class ConveyorTileEntity extends TileEntityChest implements ITickable
+public class ConveyorTileEntity extends TileEntityLockableLoot implements ITickable
 {	
 	private int actionTimer;
 	private BlockPos inputPos;
 	private BlockPos outputPos;
 	private ItemStack currentItemStack = ItemStack.EMPTY;
+	private NonNullList<ItemStack> chestContents = NonNullList.<ItemStack>withSize(27, ItemStack.EMPTY);
 	public boolean withdrawlConveyor;
 	public ConveyorTileEntity input;
 	public ConveyorTileEntity output;
@@ -74,16 +82,25 @@ public class ConveyorTileEntity extends TileEntityChest implements ITickable
     }
  
     @Override
-    public void readFromNBT(NBTTagCompound tag) 
+    public void readFromNBT(NBTTagCompound compound) 
     {
-        super.readFromNBT(tag);
+        super.readFromNBT(compound);
+        this.chestContents = NonNullList.<ItemStack>withSize(this.getSizeInventory(), ItemStack.EMPTY);
+        if (!this.checkLootAndRead(compound))
+        {
+            ItemStackHelper.loadAllItems(compound, this.chestContents);
+        }
     }
  
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound tag) 
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) 
     {
-        super.writeToNBT(tag);
-        return tag;
+        super.writeToNBT(compound);
+        if (!this.checkLootAndWrite(compound))
+        {
+            ItemStackHelper.saveAllItems(compound, this.chestContents);
+        }
+        return compound;
     }   
     
     @Override
@@ -91,11 +108,56 @@ public class ConveyorTileEntity extends TileEntityChest implements ITickable
     {
         return "Conveyor Tube";
     }
+
+    @Override
+    public void updateContainingBlockInfo()
+    {
+        return;
+    }
+
+    @Override
+    public int getSizeInventory()
+    {
+        return 27;
+    }
+
+    @Override
+    public String getGuiID()
+    {
+        return "";
+    }
     
     @Override
-    public void checkForAdjacentChests()
+    public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
     {
-    	return;
+        this.fillWithLoot(playerIn);
+        return new ContainerChest(playerInventory, this, playerIn);
+    }
+
+    @Override
+    protected NonNullList<ItemStack> getItems()
+    {
+        return this.chestContents;
+    }
+    
+    @Override
+    public int getInventoryStackLimit()
+    {
+        return 64;
+    }
+    
+    @Override
+    public boolean isEmpty()
+    {
+        for (ItemStack itemstack : this.chestContents)
+        {
+            if (!itemstack.isEmpty())
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
     
     @Override
@@ -143,6 +205,7 @@ public class ConveyorTileEntity extends TileEntityChest implements ITickable
 		}
 	}
     
+    // Gets a list of all items in the conveyor tubes inventory
     private List<Item> filterList()
     {
     	List<Item> itemlist = new ArrayList<Item>();
@@ -429,5 +492,12 @@ public class ConveyorTileEntity extends TileEntityChest implements ITickable
 			ejectItem();
 			output = null;
 		}
+    }
+
+    @Override
+    @Nullable
+    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable net.minecraft.util.EnumFacing facing)
+    {
+        return super.getCapability(capability, facing);
     }
 }

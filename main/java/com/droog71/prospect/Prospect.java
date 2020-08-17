@@ -63,7 +63,7 @@ public class Prospect
     	MinecraftForge.EVENT_BUS.register(FMLEventHandler.INSTANCE);
     	NetworkRegistry.INSTANCE.registerGuiHandler(instance, new ProspectGuiHandler());
     }
-    
+
     public static final CreativeTabs tabProspect = new CreativeTabs("Prospect") 
 	{
 		@Override

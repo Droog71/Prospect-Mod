@@ -194,6 +194,34 @@ public class Schematic extends ProspectItem
     	{
     		return new ItemStack(Blocks.PISTON);
     	}
+    	if (id == 44)
+    	{
+    		return new ItemStack(ProspectBlocks.bio_fuel_generator);
+    	}
+    	if (id == 45)
+    	{
+    		return new ItemStack(ProspectBlocks.zero_point_reactor);
+    	}
+    	if (id == 46)
+    	{
+    		return new ItemStack(ProspectBlocks.zero_point_cooler);
+    	}
+    	if (id == 47)
+    	{
+    		return new ItemStack(ProspectBlocks.conveyor_tube);
+    	}
+    	if (id == 48)
+    	{
+    		return new ItemStack(ProspectItems.bio_fuel);
+    	}
+    	if (id == 49)
+    	{
+    		return new ItemStack(ProspectItems.refrigerant);
+    	}
+    	if (id == 50)
+    	{
+    		return new ItemStack(ProspectItems.motor);
+    	}
     	return null;
     }
     
@@ -513,6 +541,67 @@ public class Schematic extends ProspectItem
     		ItemStack cobblestone = new ItemStack(Blocks.COBBLESTONE,4); 
     		ItemStack wood = new ItemStack(Blocks.PLANKS,3); 
     		ItemStack[] required = {iron_ingot,redstone,cobblestone,wood};
+    		return required;
+    	}
+    	if (id == 44)
+    	{
+    		ItemStack iron_ingot = new ItemStack(Items.IRON_INGOT,4); 
+    		ItemStack flint_and_steel = new ItemStack(Items.FLINT_AND_STEEL,1);
+    		ItemStack cauldron = new ItemStack(Blocks.CAULDRON,1); 
+    		ItemStack piston = new ItemStack(Blocks.PISTON,1); 
+    		ItemStack copper_ingot = new ItemStack(ProspectItems.copper_ingot,2);
+    		ItemStack[] required = {iron_ingot,flint_and_steel,cauldron,piston,copper_ingot};
+    		return required;
+    	}
+    	if (id == 45)
+    	{
+    		ItemStack quantum_circuit = new ItemStack(ProspectItems.quantum_circuit,2); 
+    		ItemStack motor = new ItemStack(ProspectItems.motor,2);
+    		ItemStack aluminum_plate = new ItemStack(ProspectItems.aluminum_plate,4); 
+    		ItemStack replicator = new ItemStack(ProspectBlocks.replicator,1); 
+    		ItemStack[] required = {quantum_circuit,motor,aluminum_plate,replicator};
+    		return required;
+    	}
+    	if (id == 46)
+    	{
+    		ItemStack refrigerant = new ItemStack(ProspectItems.refrigerant,1); 
+    		ItemStack motor = new ItemStack(ProspectItems.motor,1);
+    		ItemStack aluminum_plate = new ItemStack(ProspectItems.aluminum_plate,6);
+    		ItemStack piston = new ItemStack(Blocks.PISTON,1); 
+    		ItemStack[] required = {refrigerant,motor,aluminum_plate,piston};
+    		return required;
+    	}
+    	if (id == 47)
+    	{
+    		ItemStack motor = new ItemStack(ProspectItems.motor,1); 
+    		ItemStack tin_plate = new ItemStack(ProspectItems.tin_plate,2);
+    		ItemStack[] required = {motor,tin_plate};
+    		return required;
+    	}
+    	if (id == 48)
+    	{
+    		ItemStack snowball = new ItemStack(Items.SNOWBALL,1); 
+    		ItemStack coal = new ItemStack(Items.COAL,1);
+    		ItemStack bucket = new ItemStack(Items.BUCKET,1); 
+    		ItemStack ghast_tear = new ItemStack(Items.GHAST_TEAR,1); 
+    		ItemStack[] required = {snowball,coal,bucket,ghast_tear};
+    		return required;
+    	}
+    	if (id == 49)
+    	{
+    		ItemStack apple = new ItemStack(Items.APPLE,1); 
+    		ItemStack rotten_flesh = new ItemStack(Items.ROTTEN_FLESH,1);
+    		ItemStack bucket = new ItemStack(Items.BUCKET,1); 
+    		ItemStack[] required = {apple,rotten_flesh,bucket};
+    		return required;
+    	}
+    	if (id == 50)
+    	{
+    		ItemStack piston = new ItemStack(Blocks.PISTON,2);
+    		ItemStack mv_coil = new ItemStack(ProspectItems.mv_coil,1);
+    		ItemStack hv_coil = new ItemStack(ProspectItems.hv_coil,2);
+    		ItemStack lead_plate = new ItemStack(ProspectItems.lead_plate,4);
+    		ItemStack[] required = {piston,mv_coil,hv_coil,lead_plate};
     		return required;
     	}
     	return null;

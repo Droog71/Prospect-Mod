@@ -48,11 +48,15 @@
   {
     "category": "block",
     "sounds": [ "prospect:zero_point_reactor" ]
-  }
-,
+  },
 "zero_point_cooler": 
   {
     "category": "block",
     "sounds": [ "prospect:zero_point_cooler" ]
+  },
+"alarm": 
+  {
+    "category": "block",
+    "sounds": [ "prospect:alarm" ]
   }
 }

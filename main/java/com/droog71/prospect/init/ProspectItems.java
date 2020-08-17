@@ -105,6 +105,13 @@ public class ProspectItems
 	public static Item chest_schematic;
 	public static Item hopper_schematic;
 	public static Item piston_schematic;
+	public static Item bio_fuel_generator_schematic;
+	public static Item zero_point_reactor_schematic;
+	public static Item zero_point_cooler_schematic;
+	public static Item conveyor_tube_schematic;
+	public static Item bio_fuel_schematic;
+	public static Item refrigerant_schematic;
+	public static Item motor_schematic;
 	
 	public static void init() 
 	{		
@@ -193,10 +200,17 @@ public class ProspectItems
 		mv_solar_panel_schematic = new Schematic("mv_solar_panel_schematic",37).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		hv_solar_panel_schematic = new Schematic("hv_solar_panel_schematic",38).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		ev_solar_panel_schematic = new Schematic("ev_solar_panel_schematic",39).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
-		iv_solar_panel_schematic = new Schematic("iv_solar_panel_schematic",40).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		iv_solar_panel_schematic = new Schematic("iv_solar_panel_schematic",40).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);		
 		chest_schematic = new Schematic("chest_schematic",41).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		hopper_schematic = new Schematic("hopper_schematic",42).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		piston_schematic = new Schematic("piston_schematic",43).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		bio_fuel_generator_schematic = new Schematic("bio_fuel_generator_schematic",44).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		zero_point_reactor_schematic = new Schematic("zero_point_reactor_schematic",45).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		zero_point_cooler_schematic = new Schematic("zero_point_cooler_schematic",46).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		conveyor_tube_schematic = new Schematic("conveyor_tube_schematic",47).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		bio_fuel_schematic = new Schematic("bio_fuel_schematic",48).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		refrigerant_schematic = new Schematic("refrigerant_schematic",49).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		motor_schematic = new Schematic("motor_schematic",50).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 	}
 	
 	@SubscribeEvent
@@ -291,6 +305,13 @@ public class ProspectItems
 		event.getRegistry().registerAll(chest_schematic);
 		event.getRegistry().registerAll(hopper_schematic);
 		event.getRegistry().registerAll(piston_schematic);
+		event.getRegistry().registerAll(bio_fuel_generator_schematic);
+		event.getRegistry().registerAll(zero_point_reactor_schematic);
+		event.getRegistry().registerAll(zero_point_cooler_schematic);
+		event.getRegistry().registerAll(conveyor_tube_schematic);
+		event.getRegistry().registerAll(bio_fuel_schematic);
+		event.getRegistry().registerAll(refrigerant_schematic);
+		event.getRegistry().registerAll(motor_schematic);
 	}
 	
 	@SubscribeEvent
@@ -385,6 +406,13 @@ public class ProspectItems
 		registerRender(chest_schematic);
 		registerRender(hopper_schematic);
 		registerRender(piston_schematic);
+		registerRender(bio_fuel_generator_schematic);
+		registerRender(zero_point_reactor_schematic);
+		registerRender(zero_point_cooler_schematic);
+		registerRender(conveyor_tube_schematic);
+		registerRender(bio_fuel_schematic);
+		registerRender(refrigerant_schematic);
+		registerRender(motor_schematic);
 	}
 	
 	private static void registerRender(Item item) 

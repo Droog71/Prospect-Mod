@@ -28,7 +28,7 @@ public class CopperPipeTileEntity extends TileEntity implements ITickable
 	@Override
     public void invalidate() 
     {
-		super.invalidate(); // this is important for mc!
+		super.invalidate();
     }
  
     @Override
@@ -53,7 +53,7 @@ public class CopperPipeTileEntity extends TileEntity implements ITickable
 	@Override
 	public void update() 
 	{
-		if (!world.isRemote) //Everything is done on the server.
+		if (!world.isRemote)
 		{
 			if (initialPipe())
 			{
@@ -98,6 +98,7 @@ public class CopperPipeTileEntity extends TileEntity implements ITickable
 		}
 	}
     
+	// This pipe is next to the cooler
     private boolean initialPipe()
     {
     	BlockPos[] positions = {pos.add(0,1,0),pos.add(0,-1,0),pos.add(1,0,0),pos.add(-1,0,0),pos.add(0,0,1),pos.add(0,0,-1)};	    	
@@ -119,6 +120,7 @@ public class CopperPipeTileEntity extends TileEntity implements ITickable
 		return false;
     }    
     
+    // If the cooler has power, pressurize the pipe
     private void getGasFromCooler()
     {
     	if (cooler != null)
@@ -127,6 +129,7 @@ public class CopperPipeTileEntity extends TileEntity implements ITickable
     	}
     }
     
+    // Find an adjacent pipe for output
     private void connectPipe()
     {
     	BlockPos[] positions = {pos.add(0,1,0),pos.add(0,-1,0),pos.add(1,0,0),pos.add(-1,0,0),pos.add(0,0,1),pos.add(0,0,-1)};	    	
@@ -153,6 +156,7 @@ public class CopperPipeTileEntity extends TileEntity implements ITickable
     	}   	
     }
 
+    // Checks if input is still valid
     private void handleInput()
     {
     	TileEntity t = world.getTileEntity(inputPos);
@@ -173,6 +177,7 @@ public class CopperPipeTileEntity extends TileEntity implements ITickable
 		}
     }
     
+    // Outputs gas if output pipe is still valid
     private void handleOutput()
     {
     	TileEntity t = world.getTileEntity(outputPos);

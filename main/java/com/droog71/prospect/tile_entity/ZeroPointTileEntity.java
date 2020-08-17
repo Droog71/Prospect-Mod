@@ -39,6 +39,7 @@ public class ZeroPointTileEntity extends TileEntity implements ITickable, ISided
     private int burnTime;
     private int totalburnTime;
     private int effectsTimer = 250;
+    private int alarmSoundLoopTimer;
     private Object ic2EnergySource;
 	private ProspectEnergyStorage energyStorage = new ProspectEnergyStorage();
     
@@ -309,8 +310,9 @@ public class ZeroPointTileEntity extends TileEntity implements ITickable, ISided
     		}
         	else
     		{
+        		soundAlarm();
         		overHeatTime++;
-        		if (overHeatTime >= 100)
+        		if (overHeatTime >= 2000)
         		{
         			energyStorage.explode(world, pos);
         		}			
@@ -323,6 +325,17 @@ public class ZeroPointTileEntity extends TileEntity implements ITickable, ISided
         }
     }
     
+    private void soundAlarm()
+	{
+		alarmSoundLoopTimer++;
+		if (alarmSoundLoopTimer >= 200)
+		{
+			world.playSound(null, pos, ProspectSounds.alarmSoundEvent,  SoundCategory.BLOCKS, 1, 1);
+			alarmSoundLoopTimer = 0;
+		}
+	}
+    
+    // Returns true if a pressurized refrigerant pipe is adjacent to the reactor
     private boolean hasCooler()
     {
     	BlockPos[] positions = {pos.add(0,1,0),pos.add(0,-1,0),pos.add(1,0,0),pos.add(-1,0,0),pos.add(0,0,1),pos.add(0,0,-1)};	    	
