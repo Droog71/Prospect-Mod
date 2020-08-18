@@ -39,7 +39,7 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 		{
 			if (((BasicSource) ic2EnergySource == null))
 			{
-				ic2EnergySource = new BasicSource(this,energyStorage.capacity/4,tier);
+				ic2EnergySource = new BasicSource(this,capacity/4,tier);
 			}
 			((BasicSource) ic2EnergySource).onLoad(); // notify the energy sink
 		}
@@ -76,11 +76,14 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
     public void readFromNBT(NBTTagCompound tag) 
     {
         super.readFromNBT(tag);	 
-        if ((BasicSource) ic2EnergySource == null)
+        if (Loader.isModLoaded("ic2"))
 		{
-        	ic2EnergySource = new BasicSource(this,capacity/4,tier);
-		}	
-        ((BasicSource) ic2EnergySource).readFromNBT(tag);
+	        if ((BasicSource) ic2EnergySource == null)
+			{
+	        	ic2EnergySource = new BasicSource(this,capacity/4,tier);
+			}	
+	        ((BasicSource) ic2EnergySource).readFromNBT(tag);
+		}
         capacity = tag.getInteger("capacity");
         rating = tag.getInteger("rating");
         tier = tag.getInteger("tier");
@@ -90,11 +93,14 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
     public NBTTagCompound writeToNBT(NBTTagCompound tag) 
     {
         super.writeToNBT(tag);	
-        if ((BasicSource) ic2EnergySource == null)
+        if (Loader.isModLoaded("ic2"))
 		{
-			ic2EnergySource = new BasicSource(this,capacity/4,tier);
-		}	
-        ((BasicSource) ic2EnergySource).writeToNBT(tag);
+	        if ((BasicSource) ic2EnergySource == null)
+			{
+				ic2EnergySource = new BasicSource(this,capacity/4,tier);
+			}	
+	        ((BasicSource) ic2EnergySource).writeToNBT(tag);
+		}
         tag.setInteger("capacity", capacity);
         tag.setInteger("rating", rating);
         tag.setInteger("tier", tier);
@@ -148,7 +154,7 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 		{
 			if (Loader.isModLoaded("ic2"))
 			{
-				((BasicSource) ic2EnergySource).setCapacity(energyStorage.capacity/4);
+				((BasicSource) ic2EnergySource).setCapacity(capacity/4);
 			}
 		}
 	}

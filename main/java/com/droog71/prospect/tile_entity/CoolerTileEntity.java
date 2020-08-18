@@ -1,6 +1,5 @@
 package com.droog71.prospect.tile_entity;
 
-
 import com.droog71.prospect.blocks.energy.ZeroPointCooler;
 import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectSounds;
@@ -37,6 +36,20 @@ public class CoolerTileEntity extends TileEntity implements ITickable
 		super.onLoad();
 	}
 	 
+	@Override
+	public void validate()
+	{
+		super.validate();
+		if (Loader.isModLoaded("ic2"))
+		{
+			if (((BasicSink) ic2EnergySink == null))
+			{
+				ic2EnergySink = new BasicSink(this,5000,2);
+			}
+			((BasicSink) ic2EnergySink).onLoad(); // notify the energy sink
+		}
+	}
+	
 	@Override
     public void invalidate() 
     {

@@ -59,6 +59,20 @@ public class ZeroPointTileEntity extends TileEntity implements ITickable, ISided
 	}
 	 
 	@Override
+	public void validate()
+	{
+		super.validate();
+		if (Loader.isModLoaded("ic2"))
+		{
+			if (((BasicSource) ic2EnergySource == null))
+			{
+				ic2EnergySource = new BasicSource(this,4096,5);
+			}
+			((BasicSource) ic2EnergySource).onLoad(); // notify the energy sink
+		}
+	}
+	
+	@Override
     public void invalidate() 
     {
 		if (Loader.isModLoaded("ic2"))
@@ -191,7 +205,7 @@ public class ZeroPointTileEntity extends TileEntity implements ITickable, ISided
 		{
 	        if ((BasicSource) ic2EnergySource == null)
 			{
-				ic2EnergySource = new BasicSource(this,4096,1);
+				ic2EnergySource = new BasicSource(this,4096,5);
 			}	
 	        ((BasicSource) ic2EnergySource).readFromNBT(compound);
 		}
@@ -210,7 +224,7 @@ public class ZeroPointTileEntity extends TileEntity implements ITickable, ISided
 		{
 	        if ((BasicSource) ic2EnergySource == null)
 			{
-				ic2EnergySource = new BasicSource(this,4096,1);
+				ic2EnergySource = new BasicSource(this,4096,5);
 			}	
 	        ((BasicSource) ic2EnergySource).writeToNBT(compound);
 		}
@@ -263,60 +277,43 @@ public class ZeroPointTileEntity extends TileEntity implements ITickable, ISided
     	boolean needsNetworkUpdate = false;
     	boolean clientIsGenerating = burnTime > 0 && burnTime < totalburnTime;
         if (!world.isRemote)
-        {   
-        	if (hasCooler())
+        {          	
+        	if (burnTime == 0)
     		{
-	        	if (burnTime == 0)
-	    		{
-	        		if (canConsumeFuel())
-	        		{
-	        			burnTime = 1;
-	        			consumeFuel();
-	        	        needsNetworkUpdate = true;
-	        		}     		
-	    		}	
-	        	
-	        	if (burnTime > 0 && burnTime < totalburnTime)
-	            {   
-	        		updateEnergy();
-	        		if (energyStored < energyCapacity)
-	        		{
-	        			burnTime++;
-	            		effectsTimer++;
-	            		if (effectsTimer > 200)
-	            		{	
-	            			world.playSound(null, pos, ProspectSounds.zeroPointReactorSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
-	            			effectsTimer = 0;
-	            		}
-	            		addEnergy();
-	        		}
-	        		distributeEnergy();
-	        		needsNetworkUpdate = true;
-	            }	
-	        	
-	        	if (burnTime == totalburnTime)
-	    	    {
-	    	    	burnTime = 0;
-	    	    	totalburnTime = getburnTime(zeroPointItemStacks.get(0));
-	    	    	needsNetworkUpdate = true;
-	    	    }
-	    	    
-	        	if (clientIsGenerating != burnTime > 0 && burnTime < totalburnTime)
-	        	{
-	        		needsNetworkUpdate = true;
-	        	}
-	        	
-	        	ZeroPointReactor.setState(burnTime > 0 && burnTime < totalburnTime, world, pos);
-    		}
-        	else
-    		{
-        		soundAlarm();
-        		overHeatTime++;
-        		if (overHeatTime >= 2000)
+        		if (canConsumeFuel())
         		{
-        			energyStorage.explode(world, pos);
-        		}			
-    		}
+        			burnTime = 1;
+        			consumeFuel();
+        	        needsNetworkUpdate = true;
+        		}     		
+    		}	
+        	
+        	if (burnTime > 0 && burnTime < totalburnTime)
+            {   
+        		handleEnergy();
+    			burnTime++;
+        		effectsTimer++;
+        		if (effectsTimer > 200)
+        		{	
+        			world.playSound(null, pos, ProspectSounds.zeroPointReactorSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
+        			effectsTimer = 0;
+        		}         		            		
+        		needsNetworkUpdate = true;
+            }	
+        	
+        	if (burnTime == totalburnTime)
+    	    {
+    	    	burnTime = 0;
+    	    	totalburnTime = getburnTime(zeroPointItemStacks.get(0));
+    	    	needsNetworkUpdate = true;
+    	    }
+    	    
+        	if (clientIsGenerating != burnTime > 0 && burnTime < totalburnTime)
+        	{
+        		needsNetworkUpdate = true;
+        	}
+        	
+        	ZeroPointReactor.setState(burnTime > 0 && burnTime < totalburnTime, world, pos);	
         } 
         
         if (needsNetworkUpdate)
@@ -356,21 +353,8 @@ public class ZeroPointTileEntity extends TileEntity implements ITickable, ISided
     	return false;
     }
     
-    // Add energy to the buffer
- 	private void addEnergy()
- 	{
-		if (Loader.isModLoaded("ic2"))
-		{
-			if (((BasicSource) ic2EnergySource).getCapacity() > 0)
-			{
-				((BasicSource) ic2EnergySource).addEnergy(2048);
-			}
-		}
-		energyStorage.generateEnergy(8192);
- 	}
-    
     // Get values from the energy storage or ic2 energy sink
-    private void updateEnergy()
+    private void handleEnergy()
     {
     	if (energyStorage.receivers(world, pos).size() > 0)
     	{
@@ -398,7 +382,22 @@ public class ZeroPointTileEntity extends TileEntity implements ITickable, ISided
     	{
     		energyCapacity = energyStorage.getMaxEnergyStored();
     	}
+    	generateEnergy();
     }
+    
+    // Add energy to the buffer
+ 	private void generateEnergy()
+ 	{
+		if (Loader.isModLoaded("ic2"))
+		{
+			if (((BasicSource) ic2EnergySource).getCapacity() > 0)
+			{
+				((BasicSource) ic2EnergySource).addEnergy(2048);
+			}
+		}
+		energyStorage.generateEnergy(8192);		
+		distributeEnergy();
+ 	}
     
 	// Distributes energy
 	private void distributeEnergy()
@@ -421,8 +420,26 @@ public class ZeroPointTileEntity extends TileEntity implements ITickable, ISided
 		{
 			((BasicSource) ic2EnergySource).setCapacity(4096);
 		}
+		checkForCooler();
 	}
     
+	private void checkForCooler()
+	{
+		if (hasCooler() == false)
+		{
+    		soundAlarm();
+    		overHeatTime++;
+    		if (overHeatTime >= 2000)
+    		{
+    			energyStorage.explode(world, pos);
+    		}			
+		}
+		else
+		{
+			overHeatTime = 0;
+		}
+	}
+	
     // How long it takes to burn fuel
     public int getburnTime(ItemStack stack)
     {

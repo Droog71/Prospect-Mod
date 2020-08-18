@@ -2,6 +2,7 @@ package com.droog71.prospect.tile_entity;
 
 import com.droog71.prospect.blocks.energy.BioFuelGenerator;
 import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
+import com.droog71.prospect.init.ProspectBlocks;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.BioGenContainer;
@@ -57,8 +58,23 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
 	}
 	 
 	@Override
+	public void validate()
+	{
+		super.validate();
+		if (Loader.isModLoaded("ic2"))
+		{
+			if (((BasicSource) ic2EnergySource == null))
+			{
+				ic2EnergySource = new BasicSource(this,8,1);
+			}
+			((BasicSource) ic2EnergySource).onLoad(); // notify the energy sink
+		}
+	}
+	
+	@Override
     public void invalidate() 
     {
+		super.invalidate(); // this is important for mc!
 		if (Loader.isModLoaded("ic2"))
 		{
 			if (((BasicSource) ic2EnergySource != null))
@@ -66,9 +82,8 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
 				((BasicSource) ic2EnergySource).invalidate(); // notify the energy sink
 			}
 		}
-		super.invalidate(); // this is important for mc!
     }
- 
+	
     @Override
     public void onChunkUnload() 
     {
@@ -274,19 +289,14 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
         	
         	if (burnTime > 0 && burnTime < totalburnTime)
             {   
-        		updateEnergy();
-        		if (energyStored < energyCapacity)
-        		{
-        			burnTime++;
-            		effectsTimer++;
-            		if (effectsTimer > 200)
-            		{	
-            			world.playSound(null, pos, ProspectSounds.bioFuelGeneratorSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
-            			effectsTimer = 0;
-            		}
-            		addEnergy();
+        		handleEnergy();
+    			burnTime++;
+        		effectsTimer++;
+        		if (effectsTimer > 200)
+        		{	
+        			world.playSound(null, pos, ProspectSounds.bioFuelGeneratorSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
+        			effectsTimer = 0;
         		}
-        		distributeEnergy();
         		needsNetworkUpdate = true;
             }	
         	
@@ -302,7 +312,21 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
         		needsNetworkUpdate = true;
         	}
         	
-        	BioFuelGenerator.setState(burnTime > 0 && burnTime < totalburnTime, world, pos);
+        	boolean active = burnTime > 0 && burnTime < totalburnTime;
+        	if (active)
+        	{
+        		if (world.getBlockState(pos) != ProspectBlocks.bio_fuel_generator_running.getDefaultState())
+				{
+        			BioFuelGenerator.setState(true, world, pos);
+				}
+        	}
+        	else
+        	{
+        		if (world.getBlockState(pos) != ProspectBlocks.bio_fuel_generator.getDefaultState())
+				{
+        			BioFuelGenerator.setState(false, world, pos);
+				}
+        	}
         } 
         
         if (needsNetworkUpdate)
@@ -311,21 +335,8 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
         }
     }
     
-    // Add energy to the buffer
- 	private void addEnergy()
- 	{
-		if (Loader.isModLoaded("ic2"))
-		{
-			if (((BasicSource) ic2EnergySource).getCapacity() > 0)
-			{
-				((BasicSource) ic2EnergySource).addEnergy(4);
-			}
-		}
-		energyStorage.generateEnergy(16);
- 	}
-    
     // Get values from the energy storage or ic2 energy sink
-    private void updateEnergy()
+    private void handleEnergy()
     {
     	if (energyStorage.receivers(world, pos).size() > 0)
     	{
@@ -353,7 +364,22 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     	{
     		energyCapacity = energyStorage.getMaxEnergyStored();
     	}
-    }
+    	generateEnergy();
+    }    
+    
+    // Add energy to the buffer
+ 	private void generateEnergy()
+ 	{
+		if (Loader.isModLoaded("ic2"))
+		{
+			if (((BasicSource) ic2EnergySource).getCapacity() > 0)
+			{
+				((BasicSource) ic2EnergySource).addEnergy(4);
+			}
+		}
+		energyStorage.generateEnergy(16);
+		distributeEnergy();
+ 	}
     
 	// Distributes energy
 	private void distributeEnergy()
@@ -381,7 +407,7 @@ public class BioGenTileEntity extends TileEntity implements ITickable, ISidedInv
     // How long it takes to burn fuel
     public int getburnTime(ItemStack stack)
     {
-        return 6000;
+        return 24000;
     }
 
     // Checks if the item in question is registered as a copper ingot

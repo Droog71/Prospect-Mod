@@ -44,7 +44,7 @@ public class ZeroPointReactor extends ProspectBlockContainer
             worldIn.setBlockState(pos, ProspectBlocks.zero_point_reactor.getDefaultState());
         }
 
-        keepInventory = true;
+        keepInventory = false;
         
         if (tileentity != null)
         {

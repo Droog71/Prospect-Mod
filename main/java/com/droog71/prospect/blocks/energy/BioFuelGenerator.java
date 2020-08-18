@@ -44,7 +44,7 @@ public class BioFuelGenerator extends ProspectBlockContainer
             worldIn.setBlockState(pos, ProspectBlocks.bio_fuel_generator.getDefaultState());
         }
 
-        keepInventory = true;
+        keepInventory = false;
         
         if (tileentity != null)
         {
@@ -91,14 +91,20 @@ public class BioFuelGenerator extends ProspectBlockContainer
         }
     }
 
+    @Override
+	public boolean hasTileEntity(IBlockState state) 
+	{
+		return true;
+	}
+    
     /**
      * Returns a new instance of a block's tile entity class. Called on placing the block.
      */
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta)
-    {
-        return new BioGenTileEntity();
-    }
+	public TileEntity createTileEntity(World world, IBlockState state)
+	{
+		return new BioGenTileEntity();
+	}
 
     /**
      * Called serverside after this block is replaced with another in Chunk, but before the Tile Entity is updated
