@@ -1,8 +1,8 @@
 {
     "parent": "block/cube_bottom_top",
     "textures": {
-        "side": "prospect:blocks/bio_fuel_generator",
-        "bottom": "prospect:blocks/bio_fuel_generator",
-        "top": "prospect:blocks/bio_fuel_generator"
+        "side": "prospect:blocks/quarry_sides",
+        "bottom": "prospect:blocks/plating_dark",
+        "top": "prospect:blocks/plating_dark"
     }
 }

@@ -443,7 +443,7 @@ public class ZeroPointTileEntity extends TileEntity implements ITickable, ISided
     // How long it takes to burn fuel
     public int getburnTime(ItemStack stack)
     {
-        return 6000;
+        return 24000;
     }
 
     // Checks if the item in question is registered as a copper ingot
