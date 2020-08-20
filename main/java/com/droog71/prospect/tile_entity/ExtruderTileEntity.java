@@ -395,11 +395,11 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
         	ItemStack itemstack = ItemStack.EMPTY;
         	if (world.isBlockPowered(pos))
         	{
-        		itemstack = new ItemStack(ProspectItems.copper_wire,6);
+        		itemstack = new ItemStack(ProspectBlocks.copper_pipe);
         	}
         	else
         	{
-        		itemstack = new ItemStack(ProspectBlocks.copper_pipe);
+        		itemstack = new ItemStack(ProspectItems.copper_wire,6);
         	}      
 
             if (itemstack.isEmpty())
@@ -443,11 +443,11 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
             
             if (world.isBlockPowered(pos))
         	{
-        		itemstack1 = new ItemStack(ProspectItems.copper_wire,6);
+            	itemstack1 = new ItemStack(ProspectBlocks.copper_pipe);	
         	}
         	else
         	{
-        		itemstack1 = new ItemStack(ProspectBlocks.copper_pipe);
+        		itemstack1 = new ItemStack(ProspectItems.copper_wire,6);
         	} 
 
             if (itemstack2.isEmpty())
