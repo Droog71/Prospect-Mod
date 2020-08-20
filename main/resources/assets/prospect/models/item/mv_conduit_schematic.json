@@ -1,7 +1,7 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "prospect:items/ev_cable_schematic"
+        "layer0": "prospect:items/mv_conduit_schematic"
      },
      
     "display": {

@@ -9,18 +9,18 @@ import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-public class CableTileEntity extends TileEntity implements ITickable
+public class ConduitTileEntity extends TileEntity implements ITickable
 {
 	private ProspectEnergyStorage energyStorage = new ProspectEnergyStorage();
 	private int rating;
 	private int capacity;
 		
-	public CableTileEntity()
+	public ConduitTileEntity()
 	{
 		
 	}
 	
-	public CableTileEntity(int rating, int capacity)
+	public ConduitTileEntity(int rating, int capacity)
 	{			
 		this.rating = rating;
 		this.capacity = capacity;

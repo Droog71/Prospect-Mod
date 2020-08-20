@@ -128,23 +128,23 @@ public class Schematic extends ProspectItem
     	}
     	if (id == 27)
     	{
-    		return new ItemStack(ProspectBlocks.lv_cable);
+    		return new ItemStack(ProspectBlocks.lv_conduit);
     	}
     	if (id == 28)
     	{
-    		return new ItemStack(ProspectBlocks.mv_cable);
+    		return new ItemStack(ProspectBlocks.mv_conduit);
     	}
     	if (id == 29)
     	{
-    		return new ItemStack(ProspectBlocks.hv_cable);
+    		return new ItemStack(ProspectBlocks.hv_conduit);
     	}
     	if (id == 30)
     	{
-    		return new ItemStack(ProspectBlocks.ev_cable);
+    		return new ItemStack(ProspectBlocks.ev_conduit);
     	}
     	if (id == 31)
     	{
-    		return new ItemStack(ProspectBlocks.iv_cable);
+    		return new ItemStack(ProspectBlocks.iv_conduit);
     	}
     	if (id == 32)
     	{

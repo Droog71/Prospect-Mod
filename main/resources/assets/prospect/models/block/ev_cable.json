@@ -1,8 +1,0 @@
-{
-    "parent": "block/cube_bottom_top",
-    "textures": {
-        "side": "prospect:blocks/ev_cable",
-        "bottom": "prospect:blocks/ev_cable",
-        "top": "prospect:blocks/ev_cable"
-    }
-}

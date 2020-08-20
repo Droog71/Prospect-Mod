@@ -42,7 +42,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     private int replicateTime;
     private int totalreplicateTime;
 	private int effectsTimer;
-	public int itemTier;
+	public int itemWorth;
     
 	@Override
     public void onLoad() 
@@ -57,6 +57,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 		}
 		energyStorage.capacity = 45000;
 		energyStorage.maxReceive = 9000;
+		replicatorItems.init();
 	}
 	 
 	@Override
@@ -152,7 +153,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 
         if (index == 0 && !flag)
         {
-            totalreplicateTime = getreplicateTime();
+            totalreplicateTime = 64;
             replicateTime = 0;
             markDirty();
         }
@@ -307,7 +308,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
                         if (replicateTime == totalreplicateTime)
                         {
                             replicateTime = 0;
-                            totalreplicateTime = getreplicateTime();
+                            totalreplicateTime = 64;
                             replicateItem();
                             needsNetworkUpdate = true;
                         }
@@ -387,25 +388,13 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	return false;
     }
     
-    public int getreplicateTime()
-    {
-    	if (itemTier == 5)
-    	{
-    		return 200;
-    	}
-    	if (itemTier == 4)
-    	{
-    		return 150;
-    	}
-    	return 50;
-    }
-    
     /**
      * Returns true if the transmitter can transmit an item, i.e. has a source item, destination stack isn't full, etc.
      */
     private boolean canReplicate()
     {  	
-        if (replicatorItemStacks.get(0).isEmpty() || !replicatorItems.replicatorItem(this,replicatorItemStacks.get(0)))
+    	itemWorth = replicatorItems.getItemWorth(replicatorItemStacks.get(0));
+        if (replicatorItemStacks.get(0).isEmpty() || itemWorth == 0)
         {
         	return false;
         }
@@ -448,17 +437,9 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
         }
     }
 
-    public int getCreditSpendTime() //Could eventually be used for differing denominations of currency.
+    public int getCreditSpendTime()
     {
-    	if (itemTier == 5)
-    	{
-    		return 10;
-    	}
-    	if (itemTier == 4)
-    	{
-    		return 15;
-    	}
-    	return 50;
+    	return 64 / itemWorth;
     }
 
     public static boolean isCredit(ItemStack stack)

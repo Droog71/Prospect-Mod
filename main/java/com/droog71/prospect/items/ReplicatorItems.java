@@ -2,44 +2,46 @@ package com.droog71.prospect.items;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.droog71.prospect.tile_entity.ReplicatorTileEntity;
+import com.droog71.prospect.config.ConfigHandler;
+
+import ic2.core.platform.registry.Ic2Items;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class ReplicatorItems 
 {
-	public boolean replicatorItem(ReplicatorTileEntity replicator, ItemStack stack)
+	List<Item> itemTier3 = new ArrayList<Item>();
+	List<Item> itemTier2 = new ArrayList<Item>();
+	List<Item> itemTier1 = new ArrayList<Item>();
+	
+	public void init()
+	{
+		generateTier3ItemList();
+		generateTier2ItemList();
+		generateTier1ItemList();
+	}
+	
+	public int getItemWorth(ItemStack stack)
     {
     	Item item = stack.getItem();
 
-    	if (item == Items.ENDER_PEARL || item == Items.GHAST_TEAR || item == Items.BLAZE_POWDER || item == Items.NETHER_WART)
+    	if (itemTier3.contains(item))
     	{
-    		replicator.itemTier = 5;
-    		return true;
+    		return 16;
     	}
-    	if (item == Items.DIAMOND || item == Items.EMERALD)
+    	if (itemTier2.contains(item))
     	{
-    		replicator.itemTier = 4;
-    		return true;
+    		return 8;
     	}
-    	if (item == Items.IRON_INGOT || item == Items.GOLD_INGOT || item == Items.REDSTONE)
+    	if (itemTier1.contains(item))
     	{
-    		replicator.itemTier = 3;
-    		return true;
-    	}
-    	if (item == Items.GLOWSTONE_DUST || item == Items.CLAY_BALL || item == Items.QUARTZ || item == Items.COAL || item == Items.STRING)
-    	{
-    		replicator.itemTier = 2;
-    		return true;
-    	}
-    	if (item == Item.getItemFromBlock(Blocks.PLANKS) || item == Item.getItemFromBlock(Blocks.COBBLESTONE) || item == Item.getItemFromBlock(Blocks.WOOL))
-    	{
-    		replicator.itemTier = 1;
-    		return true;
+    		return 1;
     	}
     	
     	List<NonNullList<ItemStack>> oreDictList = new ArrayList<NonNullList<ItemStack>>();
@@ -57,13 +59,55 @@ public class ReplicatorItems
         		{
         			if (s.getMetadata() == stack.getMetadata())
         			{
-        				replicator.itemTier = 3;
-        				return true;
+        				return 1;
         			}			
         		}
         	}
     	}
     	
-    	return false;
+    	for (ReplicatorItem replicatorItem : ConfigHandler.replicatorItems())
+		{
+			ResourceLocation location = new ResourceLocation(replicatorItem.name);
+			Item foundItem = Item.REGISTRY.getObject(location);
+			if (foundItem == item)
+			{
+				return replicatorItem.worth;
+			}
+		}
+    	
+    	return 0;
     }
+	
+	private void generateTier3ItemList()
+	{
+		itemTier3.add(Items.ENDER_PEARL); 
+		itemTier3.add(Items.GHAST_TEAR);
+		itemTier3.add(Items.BLAZE_POWDER);
+		itemTier3.add(Items.NETHER_WART);
+	}
+	
+	private void generateTier2ItemList()
+	{
+		itemTier2.add(Items.DIAMOND);
+		itemTier2.add(Items.EMERALD);
+		if (Loader.isModLoaded("ic2"))
+		{
+			itemTier2.add(Ic2Items.uraniumDrop.getItem());
+		}
+	}
+	
+	private void generateTier1ItemList()
+	{
+		itemTier1.add(Items.IRON_INGOT); 
+		itemTier1.add(Items.GOLD_INGOT);
+		itemTier1.add(Items.REDSTONE);
+		itemTier1.add(Items.GLOWSTONE_DUST);
+		itemTier1.add(Items.CLAY_BALL);
+		itemTier1.add(Items.QUARTZ);
+		itemTier1.add(Items.COAL);
+		itemTier1.add(Items.STRING);
+		itemTier1.add(Item.getItemFromBlock(Blocks.PLANKS));
+		itemTier1.add(Item.getItemFromBlock(Blocks.COBBLESTONE));
+		itemTier1.add(Item.getItemFromBlock(Blocks.WOOL));
+	}
 }

@@ -1,7 +1,7 @@
 {
     "variants": {
         "normal": [
-            { "model": "prospect:hv_cable" }
+            { "model": "prospect:mv_conduit" }
         ]
     }
 }
