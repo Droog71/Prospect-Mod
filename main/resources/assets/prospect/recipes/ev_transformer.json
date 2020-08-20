@@ -1,21 +1,18 @@
 { 
   "type": "forge:ore_shaped",
   "pattern": [
-    " H ",
-    "PMP",
-    " H "  ],
+    "LLL",
+    "E I",
+    "LLL"  ],
   "key": {
-    "P": {
-        "item": "minecraft:piston"
+    "E": {
+        "item": "prospect:ev_coil"
     },
-    "M": {
-        "item": "prospect:mv_coil"
+    "I": {
+        "item": "prospect:iv_coil"
     },
     "L": {
         "item": "prospect:lead_plate"
-    },
-    "H": {
-        "item": "prospect:hv_coil"
     }
 },
   "result": {

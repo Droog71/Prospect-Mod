@@ -2,7 +2,7 @@
     "parent": "block/cube_bottom_top",
     "textures": {
         "side": "prospect:blocks/plating_dark",
-        "bottom": "prospect:blocks/lv_cable",
+        "bottom": "prospect:blocks/lv_conduit",
         "top": "prospect:blocks/solar_panel"
     }
 }
