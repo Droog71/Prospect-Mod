@@ -36,6 +36,16 @@ public class LaunchPadItems
 	
 	public int getCurrentPayout(Item item)
     { 
+		for (LaunchPadItem lpItem : ConfigHandler.launchPadItems())
+		{
+			ResourceLocation location = new ResourceLocation(lpItem.name);
+			Item foundItem = Item.REGISTRY.getObject(location);
+			if (foundItem == item)
+			{
+				return lpItem.worth;
+			}
+		}
+		
 		if (itemTier6.contains(item))
 		{
 			return 64;
@@ -60,17 +70,7 @@ public class LaunchPadItems
 		{
 			return 2;
 		}
-		
-		for (LaunchPadItem lpItem : ConfigHandler.launchPadItems())
-		{
-			ResourceLocation location = new ResourceLocation(lpItem.name);
-			Item foundItem = Item.REGISTRY.getObject(location);
-			if (foundItem == item)
-			{
-				return lpItem.worth;
-			}
-		}
-		
+
 		return replicatorItems.getItemWorth(new ItemStack(item));
     }
 	
