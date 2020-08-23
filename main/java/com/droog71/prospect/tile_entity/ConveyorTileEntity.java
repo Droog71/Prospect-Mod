@@ -58,6 +58,8 @@ public class ConveyorTileEntity extends TileEntityLockableLoot implements ITicka
 	private BlockPos inputPos;
 	private BlockPos outputPos;
 	private ItemStack currentItemStack = ItemStack.EMPTY;
+	private int withdrawlIndex;
+	private Object[] withdrawlItems;
 	private NonNullList<ItemStack> chestContents = NonNullList.<ItemStack>withSize(27, ItemStack.EMPTY);
 	public boolean withdrawlConveyor;
 	public ConveyorTileEntity input;
@@ -177,6 +179,14 @@ public class ConveyorTileEntity extends TileEntityLockableLoot implements ITicka
 						handleInput();
 					}					
 				}
+				else if (currentWithdrawl() != null)
+				{
+					withdrawItem();
+				}
+				else
+				{
+					getWithdrawlInventory();
+				}
 				
 				if (output == null)
 				{
@@ -229,11 +239,31 @@ public class ConveyorTileEntity extends TileEntityLockableLoot implements ITicka
     // Returns the slot to withdraw from
     private boolean isWithdrawlConveyor()
     {
-    	if (!(world.getStrongPower(pos) >= 15))
+    	if (world.getStrongPower(pos) < 15)
     	{
     		withdrawlConveyor = false;
-    		return false;
+    		return withdrawlConveyor;
     	}
+    	BlockPos[] positions = {pos.add(0,1,0),pos.add(0,-1,0),pos.add(1,0,0),pos.add(-1,0,0),pos.add(0,0,1),pos.add(0,0,-1)};    	
+    	for (BlockPos p : positions)
+    	{
+    		IInventory inventory = getInventoryAtPosition(p);
+    		if (inventory != null)
+    		{
+    			if (!(inventory instanceof ConveyorTileEntity))
+    			{
+    				withdrawlConveyor = true;
+    		    	return withdrawlConveyor;
+    			}
+    		}
+    	}   	
+    	withdrawlConveyor = false;
+		return withdrawlConveyor;
+    }
+    
+    // Returns an array of inventory slots and associated itemstacks the conveyor tube can withdraw
+    private Object[] getWithdrawlInventory()
+    {    	
     	List<IInventory> inventoryList = new ArrayList<IInventory>();
     	BlockPos[] positions = {pos.add(0,1,0),pos.add(0,-1,0),pos.add(1,0,0),pos.add(-1,0,0),pos.add(0,0,1),pos.add(0,0,-1)};    	
     	for (BlockPos p : positions)
@@ -246,34 +276,58 @@ public class ConveyorTileEntity extends TileEntityLockableLoot implements ITicka
     				inventoryList.add(inventory);
     			}
     		}
-    	}   	
+    	}   
+    	
+    	List<ConveyorWithdrawl> withDrawList = new ArrayList<ConveyorWithdrawl>();
     	for (IInventory inventory : inventoryList)
     	{ 		
     		int size = inventory.getSizeInventory();
-            for (int index = 0; index < size; ++index)
-            {
-            	ItemStack itemstack = inventory.getStackInSlot(index);                       
+            for (int index = 0; index < size; index++)
+            {         	
+            	ItemStack itemstack = inventory.getStackInSlot(index);              	
                 if (!itemstack.isEmpty())
                 {
             		if (filterList().contains(itemstack.getItem()))
 					{
-                		inventory.setInventorySlotContents(index, ItemStack.EMPTY);
-                		inventory.markDirty();
-                		currentItemStack = itemstack;
-                		withdrawlConveyor = true;
-                    	return true;
+            			withDrawList.add(new ConveyorWithdrawl(inventory, itemstack, index));
 					}
-                	else
-                	{
-                		currentItemStack = ItemStack.EMPTY;
-                		withdrawlConveyor = true;
-                    	return true;
-                	}  
                 }
             } 			
     	}
-    	withdrawlConveyor = false;
-    	return false;
+    	
+    	withdrawlItems = withDrawList.toArray();
+    	return withdrawlItems;
+    }
+    
+    // Returns the inventory, slot and stack to withdraw
+    private ConveyorWithdrawl currentWithdrawl()
+    {
+    	if (withdrawlItems == null || withdrawlItems.length == 0)
+    	{
+    		withdrawlIndex = 0;
+    		return null;
+    	}
+    	
+    	if (withdrawlIndex < withdrawlItems.length)
+    	{
+    		return (ConveyorWithdrawl) withdrawlItems[withdrawlIndex];
+    	}
+    	
+    	withdrawlIndex = 0;
+    	return null;
+    }
+    
+    // Withdraws an item from the inventory
+    private void withdrawItem()
+    {
+    	if (withdrawlIndex < withdrawlItems.length)
+    	{
+    		ConveyorWithdrawl w = (ConveyorWithdrawl) withdrawlItems[withdrawlIndex];
+        	currentItemStack = w.withdrawlStack;        	
+        	w.inventory.setInventorySlotContents(w.withdrawlIndex, ItemStack.EMPTY);
+        	w.inventory.markDirty();
+        	withdrawlIndex++;
+    	}
     }
     
     // Puts mined blocks and items into adjacent storage
