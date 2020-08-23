@@ -15,7 +15,6 @@ import techguns.TGItems;
 
 public class LaunchPadItems 
 {	
-	List<Item> itemTier6 = new ArrayList<Item>();
 	List<Item> itemTier5 = new ArrayList<Item>();
 	List<Item> itemTier4 = new ArrayList<Item>();
 	List<Item> itemTier3 = new ArrayList<Item>();
@@ -25,7 +24,6 @@ public class LaunchPadItems
 	
 	public void init()
 	{
-		generateTier6ItemList();
 		generateTier5ItemList();	
 		generateTier4ItemList();
 		generateTier3ItemList();
@@ -46,78 +44,68 @@ public class LaunchPadItems
 			}
 		}
 		
-		if (itemTier6.contains(item))
+		if (itemTier5.contains(item))
 		{
 			return 64;
 		}
-		if (itemTier5.contains(item))
+		if (itemTier4.contains(item))
 		{
 			return 32;
 		}
-		if (itemTier4.contains(item))
+		if (itemTier3.contains(item))
 		{
 			return 16;
 		}
-		if (itemTier3.contains(item))
+		if (itemTier2.contains(item))
 		{
 			return 8;
 		}
-		if (itemTier2.contains(item))
-		{
-			return 4;
-		}
 		if (itemTier1.contains(item))
 		{
-			return 2;
+			return 4;
 		}
 
 		return replicatorItems.getItemWorth(new ItemStack(item));
     }
-	
-	private void generateTier6ItemList()
-	{
-		itemTier6.add(Item.getItemFromBlock(ProspectBlocks.zero_point_reactor));
-		itemTier6.add(Item.getItemFromBlock(ProspectBlocks.replicator));
-		itemTier6.add(Item.getItemFromBlock(ProspectBlocks.iv_solar_panel));
-		
-		if (Loader.isModLoaded("techguns"))
-		{
-			itemTier6.add(TGItems.PLASMA_GENERATOR.getItem());
-		}
-		
-		if (Loader.isModLoaded("ic2"))
-    	{
-    		itemTier6.add(Ic2Items.massfabricator.getItem());
-    		itemTier6.add(Ic2Items.adjustableTransformer.getItem());
-    	}
-	}
-	
+
 	private void generateTier5ItemList()
 	{
+		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.zero_point_reactor));
 		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.zero_point_cooler)); 
+		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.replicator));
+		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.iv_solar_panel));
 		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.ev_solar_panel));
 		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.hv_solar_panel));
-		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.ev_transformer));
+		itemTier4.add(Item.getItemFromBlock(ProspectBlocks.mv_solar_panel)); 
 		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.quarry));
 		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.fabricator));
-		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.purifier));
-		
+		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.purifier));		
+			
 		if (Loader.isModLoaded("techguns"))
 		{
 			itemTier5.add(TGBlocks.BASIC_MACHINE.getItemblock());
+			itemTier5.add(TGItems.PLASMA_GENERATOR.getItem());
 		}
 		
 		if (Loader.isModLoaded("ic2"))
     	{
     		itemTier5.add(Ic2Items.nuclearReactor.getItem());	
+    		itemTier5.add(Ic2Items.massfabricator.getItem());
+    		itemTier5.add(Ic2Items.adjustableTransformer.getItem());
     	}
 	}
 	
 	private void generateTier4ItemList()
 	{
-		itemTier4.add(Item.getItemFromBlock(ProspectBlocks.mv_solar_panel)); 
-		itemTier4.add(Item.getItemFromBlock(ProspectBlocks.hv_transformer));		
-		itemTier4.add(Item.getItemFromBlock(ProspectBlocks.iv_conduit));
+		itemTier2.add(ProspectItems.quantum_circuit);
+		itemTier1.add(ProspectItems.motor);
+		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.bio_fuel_generator)); 
+		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.extruder)); 
+		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.lv_solar_panel));	
+		itemTier4.add(Item.getItemFromBlock(ProspectBlocks.hv_transformer));
+		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.ev_transformer));
+		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.mv_transformer));
+		itemTier2.add(Item.getItemFromBlock(ProspectBlocks.lv_transformer));				
 		
 		if (Loader.isModLoaded("techguns"))
 		{
@@ -135,13 +123,8 @@ public class LaunchPadItems
 	}
 	
 	private void generateTier3ItemList()
-	{
-		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.extruder)); 
-		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.press));
-		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.lv_solar_panel));
-		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.ev_conduit));
-		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.hv_conduit));
-		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.mv_transformer));
+	{	
+		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.press));					
 		
 		if (Loader.isModLoaded("techguns"))
 		{
@@ -150,15 +133,7 @@ public class LaunchPadItems
 	}
 	
 	private void generateTier2ItemList()
-	{
-		itemTier2.add(Item.getItemFromBlock(ProspectBlocks.copper_pipe)); 
-		itemTier2.add(Item.getItemFromBlock(ProspectBlocks.conveyor_tube));
-		itemTier2.add(Item.getItemFromBlock(ProspectBlocks.mv_conduit));
-		itemTier2.add(Item.getItemFromBlock(ProspectBlocks.lv_conduit));
-		itemTier2.add(Item.getItemFromBlock(ProspectBlocks.lv_transformer));
-		itemTier2.add(ProspectItems.quantum_circuit);
-		itemTier2.add(ProspectItems.gem);
-		
+	{					
 		if (Loader.isModLoaded("techguns"))
 		{
 			itemTier2.add(TGItems.CIRCUIT_BOARD_BASIC.getItem());
@@ -171,11 +146,18 @@ public class LaunchPadItems
 	
 	private void generateTier1ItemList()
 	{
-		itemTier1.add(ProspectItems.in_iv_wire); 
+		itemTier2.add(ProspectItems.gem);
+		itemTier2.add(Item.getItemFromBlock(ProspectBlocks.conveyor_tube));		
+		itemTier1.add(ProspectItems.in_iv_wire);
 		itemTier1.add(ProspectItems.in_ev_wire);
 		itemTier1.add(ProspectItems.in_hv_wire);
 		itemTier1.add(ProspectItems.in_mv_wire);
 		itemTier1.add(ProspectItems.in_lv_wire);
+		itemTier4.add(Item.getItemFromBlock(ProspectBlocks.iv_conduit));
+		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.ev_conduit));
+		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.hv_conduit));
+		itemTier2.add(Item.getItemFromBlock(ProspectBlocks.mv_conduit));
+		itemTier2.add(Item.getItemFromBlock(ProspectBlocks.lv_conduit));
 		
 		if (Loader.isModLoaded("techguns"))
 		{

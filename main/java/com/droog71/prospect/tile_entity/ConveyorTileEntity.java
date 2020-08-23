@@ -258,6 +258,7 @@ public class ConveyorTileEntity extends TileEntityLockableLoot implements ITicka
             		if (filterList().contains(itemstack.getItem()))
 					{
                 		inventory.setInventorySlotContents(index, ItemStack.EMPTY);
+                		inventory.markDirty();
                 		currentItemStack = itemstack;
                 		withdrawlConveyor = true;
                     	return true;

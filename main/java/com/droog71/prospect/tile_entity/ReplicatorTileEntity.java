@@ -186,14 +186,13 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 	public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);
-        replicatorItemStacks = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
-        ItemStackHelper.loadAllItems(compound, replicatorItemStacks);
         energyStored = compound.getInteger("EnergyStored");
+        energyCapacity = compound.getInteger("EnergyCapacity");
         replicatorSpendTime = compound.getInteger("SpendTime");
         replicateTime = compound.getInteger("replicateTime");
         totalreplicateTime = compound.getInteger("replicateTimeTotal");
-        currentCreditSpendTime = getCreditSpendTime();
-        energyCapacity = compound.getInteger("EnergyCapacity");
+        replicatorItemStacks = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
+        ItemStackHelper.loadAllItems(compound, replicatorItemStacks);
         if (Loader.isModLoaded("ic2"))
 		{
 	        if ((BasicSink) ic2EnergySink == null)

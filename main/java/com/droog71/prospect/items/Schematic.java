@@ -128,23 +128,23 @@ public class Schematic extends ProspectItem
     	}
     	if (id == 27)
     	{
-    		return new ItemStack(ProspectBlocks.lv_conduit);
+    		return new ItemStack(ProspectBlocks.lv_conduit,10);
     	}
     	if (id == 28)
     	{
-    		return new ItemStack(ProspectBlocks.mv_conduit);
+    		return new ItemStack(ProspectBlocks.mv_conduit,10);
     	}
     	if (id == 29)
     	{
-    		return new ItemStack(ProspectBlocks.hv_conduit);
+    		return new ItemStack(ProspectBlocks.hv_conduit,10);
     	}
     	if (id == 30)
     	{
-    		return new ItemStack(ProspectBlocks.ev_conduit);
+    		return new ItemStack(ProspectBlocks.ev_conduit,10);
     	}
     	if (id == 31)
     	{
-    		return new ItemStack(ProspectBlocks.iv_conduit);
+    		return new ItemStack(ProspectBlocks.iv_conduit,10);
     	}
     	if (id == 32)
     	{
@@ -208,7 +208,7 @@ public class Schematic extends ProspectItem
     	}
     	if (id == 47)
     	{
-    		return new ItemStack(ProspectBlocks.conveyor_tube);
+    		return new ItemStack(ProspectBlocks.conveyor_tube,10);
     	}
     	if (id == 48)
     	{
