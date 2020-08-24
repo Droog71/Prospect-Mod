@@ -38,5 +38,25 @@
   {
     "category": "block",
     "sounds": [ "prospect:press" ]
+  },
+"bio_fuel_generator": 
+  {
+    "category": "block",
+    "sounds": [ "prospect:bio_fuel_generator" ]
+  },
+"zero_point_reactor": 
+  {
+    "category": "block",
+    "sounds": [ "prospect:zero_point_reactor" ]
+  },
+"zero_point_cooler": 
+  {
+    "category": "block",
+    "sounds": [ "prospect:zero_point_cooler" ]
+  },
+"alarm": 
+  {
+    "category": "block",
+    "sounds": [ "prospect:alarm" ]
   }
 }

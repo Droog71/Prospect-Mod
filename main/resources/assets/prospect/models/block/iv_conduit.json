@@ -1,0 +1,8 @@
+{
+    "parent": "block/cube_bottom_top",
+    "textures": {
+        "side": "prospect:blocks/iv_conduit",
+        "bottom": "prospect:blocks/iv_conduit",
+        "top": "prospect:blocks/iv_conduit"
+    }
+}

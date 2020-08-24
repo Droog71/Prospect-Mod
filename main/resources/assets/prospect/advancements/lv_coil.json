@@ -1,0 +1,26 @@
+{
+ "parent": "minecraft:recipes/root",
+ "rewards": {
+  "recipes": [
+   "prospect:lv_coil"
+  ]
+ },
+ "criteria": {
+  "has_item": {
+   "trigger": "minecraft:inventory_changed",
+   "conditions": {
+    "items": [
+     {
+      "type": "forge:ore_dict",
+      "ore": "ingotCopper"
+     }
+    ]
+   }
+  }
+ },
+ "requirements": [
+  [
+   "has_item"
+  ]
+ ]
+}

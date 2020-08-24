@@ -3,14 +3,11 @@ package com.droog71.prospect.tile_entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.droog71.prospect.fe.ProspectEnergyStorage;
+import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.FabricatorContainer;
 import com.droog71.prospect.items.Schematic;
 import ic2.api.energy.prefab.BasicSink;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
@@ -22,16 +19,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.Loader;
@@ -272,7 +265,9 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
      */
     @Override
 	public void update()
-    {       
+    {      
+    	boolean needsNetworkUpdate = false;
+    	
         if (!world.isRemote)
         {
         	if (energyStorage.overloaded)
@@ -281,45 +276,44 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
             }
         	else
         	{
-        		updateEnergy();           	
-                if (isEnergized())
-                {      
-                	if (itemsConsumed)
-                	{
-                		if (useEnergy())
-                    	{
-                    		doWork();
-                    	}
-                	}
-                	else if (canFabricate())
-                	{
-                		consumeItems();
-                	}
-                }
+        		updateEnergy();        	
+            	if (itemsConsumed && useEnergy())
+            	{
+            		++fabricateTime;
+                	
+                    if (fabricateTime == totalfabricateTime)
+                    {
+                    	fabricateTime = 0;
+                    	totalfabricateTime = getfabricateTime(fabricatorItemStacks.get(0));
+                        fabricateItem();
+                        needsNetworkUpdate = true;
+                    }
+            		
+            		effectsTimer++;
+            		if (effectsTimer > 40)
+            		{
+            			world.playSound(null, pos, ProspectSounds.fabricatorSoundEvent,  SoundCategory.BLOCKS, 0.25f, 1);
+            			effectsTimer = 0;
+            		}
+            	}
+            	else if (canFabricate() && useEnergy())
+            	{
+            		consumeItems();
+            	}
+            	else if (fabricateTime > 0)
+                {
+                	fabricateTime = MathHelper.clamp(fabricateTime - 1, 0, totalfabricateTime);
+                }            
         	}      	
         }
-    }
-    
-    private void doWork()
-    {
-    	++fabricateTime;
-    	
-        if (fabricateTime == totalfabricateTime)
+        
+        if (needsNetworkUpdate)
         {
-        	fabricateTime = 0;
-        	totalfabricateTime = getfabricateTime(fabricatorItemStacks.get(0));
-            fabricateItem();
             markDirty();
         }
-		
-		effectsTimer++;
-		if (effectsTimer > 40)
-		{
-			world.playSound(null, pos, ProspectSounds.fabricatorSoundEvent,  SoundCategory.BLOCKS, 0.25f, 1);
-			effectsTimer = 0;
-		}
     }
-    
+
+    // Get values from the energy storage or ic2 energy sink
     private void updateEnergy()
     {
     	if (energyStorage.getEnergyStored() > 0)
@@ -346,6 +340,7 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
     	}   	 
     }
     
+    // Remove energy from the buffer
     private boolean useEnergy()
     {
     	if (Loader.isModLoaded("ic2"))
@@ -374,11 +369,15 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
     	return false;
     }
     
-    public int getfabricateTime(ItemStack stack) //For now, all schematics take the same amount of time. This may change.
+    // How long it takes to fabricate the item
+    public int getfabricateTime(ItemStack stack)
     {
     	return 50;
     }
   
+    /**
+     * Returns true if all ingredients relevant to the schematic are present in an adjacent inventory
+     */
     private boolean canCraft(ItemStack[] stacks, IInventory iinventory)
     {
         if (iinventory != null)
@@ -412,6 +411,7 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
         return false;
     }
     
+    // Consumes ingredients in adjacent inventory when crafting an item
     private void consumeItems()
     {
     	ItemStack[] stacks = null;
@@ -458,67 +458,45 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
         }
     }
     
+    // Returns an adjacent inventory containing the necessary ingredients for the current schematic
     public IInventory getInventoryForCrafting(ItemStack[] stacks)
     {
-    	List<IInventory> invList = new ArrayList<IInventory>();
+    	List<IInventory> inventoryList = new ArrayList<IInventory>();
     	BlockPos[] positions = {pos.add(0,1,0),pos.add(0,-1,0),pos.add(1,0,0),pos.add(-1,0,0),pos.add(0,0,1),pos.add(0,0,-1)};    	
     	for (BlockPos p : positions)
     	{
-    		invList.add(getInventoryAtPosition(world,p.getX(),p.getY(),p.getZ()));
-    	}   	
-    	for (IInventory inventory : invList)
-    	{
+    		IInventory inventory = getInventoryAtPosition(p);
     		if (inventory != null)
-    		{  		
-    			if (canCraft(stacks,inventory))
-    			{
-    				return inventory;
-    			} 			
+    		{
+    			inventoryList.add(inventory);
     		}
+    	}   	
+    	for (IInventory inventory : inventoryList)
+    	{ 		
+			if (canCraft(stacks,inventory))
+			{
+				return inventory;
+			} 			
     	}
     	return null;
     }
     
-    public static IInventory getInventoryAtPosition(World worldIn, double x, double y, double z)
+    // Returns IInventory instance at a given position
+    public IInventory getInventoryAtPosition(BlockPos blockpos)
     {
-        IInventory iinventory = null;
-        int i = MathHelper.floor(x);
-        int j = MathHelper.floor(y);
-        int k = MathHelper.floor(z);
-        BlockPos blockpos = new BlockPos(i, j, k);
-        net.minecraft.block.state.IBlockState state = worldIn.getBlockState(blockpos);
-        Block block = state.getBlock();
-
-        if (block.hasTileEntity(state))
+        TileEntity tileentity = world.getTileEntity(blockpos);
+        if (tileentity != null)
         {
-            TileEntity tileentity = worldIn.getTileEntity(blockpos);
-
             if (tileentity instanceof IInventory)
             {
-                iinventory = (IInventory)tileentity;
-
-                if (iinventory instanceof TileEntityChest && block instanceof BlockChest)
-                {
-                    iinventory = ((BlockChest)block).getContainer(worldIn, blockpos, true);
-                }
+                return (IInventory)tileentity;  
             }
         }
-
-        if (iinventory == null)
-        {
-            List<Entity> list = worldIn.getEntitiesInAABBexcluding((Entity)null, new AxisAlignedBB(x - 0.5D, y - 0.5D, z - 0.5D, x + 0.5D, y + 0.5D, z + 0.5D), EntitySelectors.HAS_INVENTORY);
-
-            if (!list.isEmpty())
-            {
-                iinventory = (IInventory)list.get(worldIn.rand.nextInt(list.size()));
-            }
-        }
-
-        return iinventory;
+        return null;
     }
     
     /**
-     * Returns true if the fabricator can fabricate an item, i.e. has a source item, destination stack isn't full, etc.
+     * Returns true if the fabricator can craft an item, i.e. has a source item, destination stack isn't full, etc.
      */
     private boolean canFabricate()
     {    	
@@ -548,6 +526,7 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
         }
     }
 
+    // Creates the resulting item for the current schematic
     public void fabricateItem()
     {        
         ItemStack result = new ItemStack(Items.AIR);   
@@ -650,11 +629,13 @@ public class FabricatorTileEntity extends TileEntity implements ITickable, ISide
         return true;
     }
 
+    // Not used
     public String getGuiID()
     {
         return null;
     }
 
+    // Creates the container
     public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
     {
         return new FabricatorContainer(playerInventory, this);

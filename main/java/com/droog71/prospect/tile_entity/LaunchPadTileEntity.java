@@ -1,19 +1,18 @@
 package com.droog71.prospect.tile_entity;
 
-import com.droog71.prospect.fe.ProspectEnergyStorage;
+import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectBlocks;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.LaunchPadContainer;
+import com.droog71.prospect.items.LaunchPadItems;
 import ic2.api.energy.prefab.BasicSink;
-import ic2.core.platform.registry.Ic2Items;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -30,8 +29,6 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import techguns.TGBlocks;
-import techguns.TGItems;
 
 public class LaunchPadTileEntity extends TileEntity implements ITickable, ISidedInventory
 {
@@ -42,9 +39,10 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
     private int energyCapacity;
     private int launchTime;
     private int totalLaunchTime;  
-    private int currentPayout;
+    public int currentPayout;
     private Object ic2EnergySink;
 	private ProspectEnergyStorage energyStorage = new ProspectEnergyStorage();
+	private LaunchPadItems launchPadItems = new LaunchPadItems();
 	public int capsuleYpos;
     
 	@Override
@@ -60,6 +58,7 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
 		}	
 		energyStorage.capacity = 20000;
 		energyStorage.maxReceive = 4000;
+		launchPadItems.init();
 	}
 	 
 	@Override
@@ -267,7 +266,9 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
      */
     @Override
 	public void update()
-    {                 
+    {   
+    	boolean needsNetworkUpdate = false;
+    	
         if (!world.isRemote)
         {
         	if (energyStorage.overloaded)
@@ -277,83 +278,62 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
         	else
         	{
         		updateEnergy();
-                if (isEnergized())
-                {            	
-                    if (canLaunch())
-                    {
-                    	if (useEnergy())
-                    	{        
-                    		if (capsuleYpos == 0)
-                    		{
-                    			WorldServer w = (WorldServer) world;
-                    			w.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 1, null);
-                    	    	w.spawnParticle(EnumParticleTypes.LAVA, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);
-                    	    	w.spawnParticle(EnumParticleTypes.FLAME, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null); 
-                    			world.playSound(null, pos, ProspectSounds.capsuleSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
-                    			capsuleYpos = 1;
-                    		}
-                    		else if (capsuleYpos < 500)
-                    		{
-                    			if (capsuleYpos > 1)
-                    			{
-                    				world.setBlockToAir(new BlockPos(pos.getX(),pos.getY()+capsuleYpos-1,pos.getZ()));
-                    			}               			
-                    			world.setBlockState(new BlockPos(pos.getX(),pos.getY()+capsuleYpos,pos.getZ()), ProspectBlocks.capsule.getDefaultState());
-                    			capsuleYpos++;
-                    		}   
-                    		else
-                    		{
-                    			world.setBlockToAir(new BlockPos(pos.getX(),pos.getY()+capsuleYpos-1,pos.getZ()));
-                    			capsuleYpos = 0;
-                    		}
-                    		doWork();
-                    	}
-                    	else
-                    	{
-                    		if (capsuleYpos > 1)
-                        	{
-                        		world.setBlockToAir(new BlockPos(pos.getX(),pos.getY()+capsuleYpos-1,pos.getZ()));
-                        	}
-                    		capsuleYpos = 0;
-                    	}
-                    }
-                    else
-                    {
-                    	if (capsuleYpos > 1)
-                    	{
-                    		world.setBlockToAir(new BlockPos(pos.getX(),pos.getY()+capsuleYpos-1,pos.getZ()));
-                    	}                   	
-                    	capsuleYpos = 0;
-                        launchTime = 0;
-                    }
-                }
-                else if (!isEnergized() && launchTime > 0)
+                if (canLaunch() && useEnergy())
                 {
-                    launchTime = MathHelper.clamp(launchTime - 2, 0, totalLaunchTime);
+            		++launchTime;   	
+                    if (launchTime == totalLaunchTime)
+                    {
+                        launchTime = 0;
+                        totalLaunchTime = getlaunchTime(launchPadItemStacks.get(0));
+                        launchItem();
+                        needsNetworkUpdate = true;
+                    }
                 }
-        	}       	
-        }       
-    }
-    
-    private void doWork()
-    {
-    	boolean flag1 = false;   
-    	++launchTime;
-    	
-        if (launchTime == totalLaunchTime)
-        {
-            launchTime = 0;
-            totalLaunchTime = getlaunchTime(launchPadItemStacks.get(0));
-            launchItem();
-            flag1 = true;
-        }
+                else if (launchTime > 0)
+                {
+                	launchTime = MathHelper.clamp(launchTime - 2, 0, totalLaunchTime);
+                }              
+        	} 
+        	if (capsuleYpos > 0 && capsuleYpos < 500)
+    		{
+    			moveCapsule();
+    		}   
+    		else if (capsuleYpos > 500)
+    		{
+    			world.setBlockToAir(new BlockPos(pos.getX(),pos.getY()+capsuleYpos-1,pos.getZ()));
+    			capsuleYpos = 0;
+    		}
+        }    
         
-		if (flag1)
+        if (needsNetworkUpdate)
         {
             markDirty();
         }
     }
     
+    // Spawns particle effects, plays sound and moves capsule 1 block above the launch pad
+    private void launchCapsule()
+    {
+    	WorldServer w = (WorldServer) world;
+		w.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 1, null);
+    	w.spawnParticle(EnumParticleTypes.LAVA, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null);
+    	w.spawnParticle(EnumParticleTypes.FLAME, pos.getX(), pos.getY(), pos.getZ(), 10, 0, 0, 0, 1, null); 
+		world.playSound(null, pos, ProspectSounds.capsuleSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
+		capsuleYpos = 1;
+    }
+    
+    // Continues moving the capsule up 1 block each tick
+    private void moveCapsule()
+    {
+    	if (capsuleYpos > 1)
+		{
+			world.setBlockToAir(new BlockPos(pos.getX(),pos.getY()+capsuleYpos-1,pos.getZ()));
+		}               			
+		world.setBlockState(new BlockPos(pos.getX(),pos.getY()+capsuleYpos,pos.getZ()), ProspectBlocks.capsule.getDefaultState());
+		capsuleYpos++;
+    }
+
+    // Get values from the energy storage or ic2 energy sink
     private void updateEnergy()
     {
     	if (energyStorage.getEnergyStored() > 0)
@@ -380,6 +360,7 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
     	}   	 
     }
     
+    // Remove energy from the buffer
     private boolean useEnergy()
     {
     	if (Loader.isModLoaded("ic2"))
@@ -408,111 +389,10 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
     	return false;
     }
     
-    public int getlaunchTime(ItemStack stack) //Could be used to vary launch times depending on the item.
+    // How long it takes to launch an item
+    public int getlaunchTime(ItemStack stack)
     {
         return 100;
-    }
-
-    private int getCurrentPayout()
-    {
-    	Item item = launchPadItemStacks.get(0).getItem();  	 
-    	if (Loader.isModLoaded("techguns"))
-		{
-    		if (item == TGItems.PLASMA_GENERATOR.getItem())
-    		{
-    			currentPayout = 64;
-        		return currentPayout;
-    		} 
-    		if (item == TGBlocks.BASIC_MACHINE.getItemblock())
-    		{
-    			currentPayout = 32;
-        		return currentPayout;
-    		}    		
-    		if (item == TGItems.CIRCUIT_BOARD_ELITE.getItem())
-    		{
-    			currentPayout = 16;
-        		return currentPayout;
-    		}
-    		if (item == TGItems.ELECTRIC_ENGINE.getItem())
-    		{
-    			currentPayout = 8;
-        		return currentPayout;
-    		}
-    		if (item == TGItems.CIRCUIT_BOARD_BASIC.getItem())
-    		{
-    			currentPayout = 4;
-        		return currentPayout;
-    		}  
-    		if (item == TGItems.ENERGY_CELL.getItem())
-    		{
-    			currentPayout = 2;
-        		return currentPayout;
-    		}  
-		}
-    	if (Loader.isModLoaded("ic2"))
-    	{
-    		if (item == Ic2Items.massfabricator.getItem() || item == Ic2Items.adjustableTransformer.getItem())
-    		{
-    			currentPayout = 64;
-        		return currentPayout;
-    		}
-    		if (item == Ic2Items.nuclearReactor.getItem())
-    		{
-    			currentPayout = 32;
-        		return currentPayout;
-    		}
-    		if (item == Ic2Items.advancedCircuit.getItem() || item == Ic2Items.macerator.getItem() || item == Ic2Items.compressor.getItem() || item == Ic2Items.electroFurnace.getItem() || item == Ic2Items.extractor.getItem())
-    		{
-    			currentPayout = 16;
-        		return currentPayout;
-    		}
-    		if (item == Ic2Items.electricCircuit.getItem())
-    		{
-    			currentPayout = 8;
-        		return currentPayout;
-    		}
-    		if (item == Ic2Items.doubleInsulatedGoldCable.getItem() || item == Ic2Items.tribbleInsulatedIronCable.getItem())
-    		{
-    			currentPayout = 4;
-        		return currentPayout;
-    		}
-    		if (item == Ic2Items.copperCable.getItem())
-    		{
-    			currentPayout = 2;
-        		return currentPayout;
-    		}
-    	}
-    	if (item == Item.getItemFromBlock(ProspectBlocks.replicator) || item == Item.getItemFromBlock(ProspectBlocks.iv_solar_panel))
-    	{
-    		currentPayout = 64;
-    		return currentPayout;
-    	}
-    	if (item == Item.getItemFromBlock(ProspectBlocks.hv_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.ev_transformer) || item == Item.getItemFromBlock(ProspectBlocks.quarry) || item == Item.getItemFromBlock(ProspectBlocks.ev_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.purifier)  || item == Item.getItemFromBlock(ProspectBlocks.fabricator))
-    	{
-    		currentPayout = 32;
-    		return currentPayout;
-    	}
-    	if (item == Item.getItemFromBlock(ProspectBlocks.mv_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.hv_transformer) || item == Item.getItemFromBlock(ProspectBlocks.iv_cable))
-    	{
-    		currentPayout = 16;
-    		return currentPayout;
-    	}
-    	if (item == Item.getItemFromBlock(ProspectBlocks.extruder) || item == Item.getItemFromBlock(ProspectBlocks.press) || item == Item.getItemFromBlock(ProspectBlocks.lv_solar_panel) || item == Item.getItemFromBlock(ProspectBlocks.hv_cable) || item == Item.getItemFromBlock(ProspectBlocks.mv_transformer))
-    	{
-    		currentPayout = 8;
-    		return currentPayout;
-    	}
-    	if (item == Item.getItemFromBlock(ProspectBlocks.lv_cable) || item == Item.getItemFromBlock(ProspectBlocks.lv_transformer) || item == Item.getItemFromBlock(ProspectBlocks.mv_cable) || item == ProspectItems.quantum_circuit || item == ProspectItems.gem)
-    	{
-    		currentPayout = 4;
-    		return currentPayout;
-    	}  
-    	if (item == ProspectItems.in_iv_wire || item == ProspectItems.in_ev_wire || item == ProspectItems.in_hv_wire || item == ProspectItems.in_mv_wire || item == ProspectItems.in_lv_wire)
-    	{
-    		currentPayout = 2;
-    		return currentPayout;
-    	} 
-    	return 0;
     }
     
     /**
@@ -520,7 +400,8 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
      */
     private boolean canLaunch()
     {
-        if (getCurrentPayout() < 1)
+    	currentPayout = launchPadItems.getCurrentPayout(launchPadItemStacks.get(0).getItem());
+        if (currentPayout < 1)
         {
             return false;
         }
@@ -557,12 +438,19 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
     }
 
     /**
-     * Turn one item from the launch pad source stack into the appropriate resulting item in the launch pad result stack
+     * Launch the capsule, remove the item from the inventory and add IGC to the output slot
      */
     public void launchItem()
     {
         if (canLaunch())
         {
+        	if (capsuleYpos > 1)
+        	{
+        		world.setBlockToAir(new BlockPos(pos.getX(),pos.getY()+capsuleYpos-1,pos.getZ()));
+    			capsuleYpos = 0;
+        	}
+        	launchCapsule();
+        	
             ItemStack itemstack = launchPadItemStacks.get(0);
             ItemStack itemstack1 = new ItemStack(ProspectItems.credit,currentPayout);
             ItemStack itemstack2 = launchPadItemStacks.get(2);
@@ -598,14 +486,12 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
 
     @Override
 	public void openInventory(EntityPlayer player)
-    {
-    	
+    {    	
     }
 
     @Override
 	public void closeInventory(EntityPlayer player)
-    {
-    	
+    {   	
     }
 
     /**
@@ -656,6 +542,7 @@ public class LaunchPadTileEntity extends TileEntity implements ITickable, ISided
         return true;
     }
 
+    // Not used
     public String getGuiID()
     {
         return null;

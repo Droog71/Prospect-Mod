@@ -1,0 +1,8 @@
+{
+    "parent": "block/cube_bottom_top",
+    "textures": {
+        "side": "prospect:blocks/copper_pipe_pressurized",
+        "bottom": "prospect:blocks/copper_pipe_pressurized",
+        "top": "prospect:blocks/copper_pipe_pressurized"
+    }
+}

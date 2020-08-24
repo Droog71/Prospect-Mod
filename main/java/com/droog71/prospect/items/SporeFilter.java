@@ -34,7 +34,7 @@ public class SporeFilter extends ProspectItem
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) 
     {
-    	if(itemSlot < 9) //Spore filters must be placed in the hotbar when in use. Extra filters stored in the player's inventory will not take damage.
+    	if(itemSlot < 9) //Spore filters must be placed in the hotbar when in use.
     	{  		
     		if (stack.getItemDamage() >= stack.getMaxDamage())
     		{    			   			

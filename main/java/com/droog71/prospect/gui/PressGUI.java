@@ -22,8 +22,8 @@ public class PressGUI extends GuiContainer
     public PressGUI(InventoryPlayer playerInv, IInventory pressInv)
     {
         super(new PressContainer(playerInv, pressInv));
-        this.playerInventory = playerInv;
-        this.tilePress = pressInv;
+        playerInventory = playerInv;
+        tilePress = pressInv;
     }
 
     /**
@@ -32,9 +32,9 @@ public class PressGUI extends GuiContainer
     @Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawDefaultBackground();
+        drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
-        this.renderHoveredToolTip(mouseX, mouseY);
+        renderHoveredToolTip(mouseX, mouseY);
     }
 
     /**
@@ -43,9 +43,9 @@ public class PressGUI extends GuiContainer
     @Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        String s = this.tilePress.getName();
-        this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
-        this.fontRenderer.drawString(this.playerInventory.getDisplayName().getUnformattedText(), 8, this.ySize - 96 + 2, 4210752);
+        String s = tilePress.getName();
+        fontRenderer.drawString(s, xSize / 2 - fontRenderer.getStringWidth(s) / 2, 6, 4210752);
+        fontRenderer.drawString(playerInventory.getDisplayName().getUnformattedText(), 8, ySize - 96 + 2, 4210752);
     }
 
     /**
@@ -55,37 +55,30 @@ public class PressGUI extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(PRESS_GUI_TEXTURES);
-        int i = (this.width - this.xSize) / 2;
-        int j = (this.height - this.ySize) / 2;
-        this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
+        mc.getTextureManager().bindTexture(PRESS_GUI_TEXTURES);
+        int i = (width - xSize) / 2;
+        int j = (height - ySize) / 2;
+        drawTexturedModalRect(i, j, 0, 0, xSize, ySize);
 
-        if (PressTileEntity.isEnergized(this.tilePress))
+        if (PressTileEntity.isEnergized(tilePress))
         {
-            int k = this.getBurnLeftScaled(13);
-            this.drawTexturedModalRect(i + 56, j + 36 + 12 - k, 176, 12 - k, 14, k + 1);
+            int k = getPowerScaled(13);
+            drawTexturedModalRect(i + 56, j + 36 + 12 - k, 176, 12 - k, 14, k + 1);
         }
 
-        int l = this.getCookProgressScaled(24);
-        this.drawTexturedModalRect(i + 79, j + 34, 176, 14, l + 1, 16);
+        int l = getPressProgressScaled(24);
+        drawTexturedModalRect(i + 79, j + 34, 176, 14, l + 1, 16);
     }
 
-    private int getCookProgressScaled(int pixels)
+    private int getPressProgressScaled(int pixels)
     {
-        int i = this.tilePress.getField(2);
-        int j = this.tilePress.getField(3);
+        int i = tilePress.getField(2);
+        int j = tilePress.getField(3);
         return j != 0 && i != 0 ? i * pixels / j : 0;
     }
 
-    private int getBurnLeftScaled(int pixels)
+    private int getPowerScaled(int pixels)
     {
-        int i = this.tilePress.getField(1);
-
-        if (i == 0)
-        {
-            i = 200;
-        }
-
-        return this.tilePress.getField(0) * pixels / i;
+        return tilePress.getField(0) * pixels / tilePress.getField(1);
     }
 }

@@ -1,0 +1,27 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "APA",
+    "ARA",
+    "AMA"  ],
+  "key": {
+    "R": {
+        "item": "prospect:refrigerant"
+    },
+    "M": {
+        "item": "prospect:motor"
+    },
+    "A": {
+        "item": "prospect:aluminum_plate"
+    },
+    "P": {
+        "item": "minecraft:piston"
+    }
+},
+  "result": {
+    "item": "prospect:zero_point_cooler",
+    "data": 0
+  }
+}
+
+

@@ -1,0 +1,25 @@
+{
+ "parent": "minecraft:recipes/root",
+ "rewards": {
+  "recipes": [
+   "prospect:replicator"
+  ]
+ },
+ "criteria": {
+  "has_item": {
+   "trigger": "minecraft:inventory_changed",
+   "conditions": {
+    "items": [
+     {
+      "item": "prospect:fabricator"
+     }
+    ]
+   }
+  }
+ },
+ "requirements": [
+  [
+   "has_item"
+  ]
+ ]
+}

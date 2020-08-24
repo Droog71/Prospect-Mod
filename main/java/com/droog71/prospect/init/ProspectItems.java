@@ -16,15 +16,20 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Mod.EventBusSubscriber(modid=Prospect.MODID)
 public class ProspectItems 
 {
+	// Armor
 	public static Item helmet;
 	public static Item suit;
 	public static Item pants;
 	public static Item boots;
 	
+	// Items
 	public static Item filter;
 	public static Item suit_material;	
 	public static Item gem;
 	public static Item credit;
+	public static Item bio_fuel;
+	public static Item refrigerant;
+	public static Item motor;
 	public static Item copper_wire;
 	public static Item mv_wire;
 	public static Item hv_wire;
@@ -55,6 +60,7 @@ public class ProspectItems
 	public static Item aluminum_plate;
 	public static Item silicon;
 	
+	// Schematics
 	public static Item mv_wire_schematic;
 	public static Item hv_wire_schematic;
 	public static Item ev_wire_schematic;
@@ -82,11 +88,11 @@ public class ProspectItems
 	public static Item launch_pad_schematic;
 	public static Item replicator_schematic;
 	public static Item extruder_schematic;	
-	public static Item lv_cable_schematic;
-	public static Item mv_cable_schematic;
-	public static Item hv_cable_schematic;
-	public static Item ev_cable_schematic;
-	public static Item iv_cable_schematic;
+	public static Item lv_conduit_schematic;
+	public static Item mv_conduit_schematic;
+	public static Item hv_conduit_schematic;
+	public static Item ev_conduit_schematic;
+	public static Item iv_conduit_schematic;
 	public static Item lv_transformer_schematic;
 	public static Item mv_transformer_schematic;
 	public static Item hv_transformer_schematic;
@@ -96,21 +102,32 @@ public class ProspectItems
 	public static Item hv_solar_panel_schematic;
 	public static Item ev_solar_panel_schematic;
 	public static Item iv_solar_panel_schematic;
-	
 	public static Item chest_schematic;
 	public static Item hopper_schematic;
 	public static Item piston_schematic;
+	public static Item bio_fuel_generator_schematic;
+	public static Item zero_point_reactor_schematic;
+	public static Item zero_point_cooler_schematic;
+	public static Item conveyor_tube_schematic;
+	public static Item bio_fuel_schematic;
+	public static Item refrigerant_schematic;
+	public static Item motor_schematic;
 	
 	public static void init() 
 	{		
+		// Armor
 		helmet = new ProspectArmor("helmet",Prospect.tabProspect,ProspectArmor.PROSPECTOR_ARMOR, 0, EntityEquipmentSlot.HEAD);
 		suit = new ProspectArmor("suit",Prospect.tabProspect,ProspectArmor.PROSPECTOR_ARMOR, 0, EntityEquipmentSlot.CHEST);
 		pants = new ProspectArmor("pants",Prospect.tabProspect,ProspectArmor.PROSPECTOR_ARMOR, 1, EntityEquipmentSlot.LEGS);
 		boots = new ProspectArmor("boots",Prospect.tabProspect,ProspectArmor.PROSPECTOR_ARMOR, 0, EntityEquipmentSlot.FEET);
 		
+		// Items
 		filter = new SporeFilter("filter").setMaxDamage(100000).setCreativeTab(Prospect.tabProspect).setMaxStackSize(1);
 		gem = new ProspectItem("gem").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);		
-		credit = new ProspectItem("credit").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);	
+		credit = new ProspectItem("credit").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		bio_fuel = new ProspectItem("bio_fuel").setCreativeTab(Prospect.tabProspect).setMaxStackSize(1);
+		refrigerant = new ProspectItem("refrigerant").setCreativeTab(Prospect.tabProspect).setMaxStackSize(1);
+		motor = new ProspectItem("motor").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		suit_material = new ProspectItem("suit_material").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		copper_wire = new ProspectItem("copper_wire").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		mv_wire = new ProspectItem("mv_wire").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
@@ -141,7 +158,8 @@ public class ProspectItems
 		lead_plate = new ProspectItem("lead_plate").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		aluminum_plate = new ProspectItem("aluminum_plate").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		silicon = new ProspectItem("silicon").setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
-				
+			
+		// Schematics
 		boots_schematic = new Schematic("boots_schematic",0).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		pants_schematic = new Schematic("pants_schematic",1).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		suit_schematic = new Schematic("suit_schematic",2).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
@@ -169,11 +187,11 @@ public class ProspectItems
 		iv_coil_schematic = new Schematic("iv_coil_schematic",24).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		circuit_schematic = new Schematic("circuit_schematic",25).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		prepared_circuit_schematic = new Schematic("prepared_circuit_schematic",26).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);		
-		lv_cable_schematic = new Schematic("lv_cable_schematic",27).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
-		mv_cable_schematic = new Schematic("mv_cable_schematic",28).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
-		hv_cable_schematic = new Schematic("hv_cable_schematic",29).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
-		ev_cable_schematic = new Schematic("ev_cable_schematic",30).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
-		iv_cable_schematic = new Schematic("iv_cable_schematic",31).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);		
+		lv_conduit_schematic = new Schematic("lv_conduit_schematic",27).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		mv_conduit_schematic = new Schematic("mv_conduit_schematic",28).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		hv_conduit_schematic = new Schematic("hv_conduit_schematic",29).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		ev_conduit_schematic = new Schematic("ev_conduit_schematic",30).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		iv_conduit_schematic = new Schematic("iv_conduit_schematic",31).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);		
 		lv_transformer_schematic = new Schematic("lv_transformer_schematic",32).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		mv_transformer_schematic = new Schematic("mv_transformer_schematic",33).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		hv_transformer_schematic = new Schematic("hv_transformer_schematic",34).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
@@ -182,23 +200,35 @@ public class ProspectItems
 		mv_solar_panel_schematic = new Schematic("mv_solar_panel_schematic",37).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		hv_solar_panel_schematic = new Schematic("hv_solar_panel_schematic",38).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		ev_solar_panel_schematic = new Schematic("ev_solar_panel_schematic",39).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
-		iv_solar_panel_schematic = new Schematic("iv_solar_panel_schematic",40).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		iv_solar_panel_schematic = new Schematic("iv_solar_panel_schematic",40).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);		
 		chest_schematic = new Schematic("chest_schematic",41).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		hopper_schematic = new Schematic("hopper_schematic",42).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 		piston_schematic = new Schematic("piston_schematic",43).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		bio_fuel_generator_schematic = new Schematic("bio_fuel_generator_schematic",44).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		zero_point_reactor_schematic = new Schematic("zero_point_reactor_schematic",45).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		zero_point_cooler_schematic = new Schematic("zero_point_cooler_schematic",46).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		conveyor_tube_schematic = new Schematic("conveyor_tube_schematic",47).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		bio_fuel_schematic = new Schematic("bio_fuel_schematic",48).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		refrigerant_schematic = new Schematic("refrigerant_schematic",49).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
+		motor_schematic = new Schematic("motor_schematic",50).setCreativeTab(Prospect.tabProspect).setMaxStackSize(64);
 	}
 	
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event) 
-	{		
+	{	
+		// Armor
 		event.getRegistry().registerAll(helmet);
 		event.getRegistry().registerAll(suit);
 		event.getRegistry().registerAll(pants);
 		event.getRegistry().registerAll(boots);	
 		
+		// Items
 		event.getRegistry().registerAll(filter);
 		event.getRegistry().registerAll(gem);
 		event.getRegistry().registerAll(credit);
+		event.getRegistry().registerAll(bio_fuel);
+		event.getRegistry().registerAll(refrigerant);
+		event.getRegistry().registerAll(motor);
 		event.getRegistry().registerAll(suit_material);
 		event.getRegistry().registerAll(copper_wire);
 		event.getRegistry().registerAll(mv_wire);
@@ -230,6 +260,7 @@ public class ProspectItems
 		event.getRegistry().registerAll(aluminum_plate);
 		event.getRegistry().registerAll(silicon);
 		
+		// Schematics
 		event.getRegistry().registerAll(purifier_schematic);
 		event.getRegistry().registerAll(launch_pad_schematic);
 		event.getRegistry().registerAll(fabricator_schematic);
@@ -241,11 +272,11 @@ public class ProspectItems
 		event.getRegistry().registerAll(quarry_schematic);
 		event.getRegistry().registerAll(replicator_schematic);		
 		event.getRegistry().registerAll(extruder_schematic);		
-		event.getRegistry().registerAll(lv_cable_schematic);
-		event.getRegistry().registerAll(mv_cable_schematic);
-		event.getRegistry().registerAll(hv_cable_schematic);
-		event.getRegistry().registerAll(ev_cable_schematic);
-		event.getRegistry().registerAll(iv_cable_schematic);		
+		event.getRegistry().registerAll(lv_conduit_schematic);
+		event.getRegistry().registerAll(mv_conduit_schematic);
+		event.getRegistry().registerAll(hv_conduit_schematic);
+		event.getRegistry().registerAll(ev_conduit_schematic);
+		event.getRegistry().registerAll(iv_conduit_schematic);		
 		event.getRegistry().registerAll(lv_transformer_schematic);
 		event.getRegistry().registerAll(mv_transformer_schematic);
 		event.getRegistry().registerAll(hv_transformer_schematic);
@@ -271,23 +302,34 @@ public class ProspectItems
 		event.getRegistry().registerAll(iv_coil_schematic);
 		event.getRegistry().registerAll(circuit_schematic);
 		event.getRegistry().registerAll(prepared_circuit_schematic);
-		
 		event.getRegistry().registerAll(chest_schematic);
 		event.getRegistry().registerAll(hopper_schematic);
 		event.getRegistry().registerAll(piston_schematic);
+		event.getRegistry().registerAll(bio_fuel_generator_schematic);
+		event.getRegistry().registerAll(zero_point_reactor_schematic);
+		event.getRegistry().registerAll(zero_point_cooler_schematic);
+		event.getRegistry().registerAll(conveyor_tube_schematic);
+		event.getRegistry().registerAll(bio_fuel_schematic);
+		event.getRegistry().registerAll(refrigerant_schematic);
+		event.getRegistry().registerAll(motor_schematic);
 	}
 	
 	@SubscribeEvent
 	public static void registerRenders(ModelRegistryEvent event) 
 	{
+		// Armor
 		registerRender(filter);
 		registerRender(helmet);
 		registerRender(suit);
 		registerRender(pants);
 		registerRender(boots);	
 		
+		// Items
 		registerRender(gem);
 		registerRender(credit);
+		registerRender(bio_fuel);
+		registerRender(refrigerant);
+		registerRender(motor);
 		registerRender(suit_material);
 		registerRender(copper_wire);
 		registerRender(mv_wire);
@@ -319,6 +361,7 @@ public class ProspectItems
 		registerRender(aluminum_plate);
 		registerRender(silicon);
 			
+		// Schematics
 		registerRender(helmet_schematic);
 		registerRender(suit_schematic);
 		registerRender(pants_schematic);
@@ -338,11 +381,11 @@ public class ProspectItems
 		registerRender(hv_solar_panel_schematic);
 		registerRender(ev_solar_panel_schematic);
 		registerRender(iv_solar_panel_schematic);
-		registerRender(lv_cable_schematic);
-		registerRender(mv_cable_schematic);
-		registerRender(hv_cable_schematic);
-		registerRender(ev_cable_schematic);
-		registerRender(iv_cable_schematic);		
+		registerRender(lv_conduit_schematic);
+		registerRender(mv_conduit_schematic);
+		registerRender(hv_conduit_schematic);
+		registerRender(ev_conduit_schematic);
+		registerRender(iv_conduit_schematic);		
 		registerRender(filter_schematic);
 		registerRender(mv_wire_schematic);
 		registerRender(hv_wire_schematic);
@@ -360,10 +403,16 @@ public class ProspectItems
 		registerRender(iv_coil_schematic);
 		registerRender(circuit_schematic);
 		registerRender(prepared_circuit_schematic);		
-		
 		registerRender(chest_schematic);
 		registerRender(hopper_schematic);
 		registerRender(piston_schematic);
+		registerRender(bio_fuel_generator_schematic);
+		registerRender(zero_point_reactor_schematic);
+		registerRender(zero_point_cooler_schematic);
+		registerRender(conveyor_tube_schematic);
+		registerRender(bio_fuel_schematic);
+		registerRender(refrigerant_schematic);
+		registerRender(motor_schematic);
 	}
 	
 	private static void registerRender(Item item) 

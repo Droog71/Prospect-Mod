@@ -1,0 +1,27 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "LHL",
+    "PMP",
+    "LHL"  ],
+  "key": {
+    "P": {
+        "item": "minecraft:piston"
+    },
+    "M": {
+        "item": "prospect:mv_coil"
+    },
+    "L": {
+        "item": "prospect:lead_plate"
+    },
+    "H": {
+        "item": "prospect:hv_coil"
+    }
+},
+  "result": {
+    "item": "prospect:motor",
+    "data": 0
+  }
+}
+
+

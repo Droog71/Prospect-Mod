@@ -1,0 +1,21 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "   ",
+    "TMT",
+    "   "  ],
+  "key": {
+    "M": {
+        "item": "prospect:motor"
+    },
+    "T": {
+      "item": "prospect:tin_plate"
+    }
+},
+  "result": {
+    "item": "prospect:conveyor_tube",
+    "count": 10
+  }
+}
+
+

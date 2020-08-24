@@ -1,9 +1,9 @@
 { 
   "type": "forge:ore_shaped",
   "pattern": [
-    "AAA",
+    "   ",
     "AWA",
-    "AAA"  ],
+    "   "  ],
   "key": {
     "W": {
         "item": "prospect:in_hv_wire"
@@ -13,8 +13,8 @@
     }
 },
   "result": {
-    "item": "prospect:hv_cable",
-    "data": 0
+    "item": "prospect:hv_conduit",
+    "count": 10
   }
 }
 

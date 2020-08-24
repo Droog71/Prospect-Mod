@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:wool",
+      	    "data": 0
+        },
+	{
+            "item": "minecraft:clay_ball"
+        }
+    ],
+    "result": {
+        "item": "prospect:suit_material",
+	"count": 10
+    }
+}

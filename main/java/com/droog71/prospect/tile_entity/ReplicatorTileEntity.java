@@ -1,19 +1,17 @@
 package com.droog71.prospect.tile_entity;
 
-import com.droog71.prospect.fe.ProspectEnergyStorage;
+import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.ReplicatorContainer;
+import com.droog71.prospect.items.ReplicatorItems;
 import ic2.api.energy.prefab.BasicSink;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -21,12 +19,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class ReplicatorTileEntity extends TileEntity implements ITickable, ISidedInventory
 {
@@ -34,16 +32,17 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     private static final int[] SLOTS_BOTTOM = new int[] {2, 1};
     private static final int[] SLOTS_SIDES = new int[] {1};
     private NonNullList<ItemStack> replicatorItemStacks = NonNullList.<ItemStack>withSize(3, ItemStack.EMPTY);
+    private ReplicatorItems replicatorItems = new ReplicatorItems();
+    private ProspectEnergyStorage energyStorage = new ProspectEnergyStorage();
+    private Object ic2EnergySink;
     private int energyStored;
     private int energyCapacity;
     private int replicatorSpendTime;
     private int currentCreditSpendTime;
     private int replicateTime;
     private int totalreplicateTime;
-    private Object ic2EnergySink;
 	private int effectsTimer;
-	private int itemTier;
-	private ProspectEnergyStorage energyStorage = new ProspectEnergyStorage();
+	public int itemWorth;
     
 	@Override
     public void onLoad() 
@@ -58,6 +57,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 		}
 		energyStorage.capacity = 45000;
 		energyStorage.maxReceive = 9000;
+		replicatorItems.init();
 	}
 	 
 	@Override
@@ -153,7 +153,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 
         if (index == 0 && !flag)
         {
-            totalreplicateTime = getreplicateTime();
+            totalreplicateTime = 64;
             replicateTime = 0;
             markDirty();
         }
@@ -186,14 +186,13 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 	public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);
-        replicatorItemStacks = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
-        ItemStackHelper.loadAllItems(compound, replicatorItemStacks);
         energyStored = compound.getInteger("EnergyStored");
+        energyCapacity = compound.getInteger("EnergyCapacity");
         replicatorSpendTime = compound.getInteger("SpendTime");
         replicateTime = compound.getInteger("replicateTime");
         totalreplicateTime = compound.getInteger("replicateTimeTotal");
-        currentCreditSpendTime = getCreditSpendTime();
-        energyCapacity = compound.getInteger("EnergyCapacity");
+        replicatorItemStacks = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
+        ItemStackHelper.loadAllItems(compound, replicatorItemStacks);
         if (Loader.isModLoaded("ic2"))
 		{
 	        if ((BasicSink) ic2EnergySink == null)
@@ -279,7 +278,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     @Override
 	public void update()
     {
-        boolean flag1 = false;
+        boolean needsNetworkUpdate = false;
 
         if (!world.isRemote)
         {
@@ -290,54 +289,45 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
 			else
 			{
 	        	updateEnergy();
-	        	
-	            ItemStack itemstack = replicatorItemStacks.get(1);
-	
-	            if (!itemstack.isEmpty() && !replicatorItemStacks.get(0).isEmpty())
-	            {
-	                if (isEnergized() && canReplicate())
-	                {
-	                	if (useEnergy())
-	                	{
-	                		--replicatorSpendTime;
-	                		if (replicatorSpendTime <= 0)
-	                		{
-	                            itemstack.shrink(1);
-	                            replicatorSpendTime = getCreditSpendTime();
-	                            flag1 = true;
-	                		}	                		
-                           
-		                    ++replicateTime;
-		                    if (replicateTime == totalreplicateTime)
-		                    {
-		                        replicateTime = 0;
-		                        totalreplicateTime = getreplicateTime();
-		                        replicateItem();
-		                        flag1 = true;
-		                    }
-		                    
-		                    effectsTimer++;
-		    				if (effectsTimer > 40)
-		    				{
-		    					world.playSound(null, pos, ProspectSounds.replicatorSoundEvent,  SoundCategory.BLOCKS, 0.25f, 1);
-		    					effectsTimer = 0;
-		    				}
-	                	}
-	                }
-	                else
-	                {
-	                    replicateTime = 0;
-	                }
-	            }
-	            
-	            if (flag1)
-	            {
-	                markDirty();
-	            }
+
+                if (canReplicate() && useEnergy())
+                {
+                	ItemStack itemstack = replicatorItemStacks.get(1);
+                	if (!itemstack.isEmpty() && !replicatorItemStacks.get(0).isEmpty())
+    	            {
+                		--replicatorSpendTime;
+                		if (replicatorSpendTime <= 0)
+                		{
+                            itemstack.shrink(1);
+                            replicatorSpendTime = getCreditSpendTime();
+                            needsNetworkUpdate = true;
+                		}	                		
+                       
+                        ++replicateTime;
+                        if (replicateTime == totalreplicateTime)
+                        {
+                            replicateTime = 0;
+                            totalreplicateTime = 64;
+                            replicateItem();
+                            needsNetworkUpdate = true;
+                        }
+                        
+                        effectsTimer++;
+        				if (effectsTimer > 40)
+        				{
+        					world.playSound(null, pos, ProspectSounds.replicatorSoundEvent,  SoundCategory.BLOCKS, 0.25f, 1);
+        					effectsTimer = 0;
+        				}
+    	            }
+                }
+                else if (replicateTime > 0)
+                {
+                	replicateTime = MathHelper.clamp(replicateTime - 1, 0, totalreplicateTime);
+                } 
 			}
         }
         
-        if (flag1)
+        if (needsNetworkUpdate)
         {
             markDirty();
         }
@@ -397,129 +387,13 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     	return false;
     }
     
-    public int getreplicateTime()
-    {
-    	if (itemTier == 5)
-    	{
-    		return 200;
-    	}
-    	if (itemTier == 4)
-    	{
-    		return 150;
-    	}
-    	return 50;
-    }
-
-    private boolean invalidReplicatorItem(ItemStack stack)
-    {
-    	Item i = stack.getItem();
-    	if (i == Items.ENDER_PEARL || i == Items.GHAST_TEAR || i == Items.BLAZE_POWDER || i == Items.NETHER_WART)
-    	{
-    		itemTier = 5;
-    		return false;
-    	}
-    	if (i == Items.DIAMOND || i == Items.EMERALD)
-    	{
-    		itemTier = 4;
-    		return false;
-    	}
-    	if (i == Items.IRON_INGOT || i == Items.GOLD_INGOT || i == Items.REDSTONE)
-    	{
-    		itemTier = 3;
-    		return false;
-    	}
-    	if (i == Items.GLOWSTONE_DUST || i == Items.CLAY_BALL || i == Items.QUARTZ || i == Items.COAL || i == Items.STRING)
-    	{
-    		itemTier = 2;
-    		return false;
-    	}
-    	if (i == Item.getItemFromBlock(Blocks.PLANKS) || i == Item.getItemFromBlock(Blocks.COBBLESTONE) || i == Item.getItemFromBlock(Blocks.WOOL))
-    	{
-    		itemTier = 1;
-    		return false;
-    	}
-    	NonNullList<ItemStack> copper = OreDictionary.getOres("ingotCopper");
-    	for (ItemStack s : copper)
-    	{ 		
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}			
-    		}
-    	}
-    	NonNullList<ItemStack> tin = OreDictionary.getOres("ingotTin");
-    	for (ItemStack s : tin)
-    	{
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}
-    		}
-    	}
-    	NonNullList<ItemStack> silver = OreDictionary.getOres("ingotSilver");
-    	for (ItemStack s : silver)
-    	{
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}
-    		}
-    	}
-    	NonNullList<ItemStack> lead = OreDictionary.getOres("ingotLead");
-    	for (ItemStack s : lead)
-    	{
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}
-    		}
-    	}
-    	NonNullList<ItemStack> aluminum = OreDictionary.getOres("ingotAluminum");
-    	for (ItemStack s : aluminum)
-    	{
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}
-    		}
-    	}
-    	NonNullList<ItemStack> silicon = OreDictionary.getOres("silicon");
-    	for (ItemStack s : silicon)
-    	{
-    		if (s.getItem().getRegistryName() == stack.getItem().getRegistryName())
-    		{
-    			if (s.getMetadata() == stack.getMetadata())
-    			{
-    				itemTier = 3;
-    				return false;
-    			}
-    		}
-    	}
-    	System.out.println("Invalid replicator item!");
-    	return true;
-    }
-    
     /**
      * Returns true if the transmitter can transmit an item, i.e. has a source item, destination stack isn't full, etc.
      */
     private boolean canReplicate()
     {  	
-        if (replicatorItemStacks.get(0).isEmpty() || invalidReplicatorItem(replicatorItemStacks.get(0)))
+    	itemWorth = replicatorItems.getItemWorth(replicatorItemStacks.get(0));
+        if (replicatorItemStacks.get(0).isEmpty() || itemWorth == 0)
         {
         	return false;
         }
@@ -562,17 +436,9 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
         }
     }
 
-    public int getCreditSpendTime() //Could eventually be used for differing denominations of currency.
+    public int getCreditSpendTime()
     {
-    	if (itemTier == 5)
-    	{
-    		return 10;
-    	}
-    	if (itemTier == 4)
-    	{
-    		return 15;
-    	}
-    	return 50;
+    	return 64 / itemWorth;
     }
 
     public static boolean isCredit(ItemStack stack)

@@ -1,6 +1,7 @@
 package com.droog71.prospect.tile_entity;
 
-import com.droog71.prospect.fe.ProspectEnergyStorage;
+import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
+import com.droog71.prospect.init.ProspectBlocks;
 import com.droog71.prospect.init.ProspectItems;
 import com.droog71.prospect.init.ProspectSounds;
 import com.droog71.prospect.inventory.ExtruderContainer;
@@ -258,7 +259,9 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
      */
     @Override
 	public void update()
-    {                 
+    {   
+    	boolean needsNetworkUpdate = false;
+    	
         if (!world.isRemote)
         {
             if (energyStorage.overloaded)
@@ -268,53 +271,38 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
             else
             {
             	updateEnergy();            	
-            	if (isEnergized())
+            	if (canExtrude() && useEnergy())
                 {            	
-                    if (canExtrude())
-                    {
-                    	if (useEnergy())
-                    	{
-                    		doWork();
-                    	}
-                    }
-                    else
+            		++extrudeTime;    	
+                    if (extrudeTime == totalextrudeTime)
                     {
                         extrudeTime = 0;
+                        totalextrudeTime = getextrudeTime(extruderItemStacks.get(0));
+                        extrudeItem();
+                        needsNetworkUpdate = true;
                     }
+                    
+                    effectsTimer++;
+            		if (effectsTimer > 200)
+            		{	
+            			world.playSound(null, pos, ProspectSounds.extruderSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
+            			effectsTimer = 0;
+            		}
                 }
-                else if (!isEnergized() && extrudeTime > 0)
+                else if (extrudeTime > 0)
                 {
-                    extrudeTime = MathHelper.clamp(extrudeTime - 2, 0, totalextrudeTime);
+                    extrudeTime = MathHelper.clamp(extrudeTime - 1, 0, totalextrudeTime);
                 }
             }                   
-        }       
-    }
-    
-    private void doWork()
-    {
-    	boolean flag1 = false;   
-    	++extrudeTime;
-    	
-        if (extrudeTime == totalextrudeTime)
-        {
-            extrudeTime = 0;
-            totalextrudeTime = getextrudeTime(extruderItemStacks.get(0));
-            extrudeItem();
-            flag1 = true;
-        }
+        } 
         
-        effectsTimer++;
-		if (effectsTimer > 200)
-		{	
-			world.playSound(null, pos, ProspectSounds.extruderSoundEvent,  SoundCategory.BLOCKS, 0.5f, 1);
-			effectsTimer = 0;
-		}
-		if (flag1)
+        if (needsNetworkUpdate)
         {
             markDirty();
         }
     }
     
+    // Get values from the energy storage or ic2 energy sink
     private void updateEnergy()
     {
     	if (energyStorage.getEnergyStored() > 0)
@@ -341,6 +329,7 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
     	}   	 
     }
     
+    // Remove energy from the buffer
     private boolean useEnergy()
     {
     	if (Loader.isModLoaded("ic2"))
@@ -369,11 +358,13 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
     	return false;
     }
     
-    public int getextrudeTime(ItemStack stack) //Could be used for varying extrude time for different ingots.
+    // How long it takes to extrude the ingot
+    public int getextrudeTime(ItemStack stack)
     {
         return 50;
     }
 
+    // Checks if the item in question is registered as a copper ingot
     private boolean isCopperIngot(ItemStack stack)
     {
     	NonNullList<ItemStack> copper = OreDictionary.getOres("ingotCopper");
@@ -401,7 +392,15 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
         }
         else
         {
-            ItemStack itemstack = new ItemStack(ProspectItems.copper_wire,6);
+        	ItemStack itemstack = ItemStack.EMPTY;
+        	if (world.isBlockPowered(pos))
+        	{
+        		itemstack = new ItemStack(ProspectBlocks.copper_pipe);
+        	}
+        	else
+        	{
+        		itemstack = new ItemStack(ProspectItems.copper_wire,6);
+        	}      
 
             if (itemstack.isEmpty())
             {
@@ -439,8 +438,17 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
         if (canExtrude())
         {
             ItemStack itemstack = extruderItemStacks.get(0);
-            ItemStack itemstack1 = new ItemStack(ProspectItems.copper_wire,6);
+            ItemStack itemstack1 = ItemStack.EMPTY; 
             ItemStack itemstack2 = extruderItemStacks.get(2);
+            
+            if (world.isBlockPowered(pos))
+        	{
+            	itemstack1 = new ItemStack(ProspectBlocks.copper_pipe);	
+        	}
+        	else
+        	{
+        		itemstack1 = new ItemStack(ProspectItems.copper_wire,6);
+        	} 
 
             if (itemstack2.isEmpty())
             {
@@ -531,11 +539,7 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
         return true;
     }
 
-    public String getGuiID()
-    {
-        return null;
-    }
-
+    // Create the container
     public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
     {
         return new ExtruderContainer(playerInventory, this);
@@ -559,6 +563,12 @@ public class ExtruderTileEntity extends TileEntity implements ITickable, ISidedI
         }
     }
 
+    // Not used
+    public String getGuiID()
+    {
+        return null;
+    }
+    
     @Override
 	public void setField(int id, int value)
     {

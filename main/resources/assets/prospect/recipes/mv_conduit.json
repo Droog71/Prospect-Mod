@@ -1,9 +1,9 @@
 { 
   "type": "forge:ore_shaped",
   "pattern": [
-    "AAA",
+    "   ",
     "AWA",
-    "AAA"  ],
+    "   "  ],
   "key": {
     "W": {
         "item": "prospect:in_mv_wire"
@@ -13,8 +13,8 @@
     }
 },
   "result": {
-    "item": "prospect:mv_cable",
-    "data": 0
+    "item": "prospect:mv_conduit",
+    "count": 10
   }
 }
 

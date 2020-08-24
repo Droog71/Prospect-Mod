@@ -2,7 +2,7 @@
     "type": "minecraft:crafting_shapeless",
     "ingredients": [
         {
-            "item": "prospect:mv_cable"
+            "item": "prospect:mv_conduit"
         },
         {
             "item": "minecraft:paper"
@@ -16,6 +16,6 @@
         }
     ],
     "result": {
-        "item": "prospect:mv_cable_schematic"
+        "item": "prospect:mv_conduit_schematic"
     }
 }

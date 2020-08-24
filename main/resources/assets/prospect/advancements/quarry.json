@@ -1,0 +1,26 @@
+{
+ "parent": "minecraft:recipes/root",
+ "rewards": {
+  "recipes": [
+   "prospect:quarry",
+   "prospect:press"
+  ]
+ },
+ "criteria": {
+  "has_item": {
+   "trigger": "minecraft:inventory_changed",
+   "conditions": {
+    "items": [
+     {
+      "item": "minecraft:piston"
+     }
+    ]
+   }
+  }
+ },
+ "requirements": [
+  [
+   "has_item"
+  ]
+ ]
+}

@@ -1,6 +1,7 @@
 package com.droog71.prospect.tile_entity;
 
-import com.droog71.prospect.fe.ProspectEnergyStorage;
+import com.droog71.prospect.forge_energy.ProspectEnergyStorage;
+
 import ic2.api.energy.prefab.BasicSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -38,7 +39,7 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 		{
 			if (((BasicSource) ic2EnergySource == null))
 			{
-				ic2EnergySource = new BasicSource(this,energyStorage.capacity/4,tier);
+				ic2EnergySource = new BasicSource(this,capacity/4,tier);
 			}
 			((BasicSource) ic2EnergySource).onLoad(); // notify the energy sink
 		}
@@ -75,11 +76,14 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
     public void readFromNBT(NBTTagCompound tag) 
     {
         super.readFromNBT(tag);	 
-        if ((BasicSource) ic2EnergySource == null)
+        if (Loader.isModLoaded("ic2"))
 		{
-        	ic2EnergySource = new BasicSource(this,capacity/4,tier);
-		}	
-        ((BasicSource) ic2EnergySource).readFromNBT(tag);
+	        if ((BasicSource) ic2EnergySource == null)
+			{
+	        	ic2EnergySource = new BasicSource(this,capacity/4,tier);
+			}	
+	        ((BasicSource) ic2EnergySource).readFromNBT(tag);
+		}
         capacity = tag.getInteger("capacity");
         rating = tag.getInteger("rating");
         tier = tag.getInteger("tier");
@@ -89,11 +93,14 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
     public NBTTagCompound writeToNBT(NBTTagCompound tag) 
     {
         super.writeToNBT(tag);	
-        if ((BasicSource) ic2EnergySource == null)
+        if (Loader.isModLoaded("ic2"))
 		{
-			ic2EnergySource = new BasicSource(this,capacity/4,tier);
-		}	
-        ((BasicSource) ic2EnergySource).writeToNBT(tag);
+	        if ((BasicSource) ic2EnergySource == null)
+			{
+				ic2EnergySource = new BasicSource(this,capacity/4,tier);
+			}	
+	        ((BasicSource) ic2EnergySource).writeToNBT(tag);
+		}
         tag.setInteger("capacity", capacity);
         tag.setInteger("rating", rating);
         tag.setInteger("tier", tier);
@@ -106,10 +113,11 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 		if (!world.isRemote) //Everything is done on the server.
 		{
 			addEnergy();
-			doWork();			
+			distributeEnergy();			
 		}
 	}
 	
+	// Add energy to the buffer
 	private void addEnergy() 
 	{
 		if (world.canBlockSeeSky(pos.offset(EnumFacing.UP))) 
@@ -125,7 +133,8 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 		}
 	}
 	
-	private void doWork()
+	// Distributes energy
+	private void distributeEnergy()
 	{		
 		boolean connectedFE = false;
 		if (energyStorage.receivers(world, pos).size() > 0)
@@ -143,10 +152,14 @@ public class SolarPanelTileEntity extends TileEntity implements ITickable
 		}
 		if (connectedFE == false)
 		{
-			((BasicSource) ic2EnergySource).setCapacity(energyStorage.capacity/4);
+			if (Loader.isModLoaded("ic2"))
+			{
+				((BasicSource) ic2EnergySource).setCapacity(capacity/4);
+			}
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @javax.annotation.Nullable net.minecraft.util.EnumFacing facing)
     {

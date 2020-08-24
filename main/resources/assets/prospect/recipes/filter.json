@@ -6,7 +6,8 @@
     "TMT"  ],
   "key": {
     "T": {
-        "item": "prospect:tin_plate"
+        "type": "forge:ore_dict",
+        "ore": "ingotTin"
     },
     "C": {
         "item": "minecraft:coal",
