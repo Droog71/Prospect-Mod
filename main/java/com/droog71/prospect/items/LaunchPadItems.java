@@ -76,7 +76,7 @@ public class LaunchPadItems
 		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.iv_solar_panel));
 		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.ev_solar_panel));
 		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.hv_solar_panel));
-		itemTier4.add(Item.getItemFromBlock(ProspectBlocks.mv_solar_panel)); 
+		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.mv_solar_panel)); 
 		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.quarry));
 		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.fabricator));
 		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.purifier));		
@@ -97,15 +97,15 @@ public class LaunchPadItems
 	
 	private void generateTier4ItemList()
 	{
-		itemTier2.add(ProspectItems.quantum_circuit);
-		itemTier1.add(ProspectItems.motor);
-		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.bio_fuel_generator)); 
-		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.extruder)); 
-		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.lv_solar_panel));	
+		itemTier4.add(ProspectItems.quantum_circuit);
+		itemTier4.add(ProspectItems.motor);
+		itemTier4.add(Item.getItemFromBlock(ProspectBlocks.bio_fuel_generator)); 
+		itemTier4.add(Item.getItemFromBlock(ProspectBlocks.extruder)); 
+		itemTier4.add(Item.getItemFromBlock(ProspectBlocks.lv_solar_panel));	
 		itemTier4.add(Item.getItemFromBlock(ProspectBlocks.hv_transformer));
-		itemTier5.add(Item.getItemFromBlock(ProspectBlocks.ev_transformer));
-		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.mv_transformer));
-		itemTier2.add(Item.getItemFromBlock(ProspectBlocks.lv_transformer));				
+		itemTier4.add(Item.getItemFromBlock(ProspectBlocks.ev_transformer));
+		itemTier4.add(Item.getItemFromBlock(ProspectBlocks.mv_transformer));
+		itemTier4.add(Item.getItemFromBlock(ProspectBlocks.lv_transformer));				
 		
 		if (Loader.isModLoaded("techguns"))
 		{
@@ -146,18 +146,18 @@ public class LaunchPadItems
 	
 	private void generateTier1ItemList()
 	{
-		itemTier2.add(ProspectItems.gem);
-		itemTier2.add(Item.getItemFromBlock(ProspectBlocks.conveyor_tube));		
+		itemTier1.add(ProspectItems.gem);
+		itemTier1.add(Item.getItemFromBlock(ProspectBlocks.conveyor_tube));		
 		itemTier1.add(ProspectItems.in_iv_wire);
 		itemTier1.add(ProspectItems.in_ev_wire);
 		itemTier1.add(ProspectItems.in_hv_wire);
 		itemTier1.add(ProspectItems.in_mv_wire);
 		itemTier1.add(ProspectItems.in_lv_wire);
-		itemTier4.add(Item.getItemFromBlock(ProspectBlocks.iv_conduit));
-		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.ev_conduit));
-		itemTier3.add(Item.getItemFromBlock(ProspectBlocks.hv_conduit));
-		itemTier2.add(Item.getItemFromBlock(ProspectBlocks.mv_conduit));
-		itemTier2.add(Item.getItemFromBlock(ProspectBlocks.lv_conduit));
+		itemTier1.add(Item.getItemFromBlock(ProspectBlocks.iv_conduit));
+		itemTier1.add(Item.getItemFromBlock(ProspectBlocks.ev_conduit));
+		itemTier1.add(Item.getItemFromBlock(ProspectBlocks.hv_conduit));
+		itemTier1.add(Item.getItemFromBlock(ProspectBlocks.mv_conduit));
+		itemTier1.add(Item.getItemFromBlock(ProspectBlocks.lv_conduit));
 		
 		if (Loader.isModLoaded("techguns"))
 		{
