@@ -26,7 +26,7 @@ public class Prospect
 {
     public static final String MODID = "prospect";
     public static final String NAME = "Prospect";
-    public static final String VERSION = "1.0";
+    public static final String VERSION = "1.0.1";
 
     @Instance
 	public static Prospect instance;

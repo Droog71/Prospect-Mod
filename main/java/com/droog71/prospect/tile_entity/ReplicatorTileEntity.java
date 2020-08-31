@@ -37,7 +37,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
     private Object ic2EnergySink;
     private int energyStored;
     private int energyCapacity;
-    private int replicatorSpendTime;
+    private int replicatorSpendTime = 1000;
     private int currentCreditSpendTime;
     private int replicateTime;
     private int totalreplicateTime;
@@ -295,6 +295,11 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
                 	ItemStack itemstack = replicatorItemStacks.get(1);
                 	if (!itemstack.isEmpty() && !replicatorItemStacks.get(0).isEmpty())
     	            {
+                		if (replicatorSpendTime == 1000)
+                		{
+                			replicatorSpendTime = getCreditSpendTime();
+                		}
+                		
                 		--replicatorSpendTime;
                 		if (replicatorSpendTime <= 0)
                 		{
@@ -422,7 +427,7 @@ public class ReplicatorTileEntity extends TileEntity implements ITickable, ISide
         if (canReplicate())
         {           
             ItemStack itemstack = replicatorItemStacks.get(0);
-            ItemStack itemstack1 = itemstack.copy();
+            ItemStack itemstack1 = new ItemStack(itemstack.getItem(),1,itemstack.getMetadata());
             ItemStack itemstack2 = replicatorItemStacks.get(2);
 
             if (itemstack2.isEmpty())
