@@ -13,8 +13,9 @@ import com.droog71.prospect.items.ReplicatorItem;
 
 public class ConfigHandler 
 {
+	// Gets the value of toxic_spores_enabled from the config file
 	public static boolean toxicSporesEnabled()
-	{
+	{		
 		File configFile = new File(System.getProperty("user.dir")+"/config/prospect.cfg");	
         if (configFile.exists())
         {
@@ -43,6 +44,7 @@ public class ConfigHandler
         return false;
 	}
 	
+	// Gets the value of purifier_particle_effects from the config file
 	public static boolean purifierParticleEffectsEnabled()
 	{
 		File configFile = new File(System.getProperty("user.dir")+"/config/prospect.cfg");	
@@ -73,6 +75,7 @@ public class ConfigHandler
         return false;
 	}
 	
+	// Gets launch pad items from config file
 	public static List<LaunchPadItem> launchPadItems()
 	{
 		File configFile = new File(System.getProperty("user.dir")+"/config/prospect.cfg");	
@@ -112,6 +115,7 @@ public class ConfigHandler
         return null;
 	}
 	
+	// Gets replicator items from config file
 	public static List<ReplicatorItem> replicatorItems()
 	{
 		File configFile = new File(System.getProperty("user.dir")+"/config/prospect.cfg");	
@@ -151,6 +155,7 @@ public class ConfigHandler
         return null;
 	}
 	
+	// Creates the config file
 	public static void createConfigFile()
 	{
 		try 
@@ -175,6 +180,38 @@ public class ConfigHandler
 			        ioe.printStackTrace();
 			    } 
 	        }			
+		} 
+    	catch (IOException e) 
+    	{
+    		System.out.println("Prospect mod failed to create config file!");
+			e.printStackTrace();
+		}
+	}
+	
+	// Sets the toxic_spores_enabled value to false in config
+	public static void disableToxicSpores()
+	{
+		try 
+    	{
+			File configFile = new File(System.getProperty("user.dir")+"/config/prospect.cfg");
+			if (!configFile.exists())
+	        {
+				configFile.createNewFile();
+	        }   			
+		    try 
+		    {
+		    	FileWriter f = new FileWriter(configFile,false);
+		        f.write(">toxic_spores_enabled:false\n" + 
+		        		">purifier_particle_effects:true\n" + 
+		        		">launch_pad_items}minecraft:piston=4,minecraft:hopper=2\n" + 
+		        		">replicator_items}minecraft:apple=1,minecraft:feather=1");
+		        f.close();
+		    } 
+		    catch (IOException ioe) 
+		    {
+		    	System.out.println("Prospect mod failed to write to config file!");
+		        ioe.printStackTrace();
+		    } 		
 		} 
     	catch (IOException e) 
     	{

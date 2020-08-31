@@ -31,15 +31,18 @@ public class ReplicatorItems
     {
     	Item item = stack.getItem();
 
-    	for (ReplicatorItem replicatorItem : ConfigHandler.replicatorItems())
-		{
-			ResourceLocation location = new ResourceLocation(replicatorItem.name);
-			Item foundItem = Item.REGISTRY.getObject(location);
-			if (foundItem == item)
-			{
-				return replicatorItem.worth;
-			}
-		}
+    	if (ConfigHandler.replicatorItems() != null)
+    	{
+    		for (ReplicatorItem replicatorItem : ConfigHandler.replicatorItems())
+    		{
+    			ResourceLocation location = new ResourceLocation(replicatorItem.name);
+    			Item foundItem = Item.REGISTRY.getObject(location);
+    			if (foundItem == item)
+    			{
+    				return replicatorItem.worth;
+    			}
+    		}
+    	}
     	
     	if (itemTier3.contains(item))
     	{

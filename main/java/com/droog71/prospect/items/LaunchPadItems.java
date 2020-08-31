@@ -34,13 +34,16 @@ public class LaunchPadItems
 	
 	public int getCurrentPayout(Item item)
     { 
-		for (LaunchPadItem lpItem : ConfigHandler.launchPadItems())
+		if (ConfigHandler.launchPadItems() != null)
 		{
-			ResourceLocation location = new ResourceLocation(lpItem.name);
-			Item foundItem = Item.REGISTRY.getObject(location);
-			if (foundItem == item)
+			for (LaunchPadItem lpItem : ConfigHandler.launchPadItems())
 			{
-				return lpItem.worth;
+				ResourceLocation location = new ResourceLocation(lpItem.name);
+				Item foundItem = Item.REGISTRY.getObject(location);
+				if (foundItem == item)
+				{
+					return lpItem.worth;
+				}
 			}
 		}
 		
