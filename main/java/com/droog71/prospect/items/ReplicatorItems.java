@@ -93,10 +93,6 @@ public class ReplicatorItems
 	{
 		itemTier2.add(Items.DIAMOND);
 		itemTier2.add(Items.EMERALD);
-		if (Loader.isModLoaded("ic2"))
-		{
-			itemTier2.add(Ic2Items.uraniumDrop.getItem());
-		}
 	}
 	
 	private void generateTier1ItemList()

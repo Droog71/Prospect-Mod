@@ -3,8 +3,13 @@ package com.droog71.prospect.potion;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
+
+import com.droog71.prospect.config.ConfigHandler;
 import com.droog71.prospect.init.ProspectItems;
+import com.droog71.prospect.items.LaunchPadItem;
+
 import ic2.core.platform.registry.Ic2Items;
 import net.machinemuse.powersuits.common.MPSItems;
 import techguns.TGArmors;
@@ -19,14 +24,6 @@ public class SporeArmorList
 		list.add(ProspectItems.suit);
 		list.add(ProspectItems.pants);
 		list.add(ProspectItems.boots);
-		
-		if (Loader.isModLoaded("ic2"))
-		{
-			list.add(Ic2Items.hazmatHelmet.getItem());
-			list.add(Ic2Items.hazmatChest.getItem());
-			list.add(Ic2Items.hazmatLeggings.getItem());
-			list.add(Ic2Items.hazmatBoots.getItem());
-		}
 		
 		if (Loader.isModLoaded("techguns"))
 		{
@@ -58,6 +55,19 @@ public class SporeArmorList
 			list.add(MPSItems.powerArmorTorso);
 			list.add(MPSItems.powerArmorLegs);
 			list.add(MPSItems.powerArmorFeet);
+		}
+		
+		if (ConfigHandler.protectiveArmorItems() != null)
+		{
+			for (String itemName : ConfigHandler.protectiveArmorItems())
+			{
+				ResourceLocation location = new ResourceLocation(itemName);
+				Item foundItem = Item.REGISTRY.getObject(location);
+				if (foundItem != null)
+				{
+					list.add(foundItem);
+				}
+			}
 		}
 		
 		return list;

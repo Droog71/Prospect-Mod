@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
 import com.droog71.prospect.items.LaunchPadItem;
 import com.droog71.prospect.items.ReplicatorItem;
 
@@ -155,6 +154,33 @@ public class ConfigHandler
         return null;
 	}
 	
+	// Gets protective armor items from config file
+	public static String[] protectiveArmorItems()
+	{
+		File configFile = new File(System.getProperty("user.dir")+"/config/prospect.cfg");	
+        if (configFile.exists())
+        {
+			Scanner configFileScanner;
+			try 
+			{
+				configFileScanner = new Scanner(configFile);
+				String configFileContents = configFileScanner.useDelimiter("\\Z").next();				
+				configFileScanner.close();
+				return configFileContents.split(">")[5].split("}")[1].split(",");
+			} 
+			catch (FileNotFoundException e) 
+			{
+				System.out.println("Prospect mod failed to find config file!");
+				e.printStackTrace();
+			}			
+        }
+        else
+        {
+        	createConfigFile();
+        }
+        return null;
+	}
+	
 	// Creates the config file
 	public static void createConfigFile()
 	{
@@ -164,28 +190,53 @@ public class ConfigHandler
 			if (!configFile.exists())
 	        {
 				configFile.createNewFile();
-				FileWriter f;    			
-			    try 
-			    {
-			        f = new FileWriter(configFile,false);
-			        f.write(">toxic_spores_enabled:true\n" + 
-			        		">purifier_particle_effects:true\n" + 
-			        		">launch_pad_items}minecraft:piston=4,minecraft:hopper=2\n" + 
-			        		">replicator_items}minecraft:apple=1,minecraft:feather=1");
-			        f.close();
-			    } 
-			    catch (IOException ioe) 
-			    {
-			    	System.out.println("Prospect mod failed to write to config file!");
-			        ioe.printStackTrace();
-			    } 
-	        }			
+				writeToConfigFile(configFile);
+	        }	
+			else
+			{
+				Scanner configFileScanner;
+				try 
+				{
+					configFileScanner = new Scanner(configFile);
+					String configFileContents = configFileScanner.useDelimiter("\\Z").next();				
+					configFileScanner.close();
+					if (configFileContents.split(">").length < 6)
+					{
+						writeToConfigFile(configFile);
+					}
+				} 
+				catch (FileNotFoundException e)
+				{
+					System.out.println("Prospect mod failed to find config file!");
+					e.printStackTrace();
+				}	
+			}
 		} 
     	catch (IOException e) 
     	{
     		System.out.println("Prospect mod failed to create config file!");
 			e.printStackTrace();
 		}
+	}
+	
+	public static void writeToConfigFile(File configFile)
+	{
+		FileWriter f;    			
+	    try 
+	    {
+	        f = new FileWriter(configFile,false);
+	        f.write(">toxic_spores_enabled:true\n" + 
+	        		">purifier_particle_effects:true\n" + 
+	        		">launch_pad_items}minecraft:piston=4,minecraft:hopper=2\n" + 
+	        		">replicator_items}minecraft:apple=1,minecraft:feather=1\n" +
+	        		">spore_armor}minecraft:diamond_helmet,minecraft:diamond_chestplate,minecraft:diamond_leggings,minecraft:diamond_boots");
+	        f.close();
+	    } 
+	    catch (IOException ioe) 
+	    {
+	    	System.out.println("Prospect mod failed to write to config file!");
+	        ioe.printStackTrace();
+	    }
 	}
 	
 	// Sets the toxic_spores_enabled value to false in config
@@ -198,20 +249,7 @@ public class ConfigHandler
 	        {
 				configFile.createNewFile();
 	        }   			
-		    try 
-		    {
-		    	FileWriter f = new FileWriter(configFile,false);
-		        f.write(">toxic_spores_enabled:false\n" + 
-		        		">purifier_particle_effects:true\n" + 
-		        		">launch_pad_items}minecraft:piston=4,minecraft:hopper=2\n" + 
-		        		">replicator_items}minecraft:apple=1,minecraft:feather=1");
-		        f.close();
-		    } 
-		    catch (IOException ioe) 
-		    {
-		    	System.out.println("Prospect mod failed to write to config file!");
-		        ioe.printStackTrace();
-		    } 		
+			writeToConfigFile(configFile);		
 		} 
     	catch (IOException e) 
     	{

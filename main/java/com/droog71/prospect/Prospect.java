@@ -26,7 +26,7 @@ public class Prospect
 {
     public static final String MODID = "prospect";
     public static final String NAME = "Prospect";
-    public static final String VERSION = "1.0.2";
+    public static final String VERSION = "1.0.3";
 
     @Instance
 	public static Prospect instance;
@@ -37,10 +37,10 @@ public class Prospect
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+    	ConfigHandler.createConfigFile();
     	ProspectBlocks.init();
     	ProspectItems.init();
-    	ProspectSounds.init();
-    	ConfigHandler.createConfigFile();
+    	ProspectSounds.init(); 
     }
 
     @EventHandler

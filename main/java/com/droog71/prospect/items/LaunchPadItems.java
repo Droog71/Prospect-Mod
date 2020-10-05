@@ -89,13 +89,6 @@ public class LaunchPadItems
 			itemTier5.add(TGBlocks.BASIC_MACHINE.getItemblock());
 			itemTier5.add(TGItems.PLASMA_GENERATOR.getItem());
 		}
-		
-		if (Loader.isModLoaded("ic2"))
-    	{
-    		itemTier5.add(Ic2Items.nuclearReactor.getItem());	
-    		itemTier5.add(Ic2Items.massfabricator.getItem());
-    		itemTier5.add(Ic2Items.adjustableTransformer.getItem());
-    	}
 	}
 	
 	private void generateTier4ItemList()
@@ -114,15 +107,6 @@ public class LaunchPadItems
 		{
 			itemTier4.add(TGItems.CIRCUIT_BOARD_ELITE.getItem());
 		}
-		
-		if (Loader.isModLoaded("ic2"))
-    	{
-    		itemTier4.add(Ic2Items.advancedCircuit.getItem());
-    		itemTier4.add(Ic2Items.macerator.getItem());	
-    		itemTier4.add(Ic2Items.compressor.getItem());	
-    		itemTier4.add(Ic2Items.extractor.getItem());
-    		itemTier4.add(Ic2Items.electroFurnace.getItem());
-    	}
 	}
 	
 	private void generateTier3ItemList()
@@ -141,10 +125,6 @@ public class LaunchPadItems
 		{
 			itemTier2.add(TGItems.CIRCUIT_BOARD_BASIC.getItem());
 		}
-		if (Loader.isModLoaded("ic2"))
-    	{
-    		itemTier2.add(Ic2Items.electricCircuit.getItem());
-    	}
 	}
 	
 	private void generateTier1ItemList()
