@@ -2,6 +2,7 @@ package com.droog71.prospect.worldgen;
 
 import java.util.Random;
 
+import com.droog71.prospect.config.ConfigHandler;
 import com.droog71.prospect.init.ProspectBlocks;
 
 import net.minecraft.block.state.IBlockState;
@@ -17,7 +18,7 @@ public class OreGen implements IWorldGenerator
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) 
 	{
-		if (world.provider.getDimension() == 0) 
+		if (world.provider.getDimension() == 0 && ConfigHandler.oreGenEnabled()) 
 		{
 			generateOverworld(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
 		}

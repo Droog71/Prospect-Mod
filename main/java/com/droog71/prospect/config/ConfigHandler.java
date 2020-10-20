@@ -11,7 +11,7 @@ import com.droog71.prospect.items.LaunchPadItem;
 import com.droog71.prospect.items.ReplicatorItem;
 
 public class ConfigHandler 
-{
+{	
 	// Gets the value of toxic_spores_enabled from the config file
 	public static boolean toxicSporesEnabled()
 	{		
@@ -181,6 +181,37 @@ public class ConfigHandler
         return null;
 	}
 	
+	// Gets the value of ore_generation_enabled from the config file
+	public static boolean oreGenEnabled()
+	{		
+		File configFile = new File(System.getProperty("user.dir")+"/config/prospect.cfg");	
+        if (configFile.exists())
+        {
+			Scanner configFileScanner;
+			try 
+			{
+				configFileScanner = new Scanner(configFile);
+				String configFileContents = configFileScanner.useDelimiter("\\Z").next();				
+				configFileScanner.close();
+				String configValue = configFileContents.split(">")[6].split(":")[1].toLowerCase().trim();
+				if (configValue.equals("true"))
+				{
+					return true;
+				}
+			} 
+			catch (FileNotFoundException e) 
+			{
+				System.out.println("Prospect mod failed to find config file!");
+				e.printStackTrace();
+			}			
+        }
+        else
+        {
+        	createConfigFile();
+        }
+        return false;
+	}
+	
 	// Creates the config file
 	public static void createConfigFile()
 	{
@@ -200,7 +231,7 @@ public class ConfigHandler
 					configFileScanner = new Scanner(configFile);
 					String configFileContents = configFileScanner.useDelimiter("\\Z").next();				
 					configFileScanner.close();
-					if (configFileContents.split(">").length < 6)
+					if (configFileContents.split(">").length < 7)
 					{
 						writeToConfigFile(configFile);
 					}
@@ -229,7 +260,8 @@ public class ConfigHandler
 	        		">purifier_particle_effects:true\n" + 
 	        		">launch_pad_items}minecraft:piston=4,minecraft:hopper=2\n" + 
 	        		">replicator_items}minecraft:apple=1,minecraft:feather=1\n" +
-	        		">spore_armor}minecraft:diamond_helmet,minecraft:diamond_chestplate,minecraft:diamond_leggings,minecraft:diamond_boots");
+	        		">spore_armor}minecraft:diamond_helmet,minecraft:diamond_chestplate,minecraft:diamond_leggings,minecraft:diamond_boots\n" +
+	        		">ore_generation_enabled:true");
 	        f.close();
 	    } 
 	    catch (IOException ioe) 
