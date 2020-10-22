@@ -2,6 +2,7 @@ package com.droog71.prospect.init;
 
 import com.droog71.prospect.Prospect;
 import com.droog71.prospect.armor.ProspectArmor;
+import com.droog71.prospect.items.DataTerminal;
 import com.droog71.prospect.items.ProspectItem;
 import com.droog71.prospect.items.Schematic;
 import com.droog71.prospect.items.SporeFilter;
@@ -16,6 +17,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Mod.EventBusSubscriber(modid=Prospect.MODID)
 public class ProspectItems 
 {
+	//Book
+	public static Item data_terminal;
+	
 	// Armor
 	public static Item helmet;
 	public static Item suit;
@@ -115,6 +119,9 @@ public class ProspectItems
 	
 	public static void init() 
 	{		
+		//Book
+		data_terminal = new DataTerminal("data_terminal").setCreativeTab(Prospect.tabProspect).setMaxStackSize(1);
+		
 		// Armor
 		helmet = new ProspectArmor("helmet",Prospect.tabProspect,ProspectArmor.PROSPECTOR_ARMOR, 0, EntityEquipmentSlot.HEAD);
 		suit = new ProspectArmor("suit",Prospect.tabProspect,ProspectArmor.PROSPECTOR_ARMOR, 0, EntityEquipmentSlot.CHEST);
@@ -216,6 +223,9 @@ public class ProspectItems
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event) 
 	{	
+		//Book
+		event.getRegistry().registerAll(data_terminal);
+		
 		// Armor
 		event.getRegistry().registerAll(helmet);
 		event.getRegistry().registerAll(suit);
@@ -317,6 +327,9 @@ public class ProspectItems
 	@SubscribeEvent
 	public static void registerRenders(ModelRegistryEvent event) 
 	{
+		// Book
+		registerRender(data_terminal);
+				
 		// Armor
 		registerRender(filter);
 		registerRender(helmet);

@@ -97,6 +97,10 @@ public class ProspectGuiHandler implements IGuiHandler
 		{
 			return new ConveyorTubeGUI(player.inventory, (ConveyorTileEntity)world.getTileEntity(new BlockPos(x,y,z)));
 		}
+		if (ID == 9)
+		{
+			return new DataTerminalGUI();
+		}
 		return null;
 	}
 

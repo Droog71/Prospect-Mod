@@ -29,8 +29,9 @@ public enum FMLEventHandler
             persistent = data.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
         }
         if (!persistent.hasKey(NBT_KEY)) //If this is the first time onPlayerJoin is called for this player, equip armor and spore filter.
-        {      	
-        	if (!hasArmor(event.player)) 
+        {     
+        	event.player.inventory.addItemStackToInventory(new ItemStack(ProspectItems.data_terminal));
+        	if (!hasArmor(event.player))
         	{
         		event.player.inventory.addItemStackToInventory(new ItemStack(ProspectItems.filter));
                 event.player.inventory.setInventorySlotContents(36, new ItemStack(ProspectItems.boots));

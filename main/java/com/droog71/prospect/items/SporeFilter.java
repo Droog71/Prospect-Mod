@@ -32,7 +32,7 @@ public class SporeFilter extends ProspectItem
     }
     
     @Override
-    public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) 
+    public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
     {
     	if(itemSlot < 9) //Spore filters must be placed in the hotbar when in use.
     	{  		

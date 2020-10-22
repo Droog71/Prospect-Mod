@@ -1,0 +1,24 @@
+{ 
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "AAA",
+    "CGC",
+    "ACA"  ],
+  "key": {
+    "A": {
+        "item": "prospect:aluminum_plate"
+    },
+    "G": {
+        "item": "minecraft:glass"
+    },
+    "C": {
+        "item": "prospect:circuit"
+    }
+},
+  "result": {
+    "item": "prospect:data_terminal",
+    "data": 0
+  }
+}
+
+
